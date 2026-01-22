@@ -1,0 +1,10 @@
+sagemaker==2.*
+
+pandas
+xgboost
+scikit-learn
+joblib
+numpy
+python-dotenv
+
+boto3
