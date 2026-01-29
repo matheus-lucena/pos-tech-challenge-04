@@ -1,0 +1,9 @@
+crewai
+crewai-tools
+litellm
+boto3
+pydantic
+pydantic-core
+python-dotenv
+langchain-community
+litellm[proxy]
