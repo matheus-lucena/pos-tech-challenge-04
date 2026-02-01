@@ -7,3 +7,5 @@ pydantic-core
 python-dotenv
 langchain-community
 litellm[proxy]
+gradio
+requests
