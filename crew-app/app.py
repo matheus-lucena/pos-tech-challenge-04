@@ -5,7 +5,8 @@ Este módulo orquestra a interface Gradio e inicializa o sistema.
 """
 
 from ui import criar_interface
-
+from dotenv import load_dotenv
+load_dotenv()
 
 def main():
     """

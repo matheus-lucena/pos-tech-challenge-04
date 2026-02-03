@@ -1,6 +1,7 @@
 """Serviço para interação com AWS Transcribe."""
 
 import json
+import os
 import time
 import urllib.request
 from typing import Optional, Tuple
@@ -32,10 +33,11 @@ class TranscribeService:
         """
         self.region_name = region_name
         self.client = boto3.client('transcribe', region_name=region_name)
-        self.data_access_role_arn = data_access_role_arn or (
-            'arn:aws:iam::517171444774:role/TranscribeDataAccessRole'
+        self.data_access_role_arn = os.getenv(
+            "TRANSCRIBE_ROLE_ARN", 
+            "DEFAULT_TRANSCRIBE_ROLE_ARN"
         )
-    
+
     def _validate_media_format(self, s3_path: str) -> Tuple[bool, Optional[str]]:
         """
         Valida o formato de mídia do arquivo.

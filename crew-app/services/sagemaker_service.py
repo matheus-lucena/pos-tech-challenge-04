@@ -23,7 +23,7 @@ class SageMakerService:
         """
         self.endpoint_name = endpoint_name or os.getenv(
             "SAGEMAKER_ENDPOINT", 
-            "sagemaker-xgboost-2026-01-22-21-24-26-641"
+            "DEFAULT_SAGEMAKER_ENDPOINT"
         )
         self.region_name = region_name
         self.client = boto3.client("sagemaker-runtime", region_name=region_name)
