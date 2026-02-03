@@ -4,6 +4,8 @@ from sagemaker.estimator import Estimator
 from sagemaker import image_uris
 from sagemaker.serverless import ServerlessInferenceConfig
 from sagemaker.model import Model
+from dotenv import load_dotenv
+load_dotenv()
 
 # ------------------------------------------------------------------------------
 # 1. Configurações Iniciais e Sessão
@@ -12,16 +14,11 @@ print(">>> Configurando sessão SageMaker...")
 sess = sagemaker.Session()
 region = sess.boto_region_name
 
-role = "arn:aws:iam::517171444774:role/sagemaker"
-bucket = sess.default_bucket()
-prefix = 'tech-challenge/maternal-risk'
+role = os.environ.get("AWS_ROLE_SAGEMAKER")
+bucket = os.environ.get("AWS_SAGEMAKER_BUCKET")
+prefix = 'maternal-health-system/maternal-risk'
+sess = sagemaker.Session(default_bucket=bucket)
 
-print(f"Região: {region}")
-print(f"Bucket: {bucket}")
-print(f"Role: {role.split('/')[-1]}")
-
-# ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
 file_name = 'code/maternal_health_risk.csv'
 if not os.path.exists(file_name):
     raise FileNotFoundError(f"O arquivo {file_name} não foi encontrado na pasta atual!")
