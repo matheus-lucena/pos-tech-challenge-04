@@ -1,0 +1,31 @@
+# ============================================================================
+# CONFIGURAÇÃO DE INFRAESTRUTURA
+# ============================================================================
+# Copie este arquivo para terraform.tfvars e ajuste os valores conforme necessário
+# terraform.tfvars está no .gitignore para não commitar credenciais
+
+# Região AWS
+aws_region = "us-east-1"
+
+# Nome do projeto (usado como prefixo para recursos)
+project_name = "maternal-health-system"
+
+# Nome do bucket S3 para áudios (DEVE SER ÚNICO GLOBALMENTE)
+# Exemplo: "fiap-pos-teste-20-19" ou "meu-projeto-audio-2024"
+audio_bucket_name = "fiap-pos-teste-20-19"
+
+# Se deve criar um bucket específico para dados do SageMaker
+# Se false, o SageMaker usará seu bucket padrão
+create_sagemaker_bucket = true
+
+# Deve ser único globalmente
+sagemaker_bucket_name = "fiap-pos-sagemaker-data-20-19"
+
+sagemaker_additional_buckets = []
+
+# Nome da IAM Role para Transcribe
+transcribe_role_name = "TranscribeDataAccessRole"
+
+# Dias de retenção dos logs no CloudWatch
+log_retention_days = 7
+
