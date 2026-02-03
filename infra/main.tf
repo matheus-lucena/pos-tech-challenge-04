@@ -1,6 +1,6 @@
 terraform {
   required_version = ">= 1.0"
-  
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -12,6 +12,9 @@ terraform {
 provider "aws" {
   region = var.aws_region
 }
+
+# Data source para obter informações da conta AWS
+data "aws_caller_identity" "current" {}
 
 # ============================================================================
 # S3 BUCKETS
@@ -25,7 +28,7 @@ resource "aws_s3_bucket" "audio_bucket" {
 # Configuração de versionamento do bucket de áudio
 resource "aws_s3_bucket_versioning" "audio_bucket_versioning" {
   bucket = aws_s3_bucket.audio_bucket.id
-  
+
   versioning_configuration {
     status = "Enabled"
   }
@@ -62,7 +65,7 @@ resource "aws_s3_bucket" "sagemaker_data_bucket" {
 resource "aws_s3_bucket_versioning" "sagemaker_bucket_versioning" {
   count  = var.create_sagemaker_bucket ? 1 : 0
   bucket = aws_s3_bucket.sagemaker_data_bucket[0].id
-  
+
   versioning_configuration {
     status = "Enabled"
   }
@@ -227,7 +230,7 @@ resource "aws_iam_role" "transcribe_data_access_role" {
   })
 }
 
-# Policy para Transcribe acessar S3
+# Policy para Transcribe acessar S3 (anexada à role)
 resource "aws_iam_policy" "transcribe_s3_policy" {
   name        = "${var.project_name}-transcribe-s3-policy"
   description = "Permite Transcribe acessar bucket S3"
@@ -255,6 +258,56 @@ resource "aws_iam_policy" "transcribe_s3_policy" {
 resource "aws_iam_role_policy_attachment" "transcribe_s3_attachment" {
   role       = aws_iam_role.transcribe_data_access_role.name
   policy_arn = aws_iam_policy.transcribe_s3_policy.arn
+}
+
+# Bucket Policy para permitir que o Transcribe acesse o bucket usando a role
+resource "aws_s3_bucket_policy" "audio_bucket_transcribe_policy" {
+  bucket = aws_s3_bucket.audio_bucket.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowTranscribeService"
+        Effect = "Allow"
+        Principal = {
+          Service = "transcribe.amazonaws.com"
+        }
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject"
+        ]
+        Resource = "${aws_s3_bucket.audio_bucket.arn}/*"
+        Condition = {
+          StringEquals = {
+            "aws:SourceAccount" = data.aws_caller_identity.current.account_id
+          }
+          ArnLike = {
+            "aws:SourceArn" = "arn:aws:transcribe:${var.aws_region}:${data.aws_caller_identity.current.account_id}:transcription-job/*"
+          }
+        }
+      },
+      {
+        Sid    = "AllowTranscribeServiceListBucket"
+        Effect = "Allow"
+        Principal = {
+          Service = "transcribe.amazonaws.com"
+        }
+        Action = [
+          "s3:ListBucket"
+        ]
+        Resource = aws_s3_bucket.audio_bucket.arn
+        Condition = {
+          StringEquals = {
+            "aws:SourceAccount" = data.aws_caller_identity.current.account_id
+          }
+          ArnLike = {
+            "aws:SourceArn" = "arn:aws:transcribe:${var.aws_region}:${data.aws_caller_identity.current.account_id}:transcription-job/*"
+          }
+        }
+      }
+    ]
+  })
 }
 
 # ============================================================================
@@ -365,6 +418,18 @@ resource "aws_iam_user_policy" "local_user_transcribe_policy" {
           "transcribe:DeleteTranscriptionJob"
         ]
         Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:PassRole"
+        ]
+        Resource = aws_iam_role.transcribe_data_access_role.arn
+        Condition = {
+          StringEquals = {
+            "iam:PassedToService" = "transcribe.amazonaws.com"
+          }
+        }
       }
     ]
   })

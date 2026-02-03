@@ -1,11 +1,14 @@
 """Tools do CrewAI para análise de saúde materna."""
 
 import json
+from dotenv import load_dotenv
 from crewai.tools import tool
 from services.s3_service import S3Service
 from services.sagemaker_service import SageMakerService
 from services.transcribe_service import TranscribeService
 
+# Carrega variáveis de ambiente ANTES de criar instâncias dos serviços
+load_dotenv()
 
 # Instâncias globais dos serviços para uso nas tools
 _s3_service = S3Service()

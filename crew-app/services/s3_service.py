@@ -5,7 +5,11 @@ import time
 import uuid
 from datetime import datetime
 from typing import Optional, Tuple
+from dotenv import load_dotenv
 import boto3
+
+# Garante que as variáveis de ambiente estão carregadas
+load_dotenv()
 
 
 class S3Service:

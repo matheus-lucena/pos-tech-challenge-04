@@ -5,7 +5,11 @@ import os
 import time
 import urllib.request
 from typing import Optional, Tuple
+from dotenv import load_dotenv
 import boto3
+
+# Garante que as variáveis de ambiente estão carregadas
+load_dotenv()
 
 
 class TranscribeService:
@@ -31,12 +35,16 @@ class TranscribeService:
             region_name: Região AWS (padrão: us-east-1)
             data_access_role_arn: ARN da role para acesso aos dados
         """
-        self.region_name = region_name
-        self.client = boto3.client('transcribe', region_name=region_name)
-        self.data_access_role_arn = os.getenv(
-            "TRANSCRIBE_ROLE_ARN", 
-            "DEFAULT_TRANSCRIBE_ROLE_ARN"
+        self.region_name = region_name or os.getenv("AWS_REGION", "us-east-1")
+        self.client = boto3.client('transcribe', region_name=self.region_name)
+        self.data_access_role_arn = data_access_role_arn or os.getenv(
+            "AWS_TRANSCRIBE_ROLE_ARN"
         )
+        if not self.data_access_role_arn:
+            raise ValueError(
+                "TRANSCRIBE_ROLE_ARN não configurado. "
+                "Configure a variável de ambiente TRANSCRIBE_ROLE_ARN ou passe data_access_role_arn no construtor."
+            )
 
     def _validate_media_format(self, s3_path: str) -> Tuple[bool, Optional[str]]:
         """

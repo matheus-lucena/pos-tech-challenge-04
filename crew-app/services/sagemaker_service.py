@@ -3,7 +3,11 @@
 import os
 import json
 from typing import Dict, Any, Optional
+from dotenv import load_dotenv
 import boto3
+
+# Garante que as variáveis de ambiente estão carregadas
+load_dotenv()
 
 
 class SageMakerService:
@@ -21,12 +25,14 @@ class SageMakerService:
             endpoint_name: Nome do endpoint (usa variável de ambiente se não fornecido)
             region_name: Região AWS (padrão: us-east-1)
         """
-        self.endpoint_name = endpoint_name or os.getenv(
-            "SAGEMAKER_ENDPOINT", 
-            "DEFAULT_SAGEMAKER_ENDPOINT"
-        )
-        self.region_name = region_name
-        self.client = boto3.client("sagemaker-runtime", region_name=region_name)
+        self.endpoint_name = endpoint_name or os.getenv("SAGEMAKER_ENDPOINT")
+        if not self.endpoint_name:
+            raise ValueError(
+                "SAGEMAKER_ENDPOINT não configurado. "
+                "Configure a variável de ambiente SAGEMAKER_ENDPOINT ou passe endpoint_name no construtor."
+            )
+        self.region_name = region_name or os.getenv("AWS_REGION", "us-east-1")
+        self.client = boto3.client("sagemaker-runtime", region_name=self.region_name)
     
     def predict_risk(self, data: Dict[str, Any]) -> Dict[str, Any]:
         """
