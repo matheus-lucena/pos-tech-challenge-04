@@ -6,6 +6,7 @@ from crewai.tools import tool
 from services.s3_service import S3Service
 from services.sagemaker_service import SageMakerService
 from services.transcribe_service import TranscribeService
+from services.comprehend_medical_service import ComprehendMedicalService
 
 # Carrega variáveis de ambiente ANTES de criar instâncias dos serviços
 load_dotenv()
@@ -14,6 +15,7 @@ load_dotenv()
 _s3_service = S3Service()
 _sagemaker_service = SageMakerService()
 _transcribe_service = TranscribeService()
+_comprehend_medical_service = ComprehendMedicalService()
 
 
 @tool("MaternalRiskPredictor")
@@ -48,13 +50,13 @@ def predict_risk(data_json: str) -> str:
 @tool("AudioTranscriber")
 def transcribe_consultation(s3_path: str) -> str:
     """
-    Inicia e recupera transcrição do Amazon Transcribe.
+    Inicia e recupera transcrição do Amazon Transcribe e analisa com Comprehend Medical.
     
     Args:
         s3_path: Caminho S3 do áudio (ex: 's3://bucket/audio.mp3')
     
     Returns:
-        Texto transcrito ou mensagem de erro
+        Texto transcrito com análise do Comprehend Medical ou mensagem de erro
     """
     # Valida se o arquivo existe no S3
     exists, error_msg = _s3_service.verify_file_exists(s3_path)
@@ -64,7 +66,29 @@ def transcribe_consultation(s3_path: str) -> str:
     try:
         # Realiza a transcrição
         transcript = _transcribe_service.transcribe(s3_path)
-        return transcript
+        
+        # Analisa o texto transcrito com Comprehend Medical
+        try:
+            analysis = _comprehend_medical_service.analyze_text(transcript)
+            formatted_analysis = _comprehend_medical_service.format_analysis_result(analysis)
+            
+            # Retorna transcrição + análise
+            result = f"""
+=== TRANSCRIÇÃO DO ÁUDIO ===
+{transcript}
+
+{formatted_analysis}
+"""
+            return result
+        except Exception as e:
+            # Se houver erro no Comprehend Medical, retorna apenas a transcrição
+            return f"""
+=== TRANSCRIÇÃO DO ÁUDIO ===
+{transcript}
+
+⚠️ Aviso: Não foi possível analisar com Comprehend Medical: {str(e)}
+"""
+        
     except ValueError as e:
         return f"Erro de validação: {str(e)}"
     except TimeoutError as e:

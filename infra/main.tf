@@ -461,6 +461,29 @@ resource "aws_iam_user_policy" "local_user_logs_policy" {
   })
 }
 
+# Policy para o usuário usar Comprehend Medical
+resource "aws_iam_user_policy" "local_user_comprehend_medical_policy" {
+  name = "${var.project_name}-local-user-comprehend-medical-policy"
+  user = aws_iam_user.local_user.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "comprehendmedical:DetectEntities",
+          "comprehendmedical:DetectPHI",
+          "comprehendmedical:InferICD10CM",
+          "comprehendmedical:InferRxNorm",
+          "comprehendmedical:InferSNOMEDCT"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 # ============================================================================
 # CLOUDWATCH LOG GROUPS
 # ============================================================================
