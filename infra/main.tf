@@ -476,7 +476,8 @@ resource "aws_iam_user_policy" "local_user_comprehend_medical_policy" {
           "comprehendmedical:DetectPHI",
           "comprehendmedical:InferICD10CM",
           "comprehendmedical:InferRxNorm",
-          "comprehendmedical:InferSNOMEDCT"
+          "comprehendmedical:InferSNOMEDCT",
+          "comprehendmedical:DetectEntitiesV2"
         ]
         Resource = "*"
       }
