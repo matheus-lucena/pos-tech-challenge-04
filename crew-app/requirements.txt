@@ -9,3 +9,7 @@ langchain-community
 litellm[proxy]
 gradio
 requests
+librosa
+numpy
+scipy
+soundfile

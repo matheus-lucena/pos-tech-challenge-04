@@ -1,7 +1,7 @@
 """Interface Gradio para o sistema de análise."""
 
 import gradio as gr
-from ui.processors import processar_analise
+from ui.processors import processar_analise, processar_pdf_preenchimento
 
 
 def criar_interface():
@@ -25,9 +25,7 @@ def criar_interface():
                 _add_audio_inputs()
         
         btn_processar, output = _add_action_button()
-        
-        _connect_events(btn_processar, output)
-        
+                
         _add_footer()
     
     return demo
@@ -160,14 +158,6 @@ def _add_action_button():
     return btn_processar, output
 
 
-def _connect_events(btn_processar, output):
-    """Conecta os eventos da interface."""
-    # Recupera os inputs criados anteriormente
-    # Nota: Em uma implementação mais robusta, seria melhor usar uma classe
-    # ou retornar todos os componentes. Por simplicidade, vamos usar uma abordagem diferente.
-    pass
-
-
 def _add_footer():
     """Adiciona o rodapé com informações."""
     gr.Markdown(
@@ -204,6 +194,40 @@ def criar_interface_v2():
             **Desenvolvido com CrewAI, AWS SageMaker e AWS Transcribe**
             """
         )
+        
+        # Seção de upload de PDF para pré-preenchimento
+        with gr.Row():
+            with gr.Column():
+                gr.Markdown("### 📄 Upload de Exame Médico (PDF) - Pré-preenchimento")
+                gr.Markdown(
+                    """
+                    **Faça upload de um PDF de exame médico para preencher automaticamente os campos abaixo.**
+                    
+                    O sistema extrairá automaticamente:
+                    - Idade
+                    - Pressão Arterial (Sistólica/Diastólica)
+                    - Glicemia
+                    - Temperatura
+                    - Frequência Cardíaca
+                    """
+                )
+                
+                arquivo_pdf = gr.File(
+                    label="Upload de PDF de Exame Médico",
+                    file_types=[".pdf"],
+                    type="filepath",
+                )
+                
+                btn_processar_pdf = gr.Button(
+                    "📋 Processar PDF e Pré-preencher",
+                    variant="secondary",
+                    size="lg"
+                )
+                
+                status_pdf = gr.Markdown(
+                    value="",
+                    visible=True
+                )
         
         with gr.Row():
             with gr.Column(scale=1):
@@ -264,10 +288,10 @@ def criar_interface_v2():
                 )
             
             with gr.Column(scale=1):
-                gr.Markdown("### 🎤 Análise de Áudio (Opcional)")
+                gr.Markdown("### 🎤 Análise de Áudio de Consulta (Opcional)")
                 
                 arquivo_audio = gr.File(
-                    label="Upload de Arquivo de Áudio",
+                    label="Upload de Arquivo de Áudio (Consulta/Emocional)",
                     file_types=["audio"],
                     type="filepath"
                 )
@@ -281,15 +305,48 @@ def criar_interface_v2():
                     lines=2
                 )
                 
+                gr.Markdown("---")
+                gr.Markdown("### 👶 Análise de Sinal Fetal (PCG) - Opcional")
+                gr.Markdown("*Baseado no banco de dados SUFHSDB*")
+                
+                arquivo_audio_fetal = gr.File(
+                    label="Upload de Arquivo de Áudio Fetal (PCG)",
+                    file_types=["audio"],
+                    type="filepath",
+                )
+                
+                gr.Markdown("**OU**")
+                
+                s3_audio_fetal = gr.Textbox(
+                    label="Caminho S3 do Áudio Fetal (Alternativa)",
+                    placeholder="s3://bucket-name/fetal-pcg.wav",
+                    info="Caminho S3 do arquivo de PCG fetal",
+                    lines=2
+                )
+                
                 gr.Markdown(
                     """
                     **Opções:**
                     - 📤 **Upload de arquivo**: O arquivo será enviado automaticamente para S3
                     - 🔗 **Caminho S3**: Use se o arquivo já estiver no bucket
                     
-                    **Exemplo de caminho S3:** `s3://fiap-pos-fase04-matheuslucena/vitima-01.mp3`
+                    **Análise Fetal:**
+                    - Extrai Frequência Cardíaca Fetal (FHR)
+                    - Detecta bradicardia, taquicardia e variabilidade
+                    - Classifica risco fetal em tempo real
                     """
                 )
+        
+        # Conecta o evento de processamento de PDF
+        btn_processar_pdf.click(
+            fn=processar_pdf_preenchimento,
+            inputs=[arquivo_pdf],
+            outputs=[
+                idade, pressao_sistolica, pressao_diastolica,
+                glicemia, temperatura, frequencia_cardiaca, status_pdf
+            ],
+            show_progress="full"
+        )
         
         btn_processar = gr.Button(
             "🚀 Iniciar Análise",
@@ -307,7 +364,9 @@ def criar_interface_v2():
             fn=processar_analise,
             inputs=[
                 idade, pressao_sistolica, pressao_diastolica,
-                glicemia, temperatura, frequencia_cardiaca, arquivo_audio, s3_audio
+                glicemia, temperatura, frequencia_cardiaca, 
+                arquivo_audio, s3_audio,
+                arquivo_audio_fetal, s3_audio_fetal
             ],
             outputs=output,
             show_progress="full"
@@ -318,9 +377,11 @@ def criar_interface_v2():
             ---
             ### ℹ️ Informações
             
+            - **Pré-preenchimento de PDF**: Utiliza AWS Textract para extrair dados de exames médicos em PDF
             - **Análise Biométrica**: Utiliza modelo XGBoost no AWS SageMaker
             - **Análise de Áudio**: Utiliza AWS Transcribe para transcrição e análise emocional
-            - **Sintetização**: Agente médico consolida todas as análises em um relatório final
+            - **Análise Fetal**: Processa sinais de PCG (fonocardiograma) para extrair FHR e classificar risco fetal
+            - **Sintetização**: Agente médico consolida todas as análises (biométrica, emocional e fetal) em um relatório final
             """
         )
     

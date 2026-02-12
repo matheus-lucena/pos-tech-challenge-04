@@ -15,6 +15,10 @@ class RelatorioSaude(BaseModel):
         ..., 
         description="Análise do áudio/transcrição"
     )
+    analise_fetal: str = Field(
+        default="Não fornecida",
+        description="Análise de sinais fetais (FHR, variabilidade, classificação)"
+    )
     risco_final: str = Field(
         ..., 
         description="Classificação final de risco"

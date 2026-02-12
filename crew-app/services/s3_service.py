@@ -100,4 +100,34 @@ class S3Service:
                 return False, f"Erro: Sem permissão para acessar {s3_path}. Verifique as credenciais AWS."
             else:
                 return False, f"Erro ao verificar arquivo S3: {str(e)}"
+    
+    def download_file(self, s3_path: str, local_path: str) -> bool:
+        """
+        Baixa um arquivo do S3 para o sistema de arquivos local.
+        
+        Args:
+            s3_path: Caminho S3 (s3://bucket/key)
+            local_path: Caminho local onde salvar o arquivo
+        
+        Returns:
+            True se o download foi bem-sucedido, False caso contrário
+        """
+        if not s3_path.startswith('s3://'):
+            return False
+        
+        parts = s3_path.replace('s3://', '').split('/', 1)
+        if len(parts) != 2:
+            return False
+        
+        bucket_name, object_key = parts
+        
+        try:
+            # Cria diretório se não existir
+            os.makedirs(os.path.dirname(local_path) if os.path.dirname(local_path) else '.', exist_ok=True)
+            
+            self.client.download_file(bucket_name, object_key, local_path)
+            return True
+        except Exception as e:
+            print(f"Erro ao baixar arquivo do S3: {str(e)}")
+            return False
 

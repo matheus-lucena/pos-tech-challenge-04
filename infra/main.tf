@@ -325,9 +325,9 @@ resource "aws_iam_access_key" "local_user_key" {
 }
 
 # Policy para o usuário acessar S3
-resource "aws_iam_user_policy" "local_user_s3_policy" {
-  name = "${var.project_name}-local-user-s3-policy"
-  user = aws_iam_user.local_user.name
+resource "aws_iam_policy" "local_user_s3_policy" {
+  name        = "${var.project_name}-local-user-s3-policy"
+  description = "Permite usuario local acessar buckets S3"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -356,10 +356,15 @@ resource "aws_iam_user_policy" "local_user_s3_policy" {
   })
 }
 
+resource "aws_iam_user_policy_attachment" "local_user_s3_attachment" {
+  user       = aws_iam_user.local_user.name
+  policy_arn = aws_iam_policy.local_user_s3_policy.arn
+}
+
 # Policy para o usuário usar SageMaker
-resource "aws_iam_user_policy" "local_user_sagemaker_policy" {
-  name = "${var.project_name}-local-user-sagemaker-policy"
-  user = aws_iam_user.local_user.name
+resource "aws_iam_policy" "local_user_sagemaker_policy" {
+  name        = "${var.project_name}-local-user-sagemaker-policy"
+  description = "Permite usuario local usar SageMaker"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -401,10 +406,15 @@ resource "aws_iam_user_policy" "local_user_sagemaker_policy" {
   })
 }
 
+resource "aws_iam_user_policy_attachment" "local_user_sagemaker_attachment" {
+  user       = aws_iam_user.local_user.name
+  policy_arn = aws_iam_policy.local_user_sagemaker_policy.arn
+}
+
 # Policy para o usuário usar Transcribe
-resource "aws_iam_user_policy" "local_user_transcribe_policy" {
-  name = "${var.project_name}-local-user-transcribe-policy"
-  user = aws_iam_user.local_user.name
+resource "aws_iam_policy" "local_user_transcribe_policy" {
+  name        = "${var.project_name}-local-user-transcribe-policy"
+  description = "Permite usuario local usar Transcribe"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -435,10 +445,15 @@ resource "aws_iam_user_policy" "local_user_transcribe_policy" {
   })
 }
 
+resource "aws_iam_user_policy_attachment" "local_user_transcribe_attachment" {
+  user       = aws_iam_user.local_user.name
+  policy_arn = aws_iam_policy.local_user_transcribe_policy.arn
+}
+
 # Policy para o usuário acessar CloudWatch Logs
-resource "aws_iam_user_policy" "local_user_logs_policy" {
-  name = "${var.project_name}-local-user-logs-policy"
-  user = aws_iam_user.local_user.name
+resource "aws_iam_policy" "local_user_logs_policy" {
+  name        = "${var.project_name}-local-user-logs-policy"
+  description = "Permite usuario local acessar CloudWatch Logs"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -461,10 +476,15 @@ resource "aws_iam_user_policy" "local_user_logs_policy" {
   })
 }
 
+resource "aws_iam_user_policy_attachment" "local_user_logs_attachment" {
+  user       = aws_iam_user.local_user.name
+  policy_arn = aws_iam_policy.local_user_logs_policy.arn
+}
+
 # Policy para o usuário usar Comprehend Medical
-resource "aws_iam_user_policy" "local_user_comprehend_medical_policy" {
-  name = "${var.project_name}-local-user-comprehend-medical-policy"
-  user = aws_iam_user.local_user.name
+resource "aws_iam_policy" "local_user_comprehend_medical_policy" {
+  name        = "${var.project_name}-local-user-comprehend-medical-policy"
+  description = "Permite usuario local usar Comprehend Medical"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -482,6 +502,61 @@ resource "aws_iam_user_policy" "local_user_comprehend_medical_policy" {
       }
     ]
   })
+}
+
+resource "aws_iam_user_policy_attachment" "local_user_comprehend_medical_attachment" {
+  user       = aws_iam_user.local_user.name
+  policy_arn = aws_iam_policy.local_user_comprehend_medical_policy.arn
+}
+
+# Policy para o usuário usar Textract
+resource "aws_iam_policy" "local_user_textract_policy" {
+  name        = "${var.project_name}-local-user-textract-policy"
+  description = "Permite usuario local usar Textract"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "textract:DetectDocumentText"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_user_policy_attachment" "local_user_textract_attachment" {
+  user       = aws_iam_user.local_user.name
+  policy_arn = aws_iam_policy.local_user_textract_policy.arn
+}
+
+resource "aws_iam_policy" "local_user_ecr_policy" {
+  name        = "${var.project_name}-local-user-ecr-policy"
+  description = "Permite operacoes de ECR para usuario local"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage"
+        ],
+        "Resource" : "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_user_policy_attachment" "local_user_ecr_attachment" {
+  user       = aws_iam_user.local_user.name
+  policy_arn = aws_iam_policy.local_user_ecr_policy.arn
 }
 
 # ============================================================================
