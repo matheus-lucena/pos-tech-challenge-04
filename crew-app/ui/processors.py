@@ -17,8 +17,15 @@ class AnalysisProcessor:
     def __init__(self):
         """Inicializa o processador com os serviços necessários."""
         self.s3_service = S3Service()
-        self.llm = get_llm()
+        self._llm = None
         self.pdf_parser = PDFParserService()
+    
+    @property
+    def llm(self):
+        """Lazy loading do LLM para evitar erro na importação."""
+        if self._llm is None:
+            self._llm = get_llm()
+        return self._llm
     
     def processar_analise(
         self,

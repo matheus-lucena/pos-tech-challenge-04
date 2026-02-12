@@ -13,3 +13,7 @@ librosa
 numpy
 scipy
 soundfile
+websocket-client
+pyaudio
+amazon-transcribe
+asyncio

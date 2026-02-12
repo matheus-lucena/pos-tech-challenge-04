@@ -2,6 +2,7 @@
 
 import gradio as gr
 from ui.processors import processar_analise, processar_pdf_preenchimento
+from ui.realtime_processor import processar_audio_realtime
 
 
 def criar_interface():
@@ -290,20 +291,293 @@ def criar_interface_v2():
             with gr.Column(scale=1):
                 gr.Markdown("### 🎤 Análise de Áudio de Consulta (Opcional)")
                 
-                arquivo_audio = gr.File(
-                    label="Upload de Arquivo de Áudio (Consulta/Emocional)",
-                    file_types=["audio"],
-                    type="filepath"
-                )
-                
-                gr.Markdown("**OU**")
-                
-                s3_audio = gr.Textbox(
-                    label="Caminho S3 do Áudio (Alternativa)",
-                    placeholder="s3://bucket-name/audio-file.mp3",
-                    info="Se o arquivo já estiver no S3, informe o caminho completo",
-                    lines=2
-                )
+                with gr.Tabs():
+                    with gr.Tab("📤 Upload de Arquivo"):
+                        arquivo_audio = gr.File(
+                            label="Upload de Arquivo de Áudio (Consulta/Emocional)",
+                            file_types=["audio"],
+                            type="filepath"
+                        )
+                    
+                    with gr.Tab("🔗 Caminho S3"):
+                        s3_audio = gr.Textbox(
+                            label="Caminho S3 do Áudio",
+                            placeholder="s3://bucket-name/audio-file.mp3",
+                            info="Se o arquivo já estiver no S3, informe o caminho completo",
+                            lines=2
+                        )
+                    
+                    with gr.Tab("🎙️ Gravação em Tempo Real"):
+                        gr.Markdown(
+                            """
+                            **Grave áudio em tempo real e veja a transcrição aparecer instantaneamente!**
+                            
+                            Selecione o microfone e clique em "🎙️ Iniciar Transcrição" para começar.
+                            """
+                        )
+                        
+                        # Lista dispositivos de áudio
+                        def get_audio_devices():
+                            """Obtém lista de dispositivos de áudio."""
+                            from ui.realtime_processor import RealtimeAudioProcessor
+                            devices = RealtimeAudioProcessor.list_audio_devices()
+                            if not devices:
+                                return ["Nenhum dispositivo encontrado"]
+                            return [f"{idx}: {name}" for idx, name in devices]
+                        
+                        # Obtém lista inicial de dispositivos
+                        initial_devices = get_audio_devices()
+                        device_dropdown = gr.Dropdown(
+                            label="Selecione o Microfone",
+                            choices=initial_devices,
+                            value=initial_devices[0] if initial_devices else None,
+                            info="Escolha o dispositivo de entrada de áudio"
+                        )
+                        
+                        btn_refresh_devices = gr.Button(
+                            "🔄 Atualizar Lista de Dispositivos",
+                            variant="secondary",
+                            size="sm"
+                        )
+                        
+                        status_realtime = gr.Markdown(
+                            value="",
+                            visible=True
+                        )
+                        
+                        # Player de áudio que mostra forma de onda e permite reprodução
+                        audio_player = gr.Audio(
+                            label="Áudio em Tempo Real",
+                            type="filepath",
+                            visible=True,
+                            interactive=True
+                        )
+                        
+                        transcript_realtime = gr.Textbox(
+                            label="Transcrição em Tempo Real",
+                            placeholder="A transcrição aparecerá aqui enquanto você fala...",
+                            lines=8,
+                            interactive=False,
+                        )
+                        btn_start_realtime = gr.Button(
+                            "🎙️ Iniciar Transcrição em Tempo Real",
+                            variant="primary",
+                            size="lg"
+                        )
+                        btn_stop_realtime = gr.Button(
+                            "⏹️ Parar Transcrição",
+                            variant="stop",
+                            visible=False
+                        )
+                        
+                        # Estado para controlar o streaming
+                        streaming_state = gr.State(value=False)
+                        
+                        # Função para atualizar lista de dispositivos
+                        def refresh_devices():
+                            """Atualiza a lista de dispositivos."""
+                            devices = get_audio_devices()
+                            return gr.update(choices=devices, value=devices[0] if devices else None)
+                        
+                        # Função para extrair índice do dispositivo
+                        def get_device_index(device_str):
+                            """Extrai o índice do dispositivo da string selecionada."""
+                            if not device_str or ":" not in device_str:
+                                return None
+                            try:
+                                return int(device_str.split(":")[0])
+                            except:
+                                return None
+                        
+                        # Função para iniciar transcrição em tempo real
+                        def iniciar_realtime(device_selected):
+                            """Inicia a captura e transcrição em tempo real."""
+                            from ui.realtime_processor import _realtime_processor
+                            
+                            if _realtime_processor.is_processing:
+                                return (
+                                    "⚠️ Já existe uma transcrição em andamento.",
+                                    "",
+                                    gr.update(visible=True),
+                                    gr.update(visible=False),
+                                    True
+                                )
+                            
+                            # Obtém índice do dispositivo
+                            device_index = get_device_index(device_selected)
+                            
+                            # Inicia o processamento em thread separada
+                            def process_stream():
+                                try:
+                                    _realtime_processor.start_microphone_streaming(device_index=device_index)
+                                except Exception as e:
+                                    print(f"Erro no stream: {e}")
+                            
+                            import threading
+                            thread = threading.Thread(target=process_stream, daemon=True)
+                            thread.start()
+                            
+                            status_msg = (
+                                '<div style="padding: 15px; background: #d4edda; border-radius: 8px; '
+                                'margin-bottom: 15px; border-left: 4px solid #28a745;">'
+                                '<p style="margin: 0; color: #155724;"><strong>🎙️ Gravando...</strong> '
+                                'Comece a falar! A transcrição aparecerá em tempo real.</p>'
+                                '</div>'
+                            )
+                            
+                            return (
+                                status_msg,
+                                None,  # Áudio inicial (vazio)
+                                "Aguardando transcrição...",
+                                gr.update(visible=True),
+                                gr.update(visible=False),
+                                None,  # Player de áudio vazio inicialmente
+                                True
+                            )
+                        
+                        # Função para parar transcrição
+                        def parar_realtime():
+                            """Para a transcrição em tempo real."""
+                            from ui.realtime_processor import _realtime_processor
+                            
+                            status = _realtime_processor.stop_transcription()
+                            transcript = _realtime_processor.get_current_transcript()
+                            
+                            # Obtém caminho do áudio gravado
+                            audio_path = _realtime_processor.get_recorded_audio_path()
+                            
+                            status_msg = (
+                                '<div style="padding: 15px; background: #fff3cd; border-radius: 8px; '
+                                'margin-bottom: 15px; border-left: 4px solid #ffc107;">'
+                                f'<p style="margin: 0; color: #856404;"><strong>⏹️ {status}</strong></p>'
+                                '</div>'
+                            )
+                            
+                            return (
+                                status_msg,
+                                audio_path if audio_path else None,  # Player de áudio com arquivo gravado
+                                transcript if transcript else "Nenhuma transcrição capturada.",
+                                gr.update(visible=False),
+                                gr.update(visible=True),
+                                audio_path if audio_path else None,
+                                False
+                            )
+                        
+                        # Função para atualizar transcrição em tempo real
+                        def atualizar_transcricao():
+                            """Atualiza a transcrição periodicamente."""
+                            from ui.realtime_processor import _realtime_processor
+                            
+                            if not _realtime_processor.is_processing:
+                                return transcript_realtime.value or "Transcrição finalizada."
+                            
+                            transcript = _realtime_processor.get_current_transcript()
+                            return transcript if transcript else "Aguardando transcrição..."
+                        
+                        # Conecta eventos
+                        btn_refresh_devices.click(
+                            fn=refresh_devices,
+                            outputs=[device_dropdown]
+                        )
+                        
+                        # Função que atualiza continuamente enquanto está processando
+                        def update_transcript_loop():
+                            """Loop de atualização da transcrição."""
+                            from ui.realtime_processor import _realtime_processor
+                            import time
+                            
+                            while _realtime_processor.is_processing:
+                                transcript = _realtime_processor.get_current_transcript()
+                                yield transcript if transcript else "Aguardando transcrição..."
+                                time.sleep(0.5)
+                            
+                            # Retorna transcrição final
+                            final_transcript = _realtime_processor.get_current_transcript()
+                            yield final_transcript if final_transcript else "Transcrição finalizada."
+                        
+                        def update_audio_player_loop():
+                            """Loop de atualização do player de áudio em tempo real."""
+                            from ui.realtime_processor import _realtime_processor
+                            import time
+                            import wave
+                            import os
+                            from datetime import datetime
+                            
+                            # Cria arquivo temporário para o áudio em tempo real
+                            temp_dir = "temp_audio"
+                            os.makedirs(temp_dir, exist_ok=True)
+                            
+                            while _realtime_processor.is_processing:
+                                # Salva áudio parcial para visualização
+                                if _realtime_processor.recorded_audio_frames:
+                                    try:
+                                        # Cria arquivo temporário com timestamp
+                                        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                                        temp_file = os.path.join(temp_dir, f"realtime_{timestamp}.wav")
+                                        
+                                        # Salva frames atuais
+                                        wf = wave.open(temp_file, 'wb')
+                                        wf.setnchannels(1)
+                                        wf.setsampwidth(2)
+                                        wf.setframerate(16000)
+                                        
+                                        for frame in _realtime_processor.recorded_audio_frames:
+                                            wf.writeframes(frame)
+                                        
+                                        wf.close()
+                                        
+                                        # Remove arquivo temporário anterior se existir
+                                        if hasattr(update_audio_player_loop, 'last_temp_file'):
+                                            try:
+                                                if os.path.exists(update_audio_player_loop.last_temp_file):
+                                                    os.remove(update_audio_player_loop.last_temp_file)
+                                            except:
+                                                pass
+                                        
+                                        update_audio_player_loop.last_temp_file = temp_file
+                                        yield temp_file
+                                    except Exception as e:
+                                        print(f"Erro ao criar áudio temporário: {e}")
+                                        yield gr.update()
+                                else:
+                                    yield gr.update()
+                                
+                                time.sleep(0.5)
+                            
+                            # Retorna áudio final
+                            final_audio_path = _realtime_processor.get_recorded_audio_path()
+                            if final_audio_path:
+                                # Limpa arquivo temporário
+                                if hasattr(update_audio_player_loop, 'last_temp_file'):
+                                    try:
+                                        if os.path.exists(update_audio_player_loop.last_temp_file):
+                                            os.remove(update_audio_player_loop.last_temp_file)
+                                    except:
+                                        pass
+                                yield final_audio_path
+                            else:
+                                yield gr.update()
+                        
+                        start_event = btn_start_realtime.click(
+                            fn=iniciar_realtime,
+                            inputs=[device_dropdown],
+                            outputs=[status_realtime, audio_player, transcript_realtime, btn_stop_realtime, btn_start_realtime, audio_player, streaming_state]
+                        )
+                        
+                        # Atualiza transcrição e player de áudio periodicamente após iniciar usando generator
+                        start_event.then(
+                            fn=update_transcript_loop,
+                            outputs=[transcript_realtime]
+                        )
+                        start_event.then(
+                            fn=update_audio_player_loop,
+                            outputs=[audio_player]
+                        )
+                        
+                        btn_stop_realtime.click(
+                            fn=parar_realtime,
+                            outputs=[status_realtime, audio_player, transcript_realtime, btn_stop_realtime, btn_start_realtime, audio_player, streaming_state]
+                        )
                 
                 gr.Markdown("---")
                 gr.Markdown("### 👶 Análise de Sinal Fetal (PCG) - Opcional")
