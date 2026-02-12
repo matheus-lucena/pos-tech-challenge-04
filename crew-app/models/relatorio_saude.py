@@ -1,30 +1,11 @@
-"""Modelo de dados para o relatório de saúde materna."""
-
 from typing import List
 from pydantic import BaseModel, Field
 
 
-class RelatorioSaude(BaseModel):
-    """Esquema de saída estruturada para o laudo médico."""
-    
-    analise_biometrica: str = Field(
-        ..., 
-        description="Resultado do modelo SageMaker"
-    )
-    analise_emocional: str = Field(
-        ..., 
-        description="Análise do áudio/transcrição"
-    )
-    analise_fetal: str = Field(
-        default="Não fornecida",
-        description="Análise de sinais fetais (FHR, variabilidade, classificação)"
-    )
-    risco_final: str = Field(
-        ..., 
-        description="Classificação final de risco"
-    )
-    recomendacoes: List[str] = Field(
-        ..., 
-        description="Lista de ações sugeridas"
-    )
+class HealthReport(BaseModel):
+    biometric_analysis: str = Field(..., description="SageMaker model result")
+    emotional_analysis: str = Field(..., description="Audio/transcription analysis")
+    fetal_analysis: str = Field(default="Not provided", description="Fetal signal analysis (FHR, variability, classification)")
+    final_risk: str = Field(..., description="Final risk classification")
+    recommendations: List[str] = Field(..., description="List of suggested actions")
 

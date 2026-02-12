@@ -1,5 +1,3 @@
-"""Tools do CrewAI para análise de sinais fetais."""
-
 import json
 from typing import Optional
 from dotenv import load_dotenv
@@ -20,15 +18,15 @@ def analyze_fetal_heart_sound(
     is_s3_path: bool = False
 ) -> str:
     """
-    Analisa sinais de coração fetal (PCG) de um arquivo de áudio.
-    Extrai frequência cardíaca fetal (FHR), variabilidade, e classifica o estado.
+    Analyzes fetal heart signals (PCG) from an audio file.
+    Extracts fetal heart rate (FHR), variability, and classifies the state.
     
     Args:
-        audio_path: Caminho para o arquivo de áudio (local ou S3 se is_s3_path=True)
-        is_s3_path: Se True, audio_path é um caminho S3 (s3://bucket/key)
+        audio_path: Path to audio file (local or S3 if is_s3_path=True)
+        is_s3_path: If True, audio_path is an S3 path (s3://bucket/key)
     
     Returns:
-        String formatada com resultados da análise fetal
+        Formatted string with fetal analysis results
     """
     try:
         local_path = audio_path
@@ -36,11 +34,11 @@ def analyze_fetal_heart_sound(
         
         if is_s3_path:
             if not audio_path.startswith('s3://'):
-                return f"Erro: Caminho S3 inválido. Deve começar com 's3://': {audio_path}"
+                return f"Error: Invalid S3 path. Must start with 's3://': {audio_path}"
             
             exists, error_msg = _s3_service.verify_file_exists(audio_path)
             if not exists:
-                return f"Erro: {error_msg}"
+                return f"Error: {error_msg}"
             
             try:
                 import tempfile
@@ -50,7 +48,7 @@ def analyze_fetal_heart_sound(
                 _s3_service.download_file(audio_path, temp_file.name)
                 local_path = temp_file.name
             except Exception as e:
-                return f"Erro ao baixar arquivo do S3: {str(e)}"
+                return f"Error downloading file from S3: {str(e)}"
         
         result = _fetal_service.analyze_fetal_signal(local_path)
         
@@ -61,34 +59,34 @@ def analyze_fetal_heart_sound(
                 pass
         
         if result.get("status") == "error":
-            return f"❌ Erro na análise: {result.get('error', 'Erro desconhecido')}"
+            return f"❌ Analysis error: {result.get('error', 'Unknown error')}"
         
         output = f"""
-=== ANÁLISE DE SINAL FETAL ===
+=== FETAL SIGNAL ANALYSIS ===
 
-📊 FREQUÊNCIA CARDÍACA FETAL (FHR):
+📊 FETAL HEART RATE (FHR):
    • FHR: {result['fetal_heart_rate']} bpm
-   • Confiança: {result['fhr_confidence']*100:.1f}%
-   • Variabilidade: {result['variability']:.2f} bpm
+   • Confidence: {result['fhr_confidence']*100:.1f}%
+   • Variability: {result['variability']:.2f} bpm
 
-🏥 CLASSIFICAÇÃO:
+🏥 CLASSIFICATION:
    • Status: {result['classification']['status'].upper()}
-   • Nível de Risco: {result['classification']['risk_level'].upper()}
-   • Variabilidade: {result['classification']['variability_status'].upper()}
-   • Descrição: {result['classification']['description']}
+   • Risk Level: {result['classification']['risk_level'].upper()}
+   • Variability: {result['classification']['variability_status'].upper()}
+   • Description: {result['classification']['description']}
 
-📈 QUALIDADE DO SINAL:
-   • Qualidade: {result['signal_quality'].upper()}
-   • Batimentos Detectados: {result['num_beats_detected']}
+📈 SIGNAL QUALITY:
+   • Quality: {result['signal_quality'].upper()}
+   • Beats Detected: {result['num_beats_detected']}
 
-🔬 CARACTERÍSTICAS ESPECTRAIS:
-   • Centróide Espectral: {result['spectral_features']['spectral_centroid']} Hz
-   • Largura de Banda: {result['spectral_features']['spectral_bandwidth']:.2f} Hz
-   • Energia Baixa (20-100 Hz): {result['spectral_features']['energy_low_band']*100:.1f}%
-   • Energia Média (100-300 Hz): {result['spectral_features']['energy_mid_band']*100:.1f}%
-   • Energia Alta (300-500 Hz): {result['spectral_features']['energy_high_band']*100:.1f}%
+🔬 SPECTRAL FEATURES:
+   • Spectral Centroid: {result['spectral_features']['spectral_centroid']} Hz
+   • Bandwidth: {result['spectral_features']['spectral_bandwidth']:.2f} Hz
+   • Low Energy (20-100 Hz): {result['spectral_features']['energy_low_band']*100:.1f}%
+   • Mid Energy (100-300 Hz): {result['spectral_features']['energy_mid_band']*100:.1f}%
+   • High Energy (300-500 Hz): {result['spectral_features']['energy_high_band']*100:.1f}%
 
-💡 RECOMENDAÇÕES:
+💡 RECOMMENDATIONS:
 """
         for rec in result['recommendations']:
             output += f"   • {rec}\n"
@@ -96,7 +94,7 @@ def analyze_fetal_heart_sound(
         return output.strip()
         
     except Exception as e:
-        return f"Erro ao analisar sinal fetal: {str(e)}"
+        return f"Error analyzing fetal signal: {str(e)}"
 
 
 @tool("FetalRealtimeAnalyzer")
@@ -105,15 +103,15 @@ def analyze_fetal_realtime(
     sample_rate: int = 16000
 ) -> str:
     """
-    Analisa um chunk de áudio em tempo real para monitoramento contínuo.
-    Útil para análise de streaming ou processamento em tempo real.
+    Analyzes an audio chunk in real-time for continuous monitoring.
+    Useful for streaming analysis or real-time processing.
     
     Args:
-        audio_chunk_path: Caminho para o chunk de áudio
-        sample_rate: Taxa de amostragem (padrão: 16000 Hz)
+        audio_chunk_path: Path to audio chunk
+        sample_rate: Sample rate (default: 16000 Hz)
     
     Returns:
-        String formatada com resultados da análise em tempo real
+        Formatted string with real-time analysis results
     """
     try:
         import numpy as np
@@ -124,16 +122,15 @@ def analyze_fetal_realtime(
         result = _fetal_service.analyze_realtime_stream(y, sr)
         
         if result.get("status") == "error":
-            return f"❌ Erro: {result.get('error', 'Erro desconhecido')}"
+            return f"❌ Error: {result.get('error', 'Unknown error')}"
         
         output = (
             f"FHR: {result['fetal_heart_rate']:.1f} bpm | "
-            f"Risco: {result['classification']['risk_level'].upper()} | "
+            f"Risk: {result['classification']['risk_level'].upper()} | "
             f"Status: {result['classification']['status'].upper()}"
         )
         
         return output
         
     except Exception as e:
-        return f"Erro na análise em tempo real: {str(e)}"
-
+        return f"Real-time analysis error: {str(e)}"

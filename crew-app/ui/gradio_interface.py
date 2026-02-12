@@ -1,19 +1,10 @@
-"""Interface Gradio para o sistema de análise."""
-
 import gradio as gr
-from ui.processors import processar_analise, processar_pdf_preenchimento
-from ui.realtime_processor import processar_audio_realtime
+from ui.processors import process_analysis, process_pdf_fill
 
 
-def criar_interface():
-    """
-    Cria e retorna a interface Gradio.
-    
-    Returns:
-        Interface Gradio configurada
-    """
+def create_interface():
     with gr.Blocks(
-        title="Sistema de Análise de Saúde Materna",
+        title="Maternal Health Analysis System",
         theme=gr.themes.Soft()
     ) as demo:
         _add_header()
@@ -25,7 +16,7 @@ def criar_interface():
             with gr.Column(scale=1):
                 _add_audio_inputs()
         
-        btn_processar, output = _add_action_button()
+        btn_process, output = _add_action_button()
                 
         _add_footer()
     
@@ -33,15 +24,14 @@ def criar_interface():
 
 
 def _add_header():
-    """Adiciona o cabeçalho da interface."""
     gr.Markdown(
         """
-        # 🏥 Sistema de Análise Multimodal de Saúde Materna
+        # 🏥 Multimodal Maternal Health Analysis System
         
-        Este sistema utiliza IA para analisar dados biométricos e áudios de consultas, 
-        fornecendo uma avaliação completa do risco de saúde materna.
+        This system uses AI to analyze biometric data and consultation audio, 
+        providing a complete assessment of maternal health risk.
         
-        **Desenvolvido com CrewAI, AWS SageMaker e AWS Transcribe**
+        **Built with CrewAI, AWS SageMaker and AWS Transcribe**
         """
     )
 
@@ -173,8 +163,7 @@ def _add_footer():
     )
 
 
-# Versão alternativa que funciona melhor com Gradio
-def criar_interface_v2():
+def create_interface_v2():
     """
     Cria e retorna a interface Gradio (versão alternativa mais funcional).
     
@@ -613,7 +602,7 @@ def criar_interface_v2():
         
         # Conecta o evento de processamento de PDF
         btn_processar_pdf.click(
-            fn=processar_pdf_preenchimento,
+            fn=process_pdf_fill,
             inputs=[arquivo_pdf],
             outputs=[
                 idade, pressao_sistolica, pressao_diastolica,
@@ -635,7 +624,7 @@ def criar_interface_v2():
         )
         
         btn_processar.click(
-            fn=processar_analise,
+            fn=process_analysis,
             inputs=[
                 idade, pressao_sistolica, pressao_diastolica,
                 glicemia, temperatura, frequencia_cardiaca, 

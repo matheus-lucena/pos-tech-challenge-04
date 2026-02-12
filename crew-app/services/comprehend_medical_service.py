@@ -1,42 +1,21 @@
-"""Serviço para interação com AWS Comprehend Medical."""
-
 import os
 import json
 from typing import Dict, Any, Optional, List
 from dotenv import load_dotenv
 import boto3
 
-# Garante que as variáveis de ambiente estão carregadas
 load_dotenv()
 
 
 class ComprehendMedicalService:
-    """Serviço para análise de texto médico usando AWS Comprehend Medical."""
-    
     def __init__(self, region_name: str = "us-east-1"):
-        """
-        Inicializa o serviço Comprehend Medical.
-        
-        Args:
-            region_name: Região AWS (padrão: us-east-1)
-        """
         self.region_name = region_name or os.getenv("AWS_REGION", "us-east-1")
         self.client = boto3.client('comprehendmedical', region_name=self.region_name)
     
     def detect_entities(self, text: str) -> Dict[str, Any]:
-        """
-        Detecta entidades médicas no texto.
-        
-        Args:
-            text: Texto a ser analisado
-        
-        Returns:
-            Dicionário com entidades detectadas e informações relevantes
-        """
         try:
             response = self.client.detect_entities(Text=text)
             
-            # Organiza as entidades por tipo
             entities_by_type = {}
             for entity in response.get('Entities', []):
                 entity_type = entity.get('Type', 'UNKNOWN')
@@ -59,22 +38,12 @@ class ComprehendMedicalService:
                 'raw_response': response
             }
         except Exception as e:
-            raise Exception(f"Erro na análise Comprehend Medical: {str(e)}")
+            raise Exception(f"Comprehend Medical analysis error: {str(e)}")
     
     def detect_phi(self, text: str) -> Dict[str, Any]:
-        """
-        Detecta informações de saúde protegidas (PHI - Protected Health Information).
-        
-        Args:
-            text: Texto a ser analisado
-        
-        Returns:
-            Dicionário com informações PHI detectadas
-        """
         try:
             response = self.client.detect_phi(Text=text)
             
-            # Organiza as informações PHI por tipo
             phi_by_type = {}
             for entity in response.get('Entities', []):
                 entity_type = entity.get('Type', 'UNKNOWN')
@@ -97,18 +66,9 @@ class ComprehendMedicalService:
                 'raw_response': response
             }
         except Exception as e:
-            raise Exception(f"Erro na detecção de PHI: {str(e)}")
+            raise Exception(f"PHI detection error: {str(e)}")
     
     def analyze_text(self, text: str) -> Dict[str, Any]:
-        """
-        Realiza análise completa do texto (entidades médicas + PHI).
-        
-        Args:
-            text: Texto a ser analisado
-        
-        Returns:
-            Dicionário com análise completa incluindo entidades e PHI
-        """
         try:
             entities_result = self.detect_entities(text)
             phi_result = self.detect_phi(text)
@@ -126,51 +86,38 @@ class ComprehendMedicalService:
                 }
             }
         except Exception as e:
-            raise Exception(f"Erro na análise completa: {str(e)}")
+            raise Exception(f"Complete analysis error: {str(e)}")
     
     def format_analysis_result(self, analysis: Dict[str, Any]) -> str:
-        """
-        Formata o resultado da análise em uma string legível.
-        
-        Args:
-            analysis: Resultado da análise do Comprehend Medical
-        
-        Returns:
-            String formatada com os resultados
-        """
         lines = []
-        lines.append("=== ANÁLISE COMPREHEND MEDICAL ===\n")
+        lines.append("=== COMPREHEND MEDICAL ANALYSIS ===\n")
         
-        # Entidades médicas
-        lines.append(f"📋 ENTIDADES MÉDICAS DETECTADAS: {analysis['total_entities']}\n")
+        lines.append(f"📋 MEDICAL ENTITIES DETECTED: {analysis['total_entities']}\n")
         for entity_type, entities in analysis['entities'].items():
             lines.append(f"\n🔹 {entity_type}:")
             for entity in entities:
-                lines.append(f"   - Texto: '{entity['text']}'")
-                lines.append(f"     Categoria: {entity['category']}")
-                lines.append(f"     Confiança: {entity['score']:.2%}")
+                lines.append(f"   - Text: '{entity['text']}'")
+                lines.append(f"     Category: {entity['category']}")
+                lines.append(f"     Confidence: {entity['score']:.2%}")
                 if entity['traits']:
                     traits = [t.get('Name', '') for t in entity['traits']]
-                    lines.append(f"     Traços: {', '.join(traits)}")
+                    lines.append(f"     Traits: {', '.join(traits)}")
         
-        # PHI
-        lines.append(f"\n🔒 INFORMAÇÕES PROTEGIDAS (PHI): {analysis['total_phi']}\n")
+        lines.append(f"\n🔒 PROTECTED INFORMATION (PHI): {analysis['total_phi']}\n")
         if analysis['total_phi'] > 0:
             for phi_type, phi_list in analysis['phi'].items():
                 lines.append(f"\n🔸 {phi_type}:")
                 for phi in phi_list:
-                    lines.append(f"   - Texto: '{phi['text']}'")
-                    lines.append(f"     Categoria: {phi['category']}")
-                    lines.append(f"     Confiança: {phi['score']:.2%}")
+                    lines.append(f"   - Text: '{phi['text']}'")
+                    lines.append(f"     Category: {phi['category']}")
+                    lines.append(f"     Confidence: {phi['score']:.2%}")
         else:
-            lines.append("   Nenhuma informação protegida detectada.")
+            lines.append("   No protected information detected.")
         
-        # Resumo
-        lines.append("\n📊 RESUMO:")
-        lines.append(f"   - Tipos de entidades: {', '.join(analysis['summary']['entity_types']) if analysis['summary']['entity_types'] else 'Nenhuma'}")
-        lines.append(f"   - Tipos de PHI: {', '.join(analysis['summary']['phi_types']) if analysis['summary']['phi_types'] else 'Nenhuma'}")
-        lines.append(f"   - Contém informações médicas: {'Sim' if analysis['summary']['has_medical_info'] else 'Não'}")
-        lines.append(f"   - Contém PHI: {'Sim' if analysis['summary']['has_phi'] else 'Não'}")
+        lines.append("\n📊 SUMMARY:")
+        lines.append(f"   - Entity types: {', '.join(analysis['summary']['entity_types']) if analysis['summary']['entity_types'] else 'None'}")
+        lines.append(f"   - PHI types: {', '.join(analysis['summary']['phi_types']) if analysis['summary']['phi_types'] else 'None'}")
+        lines.append(f"   - Contains medical info: {'Yes' if analysis['summary']['has_medical_info'] else 'No'}")
+        lines.append(f"   - Contains PHI: {'Yes' if analysis['summary']['has_phi'] else 'No'}")
         
         return "\n".join(lines)
-

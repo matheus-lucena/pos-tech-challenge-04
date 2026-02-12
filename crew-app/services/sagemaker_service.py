@@ -1,49 +1,28 @@
-"""Serviço para interação com AWS SageMaker."""
-
 import os
 import json
 from typing import Dict, Any, Optional
 from dotenv import load_dotenv
 import boto3
 
-# Garante que as variáveis de ambiente estão carregadas
 load_dotenv()
 
 
 class SageMakerService:
-    """Serviço para predições usando modelos SageMaker."""
-    
     def __init__(
         self, 
         endpoint_name: Optional[str] = None,
         region_name: str = "us-east-1"
     ):
-        """
-        Inicializa o serviço SageMaker.
-        
-        Args:
-            endpoint_name: Nome do endpoint (usa variável de ambiente se não fornecido)
-            region_name: Região AWS (padrão: us-east-1)
-        """
         self.endpoint_name = endpoint_name or os.getenv("SAGEMAKER_ENDPOINT")
         if not self.endpoint_name:
             raise ValueError(
-                "SAGEMAKER_ENDPOINT não configurado. "
-                "Configure a variável de ambiente SAGEMAKER_ENDPOINT ou passe endpoint_name no construtor."
+                "SAGEMAKER_ENDPOINT not configured. "
+                "Set SAGEMAKER_ENDPOINT environment variable or pass endpoint_name to constructor."
             )
         self.region_name = region_name or os.getenv("AWS_REGION", "us-east-1")
         self.client = boto3.client("sagemaker-runtime", region_name=self.region_name)
     
     def predict_risk(self, data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Analisa sinais vitais via SageMaker.
-        
-        Args:
-            data: Dicionário com dados biométricos (Age, SystolicBP, DiastolicBP, BS, BodyTemp, HeartRate)
-        
-        Returns:
-            Dicionário com status e probabilidade de risco
-        """
         try:
             response = self.client.invoke_endpoint(
                 EndpointName=self.endpoint_name,
@@ -52,7 +31,7 @@ class SageMakerService:
             )
             
             result = json.loads(response['Body'].read().decode())
-            status = "ALTO RISCO" if result.get("maternal_health_risk") == 1 else "BAIXO RISCO"
+            status = "HIGH RISK" if result.get("maternal_health_risk") == 1 else "LOW RISK"
             
             return {
                 "status": status,
@@ -60,5 +39,4 @@ class SageMakerService:
                 "raw_result": result
             }
         except Exception as e:
-            raise Exception(f"Erro na predição SageMaker: {str(e)}")
-
+            raise Exception(f"SageMaker prediction error: {str(e)}")

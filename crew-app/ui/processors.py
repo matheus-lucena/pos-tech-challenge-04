@@ -1,228 +1,175 @@
-"""Processadores para análise de dados."""
-
 import json
 import re
 import traceback
 from typing import Optional, Dict, Any, Tuple, Union
 from services.s3_service import S3Service
 from services.pdf_parser_service import PDFParserService
-from agents.crew_orchestrator import iniciar_analise_multimodal
+from agents.crew_orchestrator import start_multimodal_analysis
 from config.llm_config import get_llm
-from ui.formatters import formatar_resultado
+from ui.formatters import format_result
 
 
 class AnalysisProcessor:
-    """Processador principal para análise de saúde materna."""
-    
     def __init__(self):
-        """Inicializa o processador com os serviços necessários."""
         self.s3_service = S3Service()
         self._llm = None
         self.pdf_parser = PDFParserService()
     
     @property
     def llm(self):
-        """Lazy loading do LLM para evitar erro na importação."""
         if self._llm is None:
             self._llm = get_llm()
         return self._llm
     
-    def processar_analise(
+    def process_analysis(
         self,
-        idade: Optional[float],
-        pressao_sistolica: Optional[float],
-        pressao_diastolica: Optional[float],
-        glicemia: Optional[float],
-        temperatura: Optional[float],
-        frequencia_cardiaca: Optional[float],
-        arquivo_audio: Optional[str],
+        age: Optional[float],
+        systolic_bp: Optional[float],
+        diastolic_bp: Optional[float],
+        glucose: Optional[float],
+        temperature: Optional[float],
+        heart_rate: Optional[float],
+        audio_file: Optional[str],
         s3_audio: Optional[str],
-        arquivo_audio_fetal: Optional[str] = None,
-        s3_audio_fetal: Optional[str] = None
+        fetal_audio_file: Optional[str] = None,
+        s3_fetal_audio: Optional[str] = None
     ) -> str:
-        """
-        Processa a análise com os dados fornecidos.
-        
-        Args:
-            idade: Idade da paciente
-            pressao_sistolica: Pressão sistólica
-            pressao_diastolica: Pressão diastólica
-            glicemia: Nível de glicemia
-            temperatura: Temperatura corporal
-            frequencia_cardiaca: Frequência cardíaca
-            arquivo_audio: Caminho do arquivo de áudio local (consulta/emocional)
-            s3_audio: Caminho S3 do áudio (consulta/emocional)
-            arquivo_audio_fetal: Caminho do arquivo de áudio fetal (PCG) local
-            s3_audio_fetal: Caminho S3 do áudio fetal (PCG)
-        
-        Returns:
-            String HTML com o resultado formatado
-        """
-        # Valida e prepara dados biométricos
-        dados_biometria = self._preparar_dados_biometria(
-            idade, pressao_sistolica, pressao_diastolica,
-            glicemia, temperatura, frequencia_cardiaca
+        biometric_data = self._prepare_biometric_data(
+            age, systolic_bp, diastolic_bp,
+            glucose, temperature, heart_rate
         )
         
-        if isinstance(dados_biometria, str):
-            return self._format_error(dados_biometria)
+        if isinstance(biometric_data, str):
+            return self._format_error(biometric_data)
         
-        # áudio de consulta/emocional
-        audio_result = self._processar_audio(arquivo_audio, s3_audio)
+        audio_result = self._process_audio(audio_file, s3_audio)
         if isinstance(audio_result, str) and audio_result.startswith('<div'):
             return audio_result
         
         audio_path, status_msg = audio_result
         
-        # (PCG)
-        audio_fetal_result = self._processar_audio(arquivo_audio_fetal, s3_audio_fetal)
-        if isinstance(audio_fetal_result, str) and audio_fetal_result.startswith('<div'):
-            return audio_fetal_result
+        fetal_audio_result = self._process_audio(fetal_audio_file, s3_fetal_audio)
+        if isinstance(fetal_audio_result, str) and fetal_audio_result.startswith('<div'):
+            return fetal_audio_result
         
-        audio_fetal_path, status_msg_fetal = audio_fetal_result
+        fetal_audio_path, status_msg_fetal = fetal_audio_result
         
         combined_status_msg = status_msg
         if status_msg_fetal:
             combined_status_msg = (combined_status_msg or "") + status_msg_fetal
         
-        # Valida se pelo menos um dado foi fornecido
-        if not dados_biometria and not audio_path and not audio_fetal_path:
+        if not biometric_data and not audio_path and not fetal_audio_path:
             return self._format_warning(
-                "Por favor, forneça pelo menos dados biométricos, um arquivo de áudio de consulta ou um arquivo de áudio fetal (PCG)."
+                "Please provide at least biometric data, a consultation audio file or a fetal audio file (PCG)."
             )
         
-        # Executa a análise
         try:
-            resultado = iniciar_analise_multimodal(
+            result = start_multimodal_analysis(
                 llm=self.llm,
-                dados_biometria=dados_biometria,
+                biometric_data=biometric_data,
                 s3_audio=audio_path,
-                s3_fetal_audio=audio_fetal_path
+                s3_fetal_audio=fetal_audio_path
             )
             
-            resultado_parsed = self._parse_resultado(resultado)
-            resultado_formatado = formatar_resultado(resultado_parsed)
+            parsed_result = self._parse_result(result)
+            formatted_result = format_result(parsed_result)
             
             if combined_status_msg:
-                return combined_status_msg + resultado_formatado
+                return combined_status_msg + formatted_result
             
-            return resultado_formatado
+            return formatted_result
         except Exception as e:
             return self._format_exception(e)
     
-    def _preparar_dados_biometria(
+    def _prepare_biometric_data(
         self,
-        idade: Optional[float],
-        pressao_sistolica: Optional[float],
-        pressao_diastolica: Optional[float],
-        glicemia: Optional[float],
-        temperatura: Optional[float],
-        frequencia_cardiaca: Optional[float]
+        age: Optional[float],
+        systolic_bp: Optional[float],
+        diastolic_bp: Optional[float],
+        glucose: Optional[float],
+        temperature: Optional[float],
+        heart_rate: Optional[float]
     ) -> Union[Optional[Dict[str, Any]], str]:
-        """
-        Prepara e valida os dados biométricos.
-        
-        Returns:
-            Dicionário com dados biométricos ou string de erro
-        """
-        if not all([idade, pressao_sistolica, pressao_diastolica, glicemia, temperatura, frequencia_cardiaca]):
+        if not all([age, systolic_bp, diastolic_bp, glucose, temperature, heart_rate]):
             return None
         
         try:
             return {
-                "Age": int(idade),
-                "SystolicBP": int(pressao_sistolica),
-                "DiastolicBP": int(pressao_diastolica),
-                "BS": float(glicemia),
-                "BodyTemp": float(temperatura),
-                "HeartRate": int(frequencia_cardiaca)
+                "Age": int(age),
+                "SystolicBP": int(systolic_bp),
+                "DiastolicBP": int(diastolic_bp),
+                "BS": float(glucose),
+                "BodyTemp": float(temperature),
+                "HeartRate": int(heart_rate)
             }
         except ValueError as e:
-            return f"Valores inválidos nos dados biométricos. {str(e)}"
+            return f"Invalid values in biometric data. {str(e)}"
     
-    def _processar_audio(
+    def _process_audio(
         self,
-        arquivo_audio: Optional[str],
+        audio_file: Optional[str],
         s3_audio: Optional[str]
     ) -> Union[Tuple[Optional[str], str], str]:
-        """
-        Processa o áudio: upload ou validação de caminho S3.
-        
-        Returns:
-            Tupla (caminho_audio, mensagem_status) ou string de erro HTML
-        """
         audio_path = None
         status_msg = ""
         
-        if arquivo_audio:
-            status_msg = self._format_upload_status("Fazendo upload do áudio para S3...")
+        if audio_file:
+            status_msg = self._format_upload_status("Uploading audio to S3...")
             
-            s3_path = self.s3_service.upload_audio(arquivo_audio)
+            s3_path = self.s3_service.upload_audio(audio_file)
             if s3_path:
                 audio_path = s3_path
-                status_msg = self._format_success_status(f"Upload concluído: {s3_path}")
+                status_msg = self._format_success_status(f"Upload completed: {s3_path}")
             else:
                 return self._format_error(
-                    "Falha ao fazer upload do áudio para S3. "
-                    "Verifique as credenciais AWS e permissões."
+                    "Failed to upload audio to S3. "
+                    "Check AWS credentials and permissions."
                 )
         
         elif s3_audio and s3_audio.strip():
             audio_path = s3_audio.strip()
             if not audio_path.startswith('s3://'):
-                return self._format_error('O caminho S3 deve começar com "s3://"')
+                return self._format_error('S3 path must start with "s3://"')
         
         return audio_path, status_msg
     
-    def _parse_resultado(self, resultado: Any) -> Any:
-        """
-        Parseia o resultado do CrewAI para um formato utilizável.
+    def _parse_result(self, result: Any) -> Any:
+        if hasattr(result, 'raw'):
+            result = result.raw
+        elif hasattr(result, 'tasks_output'):
+            if result.tasks_output:
+                result = result.tasks_output[-1]
+        elif hasattr(result, '__dict__'):
+            result = result.__dict__
         
-        Args:
-            resultado: Resultado bruto do CrewAI
-        
-        Returns:
-            Resultado parseado (dict ou string)
-        """
-        if hasattr(resultado, 'raw'):
-            resultado = resultado.raw
-        elif hasattr(resultado, 'tasks_output'):
-            if resultado.tasks_output:
-                resultado = resultado.tasks_output[-1]
-        elif hasattr(resultado, '__dict__'):
-            resultado = resultado.__dict__
-        
-        if isinstance(resultado, str):
-            resultado_str = resultado.strip()
-            if resultado_str.startswith('{'):
+        if isinstance(result, str):
+            result_str = result.strip()
+            if result_str.startswith('{'):
                 try:
-                    resultado = json.loads(resultado_str)
+                    result = json.loads(result_str)
                 except:
-                    json_match = re.search(r'\{.*\}', resultado_str, re.DOTALL)
+                    json_match = re.search(r'\{.*\}', result_str, re.DOTALL)
                     if json_match:
                         try:
-                            resultado = json.loads(json_match.group())
+                            result = json.loads(json_match.group())
                         except:
                             pass
         
-        return resultado
+        return result
     
     def _format_error(self, message: str) -> str:
-        """Formata uma mensagem de erro."""
         return (
             f'<div style="padding: 20px; background: #fff5f5; border-radius: 8px; color: #dc3545;">'
-            f'<strong>❌ Erro:</strong> {message}</div>'
+            f'<strong>❌ Error:</strong> {message}</div>'
         )
     
     def _format_warning(self, message: str) -> str:
-        """Formata uma mensagem de aviso."""
         return (
             f'<div style="padding: 20px; background: #fff3cd; border-radius: 8px; color: #856404;">'
-            f'<strong>⚠️ Atenção:</strong> {message}</div>'
+            f'<strong>⚠️ Warning:</strong> {message}</div>'
         )
     
     def _format_upload_status(self, message: str) -> str:
-        """Formata uma mensagem de status de upload."""
         return (
             '<div style="padding: 15px; background: #e7f3ff; border-radius: 8px; '
             'margin-bottom: 15px; border-left: 4px solid #007bff;">'
@@ -231,7 +178,6 @@ class AnalysisProcessor:
         )
     
     def _format_success_status(self, message: str) -> str:
-        """Formata uma mensagem de sucesso."""
         return (
             '<div style="padding: 15px; background: #d4edda; border-radius: 8px; '
             'margin-bottom: 15px; border-left: 4px solid #28a745;">'
@@ -240,99 +186,85 @@ class AnalysisProcessor:
         )
     
     def _format_exception(self, exception: Exception) -> str:
-        """Formata uma exceção com traceback."""
         error_details = traceback.format_exc()
         return (
             '<div style="padding: 20px; background: #fff5f5; border-radius: 8px; color: #dc3545;">'
-            f'<strong>❌ Erro ao processar análise:</strong><br>{str(exception)}<br><br>'
-            f'<details><summary>Detalhes técnicos</summary><pre>{error_details}</pre></details>'
+            f'<strong>❌ Error processing analysis:</strong><br>{str(exception)}<br><br>'
+            f'<details><summary>Technical details</summary><pre>{error_details}</pre></details>'
             '</div>'
         )
 
 
-# Instância global do processador
 _processor = AnalysisProcessor()
 
 
-def processar_analise(*args) -> str:
-    """Wrapper para processar análise usando a instância global."""
-    return _processor.processar_analise(*args)
+def process_analysis(*args) -> str:
+    return _processor.process_analysis(*args)
 
 
-def processar_pdf_preenchimento(
-    arquivo_pdf: Optional[str]
+def process_pdf_fill(
+    pdf_file: Optional[str]
 ) -> Tuple[Optional[float], Optional[float], Optional[float], 
            Optional[float], Optional[float], Optional[float], str]:
-    """
-    Processa um PDF de exame médico e retorna os valores para pré-preenchimento.
-    
-    Args:
-        arquivo_pdf: Caminho do arquivo PDF
-    
-    Returns:
-        Tupla com (idade, pressao_sistolica, pressao_diastolica, 
-                   glicemia, temperatura, frequencia_cardiaca, status_msg)
-    """
-    if not arquivo_pdf:
+    if not pdf_file:
         return (
             None, None, None, None, None, None,
             '<div style="padding: 15px; background: #fff3cd; border-radius: 8px; '
-            'margin-bottom: 15px;"><strong>⚠️</strong> Nenhum arquivo PDF fornecido.</div>'
+            'margin-bottom: 15px;"><strong>⚠️</strong> No PDF file provided.</div>'
         )
     
     try:
-        # Extrai dados do PDF
-        resultado = _processor.pdf_parser.extract_medical_data_from_pdf(
-            pdf_path=arquivo_pdf,
+        result = _processor.pdf_parser.extract_medical_data_from_pdf(
+            pdf_path=pdf_file,
             is_s3_path=False
         )
         
-        if not resultado.get("success", False):
-            error_msg = resultado.get("error", "Erro desconhecido ao processar PDF")
+        if not result.get("success", False):
+            error_msg = result.get("error", "Unknown error processing PDF")
             return (
                 None, None, None, None, None, None,
                 f'<div style="padding: 15px; background: #fff5f5; border-radius: 8px; '
-                f'margin-bottom: 15px; color: #dc3545;"><strong>❌ Erro:</strong> {error_msg}</div>'
+                f'margin-bottom: 15px; color: #dc3545;"><strong>❌ Error:</strong> {error_msg}</div>'
             )
         
-        form_data = resultado.get("form_data", {})
+        form_data = result.get("form_data", {})
         
-        campos_encontrados = []
-        if form_data.get("idade"):
-            campos_encontrados.append("Idade")
-        if form_data.get("pressao_sistolica") and form_data.get("pressao_diastolica"):
-            campos_encontrados.append("Pressão Arterial")
-        if form_data.get("glicemia"):
-            campos_encontrados.append("Glicemia")
-        if form_data.get("temperatura"):
-            campos_encontrados.append("Temperatura")
-        if form_data.get("frequencia_cardiaca"):
-            campos_encontrados.append("Frequência Cardíaca")
+        found_fields = []
+        if form_data.get("age"):
+            found_fields.append("Age")
+        if form_data.get("systolic_bp") and form_data.get("diastolic_bp"):
+            found_fields.append("Blood Pressure")
+        if form_data.get("glucose"):
+            found_fields.append("Glucose")
+        if form_data.get("temperature"):
+            found_fields.append("Temperature")
+        if form_data.get("heart_rate"):
+            found_fields.append("Heart Rate")
         
-        if campos_encontrados:
+        if found_fields:
             status_msg = (
                 f'<div style="padding: 15px; background: #d4edda; border-radius: 8px; '
                 f'margin-bottom: 15px; border-left: 4px solid #28a745;">'
-                f'<p style="margin: 0; color: #155724;"><strong>✅ PDF processado com sucesso!</strong></p>'
-                f'<p style="margin: 5px 0 0 0; color: #155724;">Campos encontrados: {", ".join(campos_encontrados)}</p>'
+                f'<p style="margin: 0; color: #155724;"><strong>✅ PDF processed successfully!</strong></p>'
+                f'<p style="margin: 5px 0 0 0; color: #155724;">Fields found: {", ".join(found_fields)}</p>'
                 f'</div>'
             )
         else:
             status_msg = (
                 '<div style="padding: 15px; background: #fff3cd; border-radius: 8px; '
                 'margin-bottom: 15px; border-left: 4px solid #ffc107;">'
-                '<p style="margin: 0; color: #856404;"><strong>⚠️ PDF processado, mas nenhum dado biométrico foi encontrado.</strong></p>'
-                '<p style="margin: 5px 0 0 0; color: #856404;">Por favor, preencha os campos manualmente.</p>'
+                '<p style="margin: 0; color: #856404;"><strong>⚠️ PDF processed, but no biometric data was found.</strong></p>'
+                '<p style="margin: 5px 0 0 0; color: #856404;">Please fill in the fields manually.</p>'
                 '</div>'
             )
         
         return (
-            form_data.get("idade"),
-            form_data.get("pressao_sistolica"),
-            form_data.get("pressao_diastolica"),
-            form_data.get("glicemia"),
-            form_data.get("temperatura"),
-            form_data.get("frequencia_cardiaca"),
+            form_data.get("age"),
+            form_data.get("systolic_bp"),
+            form_data.get("diastolic_bp"),
+            form_data.get("glucose"),
+            form_data.get("temperature"),
+            form_data.get("heart_rate"),
             status_msg
         )
         
@@ -342,8 +274,7 @@ def processar_pdf_preenchimento(
             None, None, None, None, None, None,
             f'<div style="padding: 15px; background: #fff5f5; border-radius: 8px; '
             f'margin-bottom: 15px; color: #dc3545;">'
-            f'<strong>❌ Erro ao processar PDF:</strong> {str(e)}<br>'
-            f'<details><summary>Detalhes técnicos</summary><pre>{error_details}</pre></details>'
+            f'<strong>❌ Error processing PDF:</strong> {str(e)}<br>'
+            f'<details><summary>Technical details</summary><pre>{error_details}</pre></details>'
             f'</div>'
         )
-

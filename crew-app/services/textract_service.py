@@ -1,5 +1,3 @@
-"""Serviço para extração de texto de PDFs usando AWS Textract."""
-
 import os
 import json
 import time
@@ -11,15 +9,7 @@ load_dotenv()
 
 
 class TextractService:
-    """Serviço para extração de texto de documentos usando AWS Textract."""
-    
     def __init__(self, region_name: str = "us-east-1"):
-        """
-        Inicializa o serviço Textract.
-        
-        Args:
-            region_name: Região AWS (padrão: us-east-1)
-        """
         self.region_name = region_name or os.getenv("AWS_REGION", "us-east-1")
         self.client = boto3.client('textract', region_name=self.region_name)
         self.s3_client = boto3.client('s3', region_name=self.region_name)
@@ -29,16 +19,6 @@ class TextractService:
         s3_path: str,
         bucket_name: Optional[str] = None
     ) -> Optional[str]:
-        """
-        Extrai texto de um PDF no S3 usando Textract.
-        
-        Args:
-            s3_path: Caminho S3 do PDF (s3://bucket/key)
-            bucket_name: Nome do bucket (extraído de s3_path se não fornecido)
-        
-        Returns:
-            Texto extraído do PDF ou None em caso de erro
-        """
         if not s3_path.startswith('s3://'):
             return None
         
@@ -66,7 +46,7 @@ class TextractService:
             return '\n'.join(text_blocks)
             
         except Exception as e:
-            print(f"Erro ao extrair texto do PDF: {str(e)}")
+            print(f"Error extracting text from PDF: {str(e)}")
             return None
     
     def extract_text_from_pdf_local(
@@ -74,16 +54,6 @@ class TextractService:
         file_path: str,
         upload_to_s3: bool = True
     ) -> Optional[str]:
-        """
-        Extrai texto de um PDF local.
-        
-        Args:
-            file_path: Caminho local do PDF
-            upload_to_s3: Se True, faz upload para S3 antes de processar
-        
-        Returns:
-            Texto extraído do PDF ou None em caso de erro
-        """
         if not os.path.exists(file_path):
             return None
         
@@ -106,19 +76,10 @@ class TextractService:
                 
                 return '\n'.join(text_blocks)
             except Exception as e:
-                print(f"Erro ao extrair texto do PDF local: {str(e)}")
+                print(f"Error extracting text from local PDF: {str(e)}")
                 return None
     
     def _upload_pdf_to_s3(self, file_path: str) -> Optional[str]:
-        """
-        Faz upload de um PDF para S3.
-        
-        Args:
-            file_path: Caminho local do PDF
-        
-        Returns:
-            Caminho S3 do arquivo ou None em caso de erro
-        """
         from datetime import datetime
         import uuid
         
@@ -136,10 +97,8 @@ class TextractService:
             )
             
             time.sleep(2)
-            
             return f"s3://{bucket_name}/{s3_key}"
             
         except Exception as e:
-            print(f"Erro ao fazer upload do PDF para S3: {str(e)}")
+            print(f"Error uploading PDF to S3: {str(e)}")
             return None
-

@@ -1,5 +1,3 @@
-"""Serviço para interação com AWS Transcribe."""
-
 import json
 import os
 import time
@@ -8,17 +6,11 @@ from typing import Optional, Tuple
 from dotenv import load_dotenv
 import boto3
 
-# Garante que as variáveis de ambiente estão carregadas
 load_dotenv()
 
 
 class TranscribeService:
-    """Serviço para transcrição de áudio usando AWS Transcribe."""
-    
-    # Formatos de mídia suportados
     SUPPORTED_FORMATS = ['mp3', 'mp4', 'wav', 'flac', 'ogg', 'amr', 'webm']
-    
-    # Configurações padrão
     DEFAULT_LANGUAGE_CODE = 'pt-BR'
     DEFAULT_MAX_WAIT_SECONDS = 300
     DEFAULT_POLL_INTERVAL = 2
@@ -28,37 +20,19 @@ class TranscribeService:
         region_name: str = "us-east-1",
         data_access_role_arn: Optional[str] = None
     ):
-        """
-        Inicializa o serviço Transcribe.
-        
-        Args:
-            region_name: Região AWS (padrão: us-east-1)
-            data_access_role_arn: ARN da role para acesso aos dados
-        """
         self.region_name = region_name or os.getenv("AWS_REGION", "us-east-1")
         self.client = boto3.client('transcribe', region_name=self.region_name)
-        self.data_access_role_arn = data_access_role_arn or os.getenv(
-            "AWS_TRANSCRIBE_ROLE_ARN"
-        )
+        self.data_access_role_arn = data_access_role_arn or os.getenv("AWS_TRANSCRIBE_ROLE_ARN")
         if not self.data_access_role_arn:
             raise ValueError(
-                "TRANSCRIBE_ROLE_ARN não configurado. "
-                "Configure a variável de ambiente TRANSCRIBE_ROLE_ARN ou passe data_access_role_arn no construtor."
+                "TRANSCRIBE_ROLE_ARN not configured. "
+                "Set AWS_TRANSCRIBE_ROLE_ARN environment variable or pass data_access_role_arn to constructor."
             )
 
     def _validate_media_format(self, s3_path: str) -> Tuple[bool, Optional[str]]:
-        """
-        Valida o formato de mídia do arquivo.
-        
-        Args:
-            s3_path: Caminho S3 do arquivo
-        
-        Returns:
-            Tupla (válido, mensagem_erro)
-        """
         media_format = s3_path.split('.')[-1].lower()
         if media_format not in self.SUPPORTED_FORMATS:
-            return False, f"Erro: Formato de áudio '{media_format}' não suportado."
+            return False, f"Error: Audio format '{media_format}' not supported."
         return True, None
     
     def transcribe(
@@ -68,38 +42,18 @@ class TranscribeService:
         language_code: str = DEFAULT_LANGUAGE_CODE,
         max_wait_seconds: int = DEFAULT_MAX_WAIT_SECONDS
     ) -> str:
-        """
-        Inicia e recupera transcrição do Amazon Transcribe.
-        
-        Args:
-            s3_path: Caminho S3 do áudio (ex: 's3://bucket/audio.mp3')
-            job_name: Nome do job de transcrição (gerado automaticamente se não fornecido)
-            language_code: Código do idioma (padrão: pt-BR)
-            max_wait_seconds: Tempo máximo de espera em segundos (padrão: 300)
-        
-        Returns:
-            Texto transcrito
-        
-        Raises:
-            ValueError: Se o caminho S3 for inválido
-            Exception: Se houver erro na transcrição
-        """
         if not s3_path.startswith('s3://'):
-            raise ValueError(f"S3 path deve começar com 's3://'. Recebido: {s3_path}")
+            raise ValueError(f"S3 path must start with 's3://'. Received: {s3_path}")
         
-        # Valida formato
         is_valid, error_msg = self._validate_media_format(s3_path)
         if not is_valid:
             raise ValueError(error_msg)
         
-        # Gera nome do job se não fornecido
         if not job_name:
             job_name = f"job_{int(time.time())}"
         
-        # Extrai formato de mídia
         media_format = s3_path.split('.')[-1].lower()
         
-        # Configura parâmetros do job
         job_params = {
             'TranscriptionJobName': job_name,
             'Media': {'MediaFileUri': s3_path},
@@ -114,10 +68,7 @@ class TranscribeService:
             }
         }
         
-        # Inicia o job de transcrição
         self.client.start_transcription_job(**job_params)
-        
-        # Aguarda conclusão
         return self._wait_for_completion(job_name, max_wait_seconds)
     
     def _wait_for_completion(
@@ -125,20 +76,6 @@ class TranscribeService:
         job_name: str, 
         max_wait_seconds: int
     ) -> str:
-        """
-        Aguarda a conclusão do job de transcrição.
-        
-        Args:
-            job_name: Nome do job
-            max_wait_seconds: Tempo máximo de espera
-        
-        Returns:
-            Texto transcrito
-        
-        Raises:
-            TimeoutError: Se o job não completar no tempo máximo
-            Exception: Se o job falhar
-        """
         elapsed = 0
         
         while elapsed < max_wait_seconds:
@@ -150,28 +87,15 @@ class TranscribeService:
                 return self._fetch_transcript(transcript_uri)
             
             elif job_status == 'FAILED':
-                failure_reason = status['TranscriptionJob'].get(
-                    'FailureReason', 
-                    'Desconhecido'
-                )
-                raise Exception(f"Falha na transcrição: {failure_reason}")
+                failure_reason = status['TranscriptionJob'].get('FailureReason', 'Unknown')
+                raise Exception(f"Transcription failed: {failure_reason}")
             
             time.sleep(self.DEFAULT_POLL_INTERVAL)
             elapsed += self.DEFAULT_POLL_INTERVAL
         
-        raise TimeoutError(f"Timeout aguardando transcrição após {max_wait_seconds} segundos.")
+        raise TimeoutError(f"Timeout waiting for transcription after {max_wait_seconds} seconds.")
     
     def _fetch_transcript(self, transcript_uri: str) -> str:
-        """
-        Busca o texto transcrito a partir da URI.
-        
-        Args:
-            transcript_uri: URI do arquivo de transcrição
-        
-        Returns:
-            Texto transcrito
-        """
         with urllib.request.urlopen(transcript_uri) as response:
             transcript_data = json.loads(response.read().decode())
             return transcript_data['results']['transcripts'][0]['transcript']
-

@@ -1,5 +1,3 @@
-"""Serviço para interação com AWS S3."""
-
 import os
 import time
 import uuid
@@ -8,20 +6,11 @@ from typing import Optional, Tuple
 from dotenv import load_dotenv
 import boto3
 
-# Garante que as variáveis de ambiente estão carregadas
 load_dotenv()
 
 
 class S3Service:
-    """Serviço para upload e gerenciamento de arquivos no S3."""
-    
     def __init__(self, region_name: str = "us-east-1"):
-        """
-        Inicializa o serviço S3.
-        
-        Args:
-            region_name: Região AWS (padrão: us-east-1)
-        """
         self.region_name = region_name
         self.client = boto3.client('s3', region_name=region_name)
     
@@ -30,16 +19,6 @@ class S3Service:
         file_path: str, 
         bucket_name: Optional[str] = None
     ) -> Optional[str]:
-        """
-        Faz upload do arquivo de áudio para o S3 e retorna o caminho S3.
-        
-        Args:
-            file_path: Caminho do arquivo local
-            bucket_name: Nome do bucket S3 (usa variável de ambiente se não fornecido)
-        
-        Returns:
-            Caminho S3 do arquivo (s3://bucket/key) ou None em caso de erro
-        """
         if not file_path or not os.path.exists(file_path):
             return None
         
@@ -60,32 +39,20 @@ class S3Service:
                 ExtraArgs={'ContentType': content_type}
             )
             
-            # Pequeno delay para garantir que o arquivo está disponível
             time.sleep(2)
-            
-            s3_path = f"s3://{bucket_name}/{s3_key}"
-            return s3_path
+            return f"s3://{bucket_name}/{s3_key}"
             
         except Exception as e:
-            print(f"Erro ao fazer upload para S3: {str(e)}")
+            print(f"Error uploading to S3: {str(e)}")
             return None
     
     def verify_file_exists(self, s3_path: str) -> Tuple[bool, Optional[str]]:
-        """
-        Verifica se um arquivo existe no S3.
-        
-        Args:
-            s3_path: Caminho S3 (s3://bucket/key)
-        
-        Returns:
-            Tupla (existe, mensagem_erro). Se existe=True, mensagem_erro é None.
-        """
         if not s3_path.startswith('s3://'):
-            return False, f"Erro: S3 path deve começar com 's3://'. Recebido: {s3_path}"
+            return False, f"Error: S3 path must start with 's3://'. Received: {s3_path}"
         
         parts = s3_path.replace('s3://', '').split('/', 1)
         if len(parts) != 2:
-            return False, f"Erro: Formato de S3 path inválido. Use: s3://bucket/key. Recebido: {s3_path}"
+            return False, f"Error: Invalid S3 path format. Use: s3://bucket/key. Received: {s3_path}"
         
         bucket_name, object_key = parts
         
@@ -95,23 +62,13 @@ class S3Service:
         except self.client.exceptions.ClientError as e:
             error_code = e.response.get('Error', {}).get('Code', '')
             if error_code == '404':
-                return False, f"Erro: Arquivo não encontrado em S3: {s3_path}"
+                return False, f"Error: File not found in S3: {s3_path}"
             elif error_code == '403':
-                return False, f"Erro: Sem permissão para acessar {s3_path}. Verifique as credenciais AWS."
+                return False, f"Error: No permission to access {s3_path}. Check AWS credentials."
             else:
-                return False, f"Erro ao verificar arquivo S3: {str(e)}"
+                return False, f"Error verifying S3 file: {str(e)}"
     
     def download_file(self, s3_path: str, local_path: str) -> bool:
-        """
-        Baixa um arquivo do S3 para o sistema de arquivos local.
-        
-        Args:
-            s3_path: Caminho S3 (s3://bucket/key)
-            local_path: Caminho local onde salvar o arquivo
-        
-        Returns:
-            True se o download foi bem-sucedido, False caso contrário
-        """
         if not s3_path.startswith('s3://'):
             return False
         
@@ -122,12 +79,9 @@ class S3Service:
         bucket_name, object_key = parts
         
         try:
-            # Cria diretório se não existir
             os.makedirs(os.path.dirname(local_path) if os.path.dirname(local_path) else '.', exist_ok=True)
-            
             self.client.download_file(bucket_name, object_key, local_path)
             return True
         except Exception as e:
-            print(f"Erro ao baixar arquivo do S3: {str(e)}")
+            print(f"Error downloading file from S3: {str(e)}")
             return False
-

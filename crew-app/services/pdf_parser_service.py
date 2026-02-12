@@ -1,5 +1,3 @@
-"""Serviço para parsear dados médicos de texto extraído de PDFs."""
-
 import re
 from typing import Dict, Any, Optional
 from services.textract_service import TextractService
@@ -7,10 +5,7 @@ from services.comprehend_medical_service import ComprehendMedicalService
 
 
 class PDFParserService:
-    """Serviço para extrair e parsear dados médicos de PDFs de exames."""
-    
     def __init__(self):
-        """Inicializa o serviço com Textract e Comprehend Medical."""
         self.textract_service = TextractService()
         self.comprehend_service = ComprehendMedicalService()
     
@@ -19,17 +14,6 @@ class PDFParserService:
         pdf_path: str,
         is_s3_path: bool = False
     ) -> Dict[str, Any]:
-        """
-        Extrai dados médicos de um PDF de exame.
-        
-        Args:
-            pdf_path: Caminho do PDF (local ou S3)
-            is_s3_path: Se True, pdf_path é um caminho S3
-        
-        Returns:
-            Dicionário com dados extraídos e campos do formulário
-        """
-        # Extrai texto do PDF
         if is_s3_path:
             text = self.textract_service.extract_text_from_pdf_s3(pdf_path)
         else:
@@ -38,18 +22,16 @@ class PDFParserService:
         if not text:
             return {
                 "success": False,
-                "error": "Não foi possível extrair texto do PDF",
+                "error": "Could not extract text from PDF",
                 "form_data": {}
             }
         
-        # Analisa o texto com Comprehend Medical para extrair entidades médicas
         try:
             entities = self.comprehend_service.detect_entities(text)
         except Exception as e:
-            print(f"Erro ao analisar com Comprehend Medical: {str(e)}")
+            print(f"Error analyzing with Comprehend Medical: {str(e)}")
             entities = {}
         
-        # Parseia dados específicos do formulário
         form_data = self._parse_form_fields(text, entities)
         
         return {
@@ -64,88 +46,70 @@ class PDFParserService:
         text: str, 
         entities: Dict[str, Any]
     ) -> Dict[str, Optional[float]]:
-        """
-        Parseia campos específicos do formulário a partir do texto.
-        
-        Args:
-            text: Texto extraído do PDF
-            entities: Entidades detectadas pelo Comprehend Medical
-        
-        Returns:
-            Dicionário com valores para preencher o formulário
-        """
         form_data = {
-            "idade": None,
-            "pressao_sistolica": None,
-            "pressao_diastolica": None,
-            "glicemia": None,
-            "temperatura": None,
-            "frequencia_cardiaca": None
+            "age": None,
+            "systolic_bp": None,
+            "diastolic_bp": None,
+            "glucose": None,
+            "temperature": None,
+            "heart_rate": None
         }
         
-        # Normaliza o texto para busca
         text_lower = text.lower()
         text_upper = text.upper()
         
-        # Extrai idade
-        idade_match = re.search(r'idade[:\s]*(\d+)', text_lower, re.IGNORECASE)
-        if not idade_match:
-            idade_match = re.search(r'(\d+)\s*anos?', text_lower)
-        if idade_match:
+        age_match = re.search(r'age[:\s]*(\d+)', text_lower, re.IGNORECASE)
+        if not age_match:
+            age_match = re.search(r'(\d+)\s*years?', text_lower)
+        if age_match:
             try:
-                form_data["idade"] = float(idade_match.group(1))
+                form_data["age"] = float(age_match.group(1))
             except:
                 pass
         
-        # Extrai pressão arterial (sistólica e diastólica)
-        # Padrões: "140/90", "PA: 140/90", "Pressão: 140x90", etc.
-        pa_patterns = [
-            r'press[ãa]o[:\s]*(\d+)[/\sxX](\d+)',
-            r'pa[:\s]*(\d+)[/\sxX](\d+)',
+        bp_patterns = [
+            r'blood\s*pressure[:\s]*(\d+)[/\sxX](\d+)',
+            r'bp[:\s]*(\d+)[/\sxX](\d+)',
             r'(\d+)[/\sxX](\d+)\s*mmhg',
             r'(\d+)[/\sxX](\d+)\s*mm\s*hg'
         ]
         
-        for pattern in pa_patterns:
+        for pattern in bp_patterns:
             match = re.search(pattern, text_lower)
             if match:
                 try:
-                    sistolica = float(match.group(1))
-                    diastolica = float(match.group(2))
-                    # Validação básica: sistólica deve ser maior que diastólica
-                    if 50 <= sistolica <= 250 and 30 <= diastolica <= 180 and sistolica > diastolica:
-                        form_data["pressao_sistolica"] = sistolica
-                        form_data["pressao_diastolica"] = diastolica
+                    systolic = float(match.group(1))
+                    diastolic = float(match.group(2))
+                    if 50 <= systolic <= 250 and 30 <= diastolic <= 180 and systolic > diastolic:
+                        form_data["systolic_bp"] = systolic
+                        form_data["diastolic_bp"] = diastolic
                         break
                 except:
                     continue
         
-        # Extrai glicemia
-        glicemia_patterns = [
-            r'glicemia[:\s]*(\d+[.,]?\d*)',
-            r'glicose[:\s]*(\d+[.,]?\d*)',
-            r'glic[:\s]*(\d+[.,]?\d*)',
+        glucose_patterns = [
+            r'glucose[:\s]*(\d+[.,]?\d*)',
+            r'gluc[:\s]*(\d+[.,]?\d*)',
             r'bs[:\s]*(\d+[.,]?\d*)',
-            r'(\d+[.,]?\d*)\s*mg/dl\s*(?:glicemia|glicose)',
+            r'(\d+[.,]?\d*)\s*mg/dl\s*(?:glucose)',
         ]
         
-        for pattern in glicemia_patterns:
+        for pattern in glucose_patterns:
             match = re.search(pattern, text_lower)
             if match:
                 try:
-                    glicemia_str = match.group(1).replace(',', '.')
-                    glicemia = float(glicemia_str)
-                    if 3.0 <= glicemia <= 30.0:
-                        form_data["glicemia"] = glicemia
+                    glucose_str = match.group(1).replace(',', '.')
+                    glucose = float(glucose_str)
+                    if 3.0 <= glucose <= 30.0:
+                        form_data["glucose"] = glucose
                         break
                 except:
                     continue
         
-        # Extrai temperatura
         temp_patterns = [
-            r'temperatura[:\s]*(\d+[.,]?\d*)\s*[°]?[fcFC]',
+            r'temperature[:\s]*(\d+[.,]?\d*)\s*[°]?[fcFC]',
             r'temp[:\s]*(\d+[.,]?\d*)\s*[°]?[fcFC]',
-            r'(\d+[.,]?\d*)\s*[°]?[fcFC]\s*(?:temperatura|temp)',
+            r'(\d+[.,]?\d*)\s*[°]?[fcFC]\s*(?:temperature|temp)',
         ]
         
         for pattern in temp_patterns:
@@ -154,73 +118,60 @@ class PDFParserService:
                 try:
                     temp_str = match.group(1).replace(',', '.')
                     temp = float(temp_str)
-                    # Detecta se é Fahrenheit ou Celsius
                     if 'f' in match.group(0).lower():
-                        # Já está em Fahrenheit
                         if 95.0 <= temp <= 105.0:
-                            form_data["temperatura"] = temp
+                            form_data["temperature"] = temp
                     else:
-                        # Assume Celsius, converte para Fahrenheit
                         if 35.0 <= temp <= 40.5:
-                            form_data["temperatura"] = (temp * 9/5) + 32
-                    if form_data["temperatura"]:
+                            form_data["temperature"] = (temp * 9/5) + 32
+                    if form_data["temperature"]:
                         break
                 except:
                     continue
         
-        # Extrai frequência cardíaca
-        fc_patterns = [
-            r'frequ[êe]ncia\s*cardiaca[:\s]*(\d+)',
-            r'fc[:\s]*(\d+)',
-            r'freq[:\s]*(\d+)',
+        hr_patterns = [
+            r'heart\s*rate[:\s]*(\d+)',
+            r'hr[:\s]*(\d+)',
             r'(\d+)\s*bpm',
-            r'(\d+)\s*batimentos',
+            r'(\d+)\s*beats',
         ]
         
-        for pattern in fc_patterns:
+        for pattern in hr_patterns:
             match = re.search(pattern, text_lower)
             if match:
                 try:
-                    fc = float(match.group(1))
-                    if 40 <= fc <= 200:
-                        form_data["frequencia_cardiaca"] = fc
+                    hr = float(match.group(1))
+                    if 40 <= hr <= 200:
+                        form_data["heart_rate"] = hr
                         break
                 except:
                     continue
         
-        # Tenta usar entidades do Comprehend Medical como fallback
         if entities and 'entities' in entities:
-            # O formato retornado pelo Comprehend Medical é um dicionário por tipo
-            # Exemplo: {'AGE': [{'text': '35', ...}], ...}
             for entity_type, entity_list in entities.get('entities', {}).items():
                 for entity in entity_list:
                     text_entity = entity.get('text', '')
                     
-                    # Idade
-                    if entity_type == 'AGE' and not form_data["idade"]:
+                    if entity_type == 'AGE' and not form_data["age"]:
                         try:
                             age_match = re.search(r'(\d+)', text_entity)
                             if age_match:
                                 age = float(age_match.group(1))
                                 if 15 <= age <= 50:
-                                    form_data["idade"] = age
+                                    form_data["age"] = age
                         except:
                             pass
                     
-                    # Pressão arterial - pode estar em TEST_VALUE ou outros tipos
-                    if entity_type == 'TEST_VALUE' and not form_data["pressao_sistolica"]:
-                        # Comprehend Medical pode detectar valores de teste
-                        # Tenta extrair pressão do texto
-                        pa_match = re.search(r'(\d+)[/\sxX](\d+)', text_entity)
-                        if pa_match:
+                    if entity_type == 'TEST_VALUE' and not form_data["systolic_bp"]:
+                        bp_match = re.search(r'(\d+)[/\sxX](\d+)', text_entity)
+                        if bp_match:
                             try:
-                                sistolica = float(pa_match.group(1))
-                                diastolica = float(pa_match.group(2))
-                                if 50 <= sistolica <= 250 and 30 <= diastolica <= 180 and sistolica > diastolica:
-                                    form_data["pressao_sistolica"] = sistolica
-                                    form_data["pressao_diastolica"] = diastolica
+                                systolic = float(bp_match.group(1))
+                                diastolic = float(bp_match.group(2))
+                                if 50 <= systolic <= 250 and 30 <= diastolic <= 180 and systolic > diastolic:
+                                    form_data["systolic_bp"] = systolic
+                                    form_data["diastolic_bp"] = diastolic
                             except:
                                 pass
         
         return form_data
-

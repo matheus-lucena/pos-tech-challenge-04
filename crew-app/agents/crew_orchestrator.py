@@ -1,60 +1,45 @@
-"""Orquestração dos agentes CrewAI para análise multimodal."""
-
 from typing import List, Optional, Tuple
 from crewai import Agent, Task, Crew, Process, LLM
-from models.relatorio_saude import RelatorioSaude
+from models.relatorio_saude import HealthReport
 from tools.health_tools import predict_risk, transcribe_consultation
 from tools.fetal_tools import analyze_fetal_heart_sound
 
 
-def criar_agentes(llm: LLM) -> Tuple[Agent, Agent, Agent, Agent]:
-    """
-    Cria os agentes necessários para a análise.
-    
-    Args:
-        llm: Instância do LLM configurado
-    
-    Returns:
-        Tupla com (analyst, psychologist, fetal_analyst, chief)
-    """
-    # Agente 1: Analista de Dados (Sinais Vitais)
+def create_agents(llm: LLM) -> Tuple[Agent, Agent, Agent, Agent]:
     analyst = Agent(
-        role='Analista Biométrico',
-        goal='Interpretar sinais vitais via SageMaker.',
-        backstory='Especialista em identificar anomalias em dados tabulares de saúde.',
+        role='Biometric Analyst',
+        goal='Interpret vital signs via SageMaker.',
+        backstory='Specialist in identifying anomalies in tabular health data.',
         tools=[predict_risk],
         llm=llm,
         allow_delegation=False,
         max_iter=2,
     )
 
-    # Agente 2: Analista de Áudio (Comportamental)
     psychologist = Agent(
-        role='Psicólogo Perinatal',
-        goal='Detectar sinais de ansiedade ou depressão em áudios.',
-        backstory='Especialista em saúde mental materna e análise de discurso.',
+        role='Perinatal Psychologist',
+        goal='Detect signs of anxiety or depression in audio.',
+        backstory='Specialist in maternal mental health and discourse analysis.',
         tools=[transcribe_consultation],
         llm=llm,
         allow_delegation=False,
         max_iter=2,
     )
 
-    # Agente 3: Analista de Sinais Fetais
     fetal_analyst = Agent(
-        role='Especialista em Monitoramento Fetal',
-        goal='Analisar sinais de coração fetal (PCG) e detectar anomalias na frequência cardíaca fetal (FHR).',
-        backstory='Especialista em análise de fonocardiogramas fetais, detecção de bradicardia, taquicardia e variabilidade da FHR. Experiente com banco de dados SUFHSDB.',
+        role='Fetal Monitoring Specialist',
+        goal='Analyze fetal heart signals (PCG) and detect anomalies in fetal heart rate (FHR).',
+        backstory='Specialist in fetal phonocardiogram analysis, detection of bradycardia, tachycardia and FHR variability. Experienced with SUFHSDB database.',
         tools=[analyze_fetal_heart_sound],
         llm=llm,
         allow_delegation=False,
         max_iter=2,
     )
 
-    # Agente 4: Médico Chefe (Sintetizador)
     chief = Agent(
-        role='Médico Obstetra Sênior',
-        goal='Consolidar todas as análises disponíveis (biométricos, emocional e fetal) em um laudo final.',
-        backstory='Responsável pela decisão final, integrando dados técnicos, emocionais e monitoramento fetal.',
+        role='Senior Obstetrician',
+        goal='Consolidate all available analyses (biometric, emotional and fetal) into a final report.',
+        backstory='Responsible for final decision, integrating technical, emotional and fetal monitoring data.',
         llm=llm,
         allow_delegation=False,
         max_iter=2,
@@ -63,102 +48,70 @@ def criar_agentes(llm: LLM) -> Tuple[Agent, Agent, Agent, Agent]:
     return analyst, psychologist, fetal_analyst, chief
 
 
-def criar_tarefas(
+def create_tasks(
     analyst: Agent,
     psychologist: Agent,
     fetal_analyst: Agent,
     chief: Agent,
-    dados_biometria: Optional[dict] = None,
+    biometric_data: Optional[dict] = None,
     s3_audio: Optional[str] = None,
     s3_fetal_audio: Optional[str] = None
 ) -> List[Task]:
-    """
-    Cria as tarefas para os agentes baseado nos dados disponíveis.
-    
-    Args:
-        analyst: Agente analista biométrico
-        psychologist: Agente psicólogo
-        fetal_analyst: Agente analista de sinais fetais
-        chief: Agente médico chefe
-        dados_biometria: Dados biométricos opcionais
-        s3_audio: Caminho S3 do áudio opcional (consulta/emocional)
-        s3_fetal_audio: Caminho S3 do áudio fetal (PCG) opcional
-    
-    Returns:
-        Lista de tarefas
-    """
     tasks = []
     
-    # Adiciona tarefas dinamicamente conforme o que o usuário quer analisar
-    if dados_biometria:
+    if biometric_data:
         t1 = Task(
-            description=f"Analise os dados biométricos: {dados_biometria}",
-            expected_output="Status de risco técnico (Alto/Baixo) baseado em sinais vitais maternos.",
+            description=f"Analyze biometric data: {biometric_data}",
+            expected_output="Technical risk status (High/Low) based on maternal vital signs.",
             agent=analyst
         )
         tasks.append(t1)
 
     if s3_audio:
         t2 = Task(
-            description=f"Processe o áudio de consulta em: {s3_audio}",
-            expected_output="Análise qualitativa do estado emocional e psicológico da paciente.",
+            description=f"Process consultation audio at: {s3_audio}",
+            expected_output="Qualitative analysis of patient's emotional and psychological state.",
             agent=psychologist
         )
         tasks.append(t2)
 
     if s3_fetal_audio:
         t3 = Task(
-            description=f"Analise o sinal de coração fetal (PCG) em: {s3_fetal_audio}. Use a ferramenta analyze_fetal_heart_sound com is_s3_path=True.",
-            expected_output="Análise completa do sinal fetal incluindo FHR, variabilidade, classificação de risco e recomendações.",
+            description=f"Analyze fetal heart signal (PCG) at: {s3_fetal_audio}. Use analyze_fetal_heart_sound tool with is_s3_path=True.",
+            expected_output="Complete fetal signal analysis including FHR, variability, risk classification and recommendations.",
             agent=fetal_analyst
         )
         tasks.append(t3)
 
-    # Tarefa final sempre consolida o que foi feito
     t_final = Task(
         description=(
-            "Sintetize todas as análises anteriores (biométrica, emocional e fetal). "
-            "Se algum dado faltar, baseie-se no que está disponível. "
-            "Integre especialmente a análise fetal com os outros dados para uma visão completa."
+            "Synthesize all previous analyses (biometric, emotional and fetal). "
+            "If any data is missing, base on what is available. "
+            "Especially integrate fetal analysis with other data for a complete view."
         ),
-        expected_output="Relatório final estruturado em JSON incluindo análise_fetal.",
+        expected_output="Final structured report in JSON including fetal_analysis.",
         agent=chief,
         context=tasks,
-        output_json=RelatorioSaude
+        output_json=HealthReport
     )
     tasks.append(t_final)
     
     return tasks
 
 
-def iniciar_analise_multimodal(
+def start_multimodal_analysis(
     llm: LLM,
-    dados_biometria: Optional[dict] = None,
+    biometric_data: Optional[dict] = None,
     s3_audio: Optional[str] = None,
     s3_fetal_audio: Optional[str] = None
 ):
-    """
-    Inicia a análise multimodal usando agentes CrewAI.
+    analyst, psychologist, fetal_analyst, chief = create_agents(llm)
     
-    Args:
-        llm: Instância do LLM configurado
-        dados_biometria: Dados biométricos opcionais
-        s3_audio: Caminho S3 do áudio opcional (consulta/emocional)
-        s3_fetal_audio: Caminho S3 do áudio fetal (PCG) opcional
-    
-    Returns:
-        Resultado da execução do crew
-    """
-    # Cria os agentes
-    analyst, psychologist, fetal_analyst, chief = criar_agentes(llm)
-    
-    # Cria as tarefas
-    tasks = criar_tarefas(
+    tasks = create_tasks(
         analyst, psychologist, fetal_analyst, chief,
-        dados_biometria, s3_audio, s3_fetal_audio
+        biometric_data, s3_audio, s3_fetal_audio
     )
     
-    # Cria e executa o crew
     crew = Crew(
         agents=[analyst, psychologist, fetal_analyst, chief],
         tasks=tasks,
@@ -167,4 +120,3 @@ def iniciar_analise_multimodal(
     )
 
     return crew.kickoff()
-
