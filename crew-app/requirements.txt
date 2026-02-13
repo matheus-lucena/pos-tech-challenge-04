@@ -17,3 +17,5 @@ websocket-client
 pyaudio
 amazon-transcribe
 asyncio
+transformers
+torch

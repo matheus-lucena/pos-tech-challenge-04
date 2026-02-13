@@ -7,12 +7,102 @@ from dotenv import load_dotenv
 from amazon_transcribe.client import TranscribeStreamingClient
 from amazon_transcribe.handlers import TranscriptResultStreamHandler
 from amazon_transcribe.model import TranscriptEvent
-import litellm
+from transformers import pipeline
+import torch
 
 load_dotenv()
 
-LLM_MODEL = "ollama/qwen2.5:7b"
-LLM_BASE_URL = "http://localhost:11434"
+
+class ZeroShotViolenceDetector:
+    def __init__(self):
+        print("🚀 Inicializando Detector de Violência...")
+        
+        if not torch.cuda.is_available():
+            print("⚠️ ALERTA: CUDA não detectado! O script vai rodar na CPU. Verifique sua instalação do PyTorch.")
+            device = -1
+        else:
+            print(f"✅ GPU Detectada: {torch.cuda.get_device_name(0)}")
+            device = 0
+        
+        self.classifier = pipeline(
+            "zero-shot-classification", 
+            model="MoritzLaurer/mDeBERTa-v3-base-mnli-xnli",
+            device=device,
+            torch_dtype=torch.float16 if device >= 0 and torch.cuda.is_available() else torch.float32
+        )
+        self.labels = [
+            "agressão física violência", 
+            "ameaça de morte perigo", 
+            "menção a arma faca objeto perigoso",
+            "ameaça com arma ou faca",
+            "conversa tranquila normal", 
+            "pedido de socorro emergência",
+            "discussão verbal acalorada",
+            "contexto de jogo ou filme"
+        ]
+        
+        self.danger_keywords = [
+            "faca", "facas", "facaço", "canivete",
+            "arma", "armas", "revólver", "pistola", "espingarda", "rifle",
+            "tiro", "atirar", "disparar", "disparo",
+            "bala", "balas", "munição",
+            "cutelo", "machado", "tesoura grande",
+            "golpear com", "esfaquear", "atacar com",
+            "tenho uma", "tenho um", "estou com", "estou armado"
+        ]
+        
+        self.threshold = 0.75 
+
+    def _check_danger_keywords(self, text: str) -> bool:
+        """
+        Verifica se o texto contém palavras-chave perigosas relacionadas a armas/facas
+        """
+        text_lower = text.lower()
+        for keyword in self.danger_keywords:
+            if keyword in text_lower:
+                return True
+        return False
+
+    def predict(self, text: str) -> Tuple[bool, str, float]:
+        """
+        Inferência ultra-rápida com verificação híbrida (modelo + palavras-chave)
+        Retorna: (is_danger, top_label, score)
+        """
+        if len(text) < 10: 
+            return False, "muito curto", 0.0
+
+        has_danger_keywords = self._check_danger_keywords(text)
+        
+        try:
+            result = self.classifier(text, self.labels, multi_label=False)
+            
+            top_label = result['labels'][0]
+            score = result['scores'][0]
+            
+            danger_labels = [
+                "agressão física violência", 
+                "ameaça de morte perigo", 
+                "menção a arma faca objeto perigoso",
+                "ameaça com arma ou faca",
+                "pedido de socorro emergência"
+            ]
+            
+            is_danger = (
+                has_danger_keywords or 
+                (top_label in danger_labels and score > self.threshold)
+            )
+            
+            if has_danger_keywords and not is_danger:
+                is_danger = True
+                top_label = "menção a arma faca objeto perigoso"
+                score = 0.9
+            
+            return is_danger, top_label, score
+        except Exception as e:
+            print(f"Error in zero-shot classification: {e}")
+            if has_danger_keywords:
+                return True, "menção a arma faca objeto perigoso", 0.9
+            return False, "erro", 0.0
 
 
 class ViolenceHandler(TranscriptResultStreamHandler):
@@ -20,44 +110,30 @@ class ViolenceHandler(TranscriptResultStreamHandler):
         super().__init__(stream)
         self.output_queue = output_queue
         self.full_transcript_context = ""
-        self._llm_initialized = False
         self.last_analyzed_text = ""
+        self._detector_initialized = False
+        self._detector = None
 
-    def _initialize_llm(self):
-        if not self._llm_initialized:
+    def _initialize_detector(self):
+        if not self._detector_initialized:
             try:
-                os.environ["OPENAI_API_KEY"] = "sk-ollama-local"
-                self._llm_initialized = True
+                self._detector = ZeroShotViolenceDetector()
+                self._detector_initialized = True
             except Exception as e:
-                print(f"Warning initializing LLM: {e}")
+                print(f"Warning initializing detector: {e}")
 
     def _analyze_violence_risk(self, transcript_text: str) -> bool:
         try:
-            self._initialize_llm()
+            self._initialize_detector()
             
-            prompt = f"""Analyze the following text and determine if there are signs of violence, imminent danger, or urgent need for help.
-
-Text: "{transcript_text}"
-
-Respond ONLY with "YES" if there is risk of violence or danger, or "NO" if there is no risk.
-Response:"""
+            if self._detector is None:
+                return False
             
-            response = litellm.completion(
-                model=LLM_MODEL,
-                messages=[
-                    {"role": "user", "content": prompt}
-                ],
-                api_base=LLM_BASE_URL,
-                timeout=5.0
-            )
-            
-            answer = response.choices[0].message.content.strip().upper()
-            is_violent = "YES" in answer or "SIM" in answer or "RISK" in answer or "RISCO" in answer or "DANGER" in answer or "PERIGO" in answer
-            
-            return is_violent
+            is_danger, _, _ = self._detector.predict(transcript_text)
+            return is_danger
             
         except Exception as e:
-            print(f"Error analyzing risk with LLM: {e}")
+            print(f"Error analyzing risk with detector: {e}")
             return False
 
     async def handle_transcript_event(self, transcript_event: TranscriptEvent):
@@ -84,7 +160,7 @@ Response:"""
                     is_violent = await asyncio.to_thread(self._analyze_violence_risk, text_to_analyze)
                     self.last_analyzed_text = text_to_analyze.strip()
                 except Exception as e:
-                    print(f"Error executing LLM analysis: {e}")
+                    print(f"Error executing violence detection: {e}")
             
             try:
                 self.output_queue.put_nowait((transcript.strip(), is_final, is_violent))
