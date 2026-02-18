@@ -31,8 +31,8 @@ class AnalysisProcessor:
         heart_rate: Optional[float],
         audio_file: Optional[str],
         s3_audio: Optional[str],
-        fetal_audio_file: Optional[str] = None,
-        s3_fetal_audio: Optional[str] = None
+        maternal_audio_file: Optional[str] = None,
+        s3_maternal_audio: Optional[str] = None
     ) -> str:
         biometric_data = self._prepare_biometric_data(
             age, systolic_bp, diastolic_bp,
@@ -48,19 +48,19 @@ class AnalysisProcessor:
         
         audio_path, status_msg = audio_result
         
-        fetal_audio_result = self._process_audio(fetal_audio_file, s3_fetal_audio)
-        if isinstance(fetal_audio_result, str) and fetal_audio_result.startswith('<div'):
-            return fetal_audio_result
+        maternal_audio_result = self._process_audio(maternal_audio_file, s3_maternal_audio)
+        if isinstance(maternal_audio_result, str) and maternal_audio_result.startswith('<div'):
+            return maternal_audio_result
         
-        fetal_audio_path, status_msg_fetal = fetal_audio_result
+        maternal_audio_path, status_msg_maternal = maternal_audio_result
         
         combined_status_msg = status_msg
-        if status_msg_fetal:
-            combined_status_msg = (combined_status_msg or "") + status_msg_fetal
+        if status_msg_maternal:
+            combined_status_msg = (combined_status_msg or "") + status_msg_maternal
         
-        if not biometric_data and not audio_path and not fetal_audio_path:
+        if not biometric_data and not audio_path and not maternal_audio_path:
             return self._format_warning(
-                "Please provide at least biometric data, a consultation audio file or a fetal audio file (PCG)."
+                "Please provide at least biometric data, a consultation audio file or a maternal audio file (PCG)."
             )
         
         try:
@@ -68,7 +68,7 @@ class AnalysisProcessor:
                 llm=self.llm,
                 biometric_data=biometric_data,
                 s3_audio=audio_path,
-                s3_fetal_audio=fetal_audio_path
+                s3_maternal_audio=maternal_audio_path
             )
             
             parsed_result = self._parse_result(result)

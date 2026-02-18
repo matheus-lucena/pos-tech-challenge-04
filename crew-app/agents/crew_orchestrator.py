@@ -2,7 +2,7 @@ from typing import List, Optional, Tuple
 from crewai import Agent, Task, Crew, Process, LLM
 from models.relatorio_saude import HealthReport
 from tools.health_tools import predict_risk, transcribe_consultation
-from tools.fetal_tools import analyze_fetal_heart_sound
+from tools.maternal_tools import analyze_maternal_heart_sound
 
 
 def create_agents(llm: LLM) -> Tuple[Agent, Agent, Agent, Agent]:
@@ -26,11 +26,11 @@ def create_agents(llm: LLM) -> Tuple[Agent, Agent, Agent, Agent]:
         max_iter=2,
     )
 
-    fetal_analyst = Agent(
-        role='Fetal Monitoring Specialist',
-        goal='Analyze fetal heart signals (PCG) and detect anomalies in fetal heart rate (FHR).',
-        backstory='Specialist in fetal phonocardiogram analysis, detection of bradycardia, tachycardia and FHR variability. Experienced with SUFHSDB database.',
-        tools=[analyze_fetal_heart_sound],
+    maternal_analyst = Agent(
+        role='Maternal Monitoring Specialist',
+        goal='Analyze maternal heart signals (PCG) and detect anomalies in maternal heart rate (MHR).',
+        backstory='Specialist in maternal phonocardiogram analysis and MHR variability assessment for resting pregnant patients.',
+        tools=[analyze_maternal_heart_sound],
         llm=llm,
         allow_delegation=False,
         max_iter=2,
@@ -38,24 +38,24 @@ def create_agents(llm: LLM) -> Tuple[Agent, Agent, Agent, Agent]:
 
     chief = Agent(
         role='Senior Obstetrician',
-        goal='Consolidate all available analyses (biometric, emotional and fetal) into a final report.',
-        backstory='Responsible for final decision, integrating technical, emotional and fetal monitoring data.',
+        goal='Consolidate all available analyses (biometric, emotional and maternal) into a final report.',
+        backstory='Responsible for final decision, integrating technical, emotional and maternal monitoring data.',
         llm=llm,
         allow_delegation=False,
         max_iter=2,
     )
     
-    return analyst, psychologist, fetal_analyst, chief
+    return analyst, psychologist, maternal_analyst, chief
 
 
 def create_tasks(
     analyst: Agent,
     psychologist: Agent,
-    fetal_analyst: Agent,
+    maternal_analyst: Agent,
     chief: Agent,
     biometric_data: Optional[dict] = None,
     s3_audio: Optional[str] = None,
-    s3_fetal_audio: Optional[str] = None
+    s3_maternal_audio: Optional[str] = None
 ) -> List[Task]:
     tasks = []
     
@@ -75,21 +75,21 @@ def create_tasks(
         )
         tasks.append(t2)
 
-    if s3_fetal_audio:
+    if s3_maternal_audio:
         t3 = Task(
-            description=f"Analyze fetal heart signal (PCG) at: {s3_fetal_audio}. Use analyze_fetal_heart_sound tool with is_s3_path=True.",
-            expected_output="Complete fetal signal analysis including FHR, variability, risk classification and recommendations.",
-            agent=fetal_analyst
+            description=f"Analyze maternal heart signal (PCG) at: {s3_maternal_audio}. Use analyze_maternal_heart_sound tool with is_s3_path=True.",
+            expected_output="Complete maternal signal analysis including MHR, variability, risk classification and recommendations.",
+            agent=maternal_analyst
         )
         tasks.append(t3)
 
     t_final = Task(
         description=(
-            "Synthesize all previous analyses (biometric, emotional and fetal). "
+            "Synthesize all previous analyses (biometric, emotional and maternal). "
             "If any data is missing, base on what is available. "
-            "Especially integrate fetal analysis with other data for a complete view."
+            "Especially integrate maternal analysis with other data for a complete view."
         ),
-        expected_output="Final structured report in JSON including fetal_analysis.",
+        expected_output="Final structured report in JSON including maternal_analysis.",
         agent=chief,
         context=tasks,
         output_json=HealthReport
@@ -103,17 +103,17 @@ def start_multimodal_analysis(
     llm: LLM,
     biometric_data: Optional[dict] = None,
     s3_audio: Optional[str] = None,
-    s3_fetal_audio: Optional[str] = None
+    s3_maternal_audio: Optional[str] = None
 ):
-    analyst, psychologist, fetal_analyst, chief = create_agents(llm)
+    analyst, psychologist, maternal_analyst, chief = create_agents(llm)
     
     tasks = create_tasks(
-        analyst, psychologist, fetal_analyst, chief,
-        biometric_data, s3_audio, s3_fetal_audio
+        analyst, psychologist, maternal_analyst, chief,
+        biometric_data, s3_audio, s3_maternal_audio
     )
     
     crew = Crew(
-        agents=[analyst, psychologist, fetal_analyst, chief],
+        agents=[analyst, psychologist, maternal_analyst, chief],
         tasks=tasks,
         process=Process.sequential,
         verbose=True

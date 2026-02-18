@@ -76,12 +76,12 @@ def _format_dict_result(result: Dict[str, Any]) -> str:
             '#28a745'
         )
     
-    if 'fetal_analysis' in result or 'analise_fetal' in result:
-        key = 'fetal_analysis' if 'fetal_analysis' in result else 'analise_fetal'
+    if 'maternal_analysis' in result or 'analise_materna' in result:
+        key = 'maternal_analysis' if 'maternal_analysis' in result else 'analise_materna'
         output += _format_section(
             key,
-            '👶',
-            'Fetal Analysis',
+            '🤰',
+            'Maternal Analysis',
             result[key],
             '#17a2b8'
         )

@@ -569,21 +569,21 @@ def create_interface_v2():
                         )
                 
                 gr.Markdown("---")
-                gr.Markdown("### 👶 Análise de Sinal Fetal (PCG) - Opcional")
+                gr.Markdown("### 🤰 Análise de Sinal Materno (PCG) - Opcional")
                 gr.Markdown("*Baseado no banco de dados SUFHSDB*")
                 
-                arquivo_audio_fetal = gr.File(
-                    label="Upload de Arquivo de Áudio Fetal (PCG)",
+                arquivo_audio_materno = gr.File(
+                    label="Upload de Arquivo de Áudio Materno (PCG)",
                     file_types=["audio"],
                     type="filepath",
                 )
                 
                 gr.Markdown("**OU**")
                 
-                s3_audio_fetal = gr.Textbox(
-                    label="Caminho S3 do Áudio Fetal (Alternativa)",
-                    placeholder="s3://bucket-name/fetal-pcg.wav",
-                    info="Caminho S3 do arquivo de PCG fetal",
+                s3_audio_materno = gr.Textbox(
+                    label="Caminho S3 do Áudio Materno (Alternativa)",
+                    placeholder="s3://bucket-name/maternal-pcg.wav",
+                    info="Caminho S3 do arquivo de PCG materno",
                     lines=2
                 )
                 
@@ -593,10 +593,10 @@ def create_interface_v2():
                     - 📤 **Upload de arquivo**: O arquivo será enviado automaticamente para S3
                     - 🔗 **Caminho S3**: Use se o arquivo já estiver no bucket
                     
-                    **Análise Fetal:**
-                    - Extrai Frequência Cardíaca Fetal (FHR)
+                    **Análise Materna:**
+                    - Extrai Frequência Cardíaca Materna (MHR)
                     - Detecta bradicardia, taquicardia e variabilidade
-                    - Classifica risco fetal em tempo real
+                    - Classifica risco materno em tempo real
                     """
                 )
         
@@ -629,7 +629,7 @@ def create_interface_v2():
                 idade, pressao_sistolica, pressao_diastolica,
                 glicemia, temperatura, frequencia_cardiaca, 
                 arquivo_audio, s3_audio,
-                arquivo_audio_fetal, s3_audio_fetal
+                arquivo_audio_materno, s3_audio_materno
             ],
             outputs=output,
             show_progress="full"
@@ -643,8 +643,8 @@ def create_interface_v2():
             - **Pré-preenchimento de PDF**: Utiliza AWS Textract para extrair dados de exames médicos em PDF
             - **Análise Biométrica**: Utiliza modelo XGBoost no AWS SageMaker
             - **Análise de Áudio**: Utiliza AWS Transcribe para transcrição e análise emocional
-            - **Análise Fetal**: Processa sinais de PCG (fonocardiograma) para extrair FHR e classificar risco fetal
-            - **Sintetização**: Agente médico consolida todas as análises (biométrica, emocional e fetal) em um relatório final
+            - **Análise Materna**: Processa sinais de PCG (fonocardiograma) para extrair MHR e classificar risco materno
+            - **Sintetização**: Agente médico consolida todas as análises (biométrica, emocional e materna) em um relatório final
             """
         )
     
