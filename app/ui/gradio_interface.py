@@ -299,46 +299,29 @@ def create_interface_v2():
         # Abaixo do botão principal: fluxo separado de Análise de Áudio de Consulta
         with gr.Row():
             with gr.Column():
-                gr.Markdown("### 🎤 Análise de Áudio de Consulta (Opcional)")
+                gr.Markdown("### 🎤 Áudio de Consulta (Opcional)")
+                gr.Markdown("Escolha **uma** opção: enviar arquivo **ou** gravar ao vivo com o microfone.")
                 
                 with gr.Tabs():
-                    with gr.Tab("📤 Upload de Arquivo"):
+                    with gr.Tab("📤 Enviar arquivo"):
                         arquivo_audio = gr.File(
-                            label="Upload de Arquivo de Áudio (Consulta/Emocional)",
+                            label="Arquivo de áudio",
                             file_types=["audio"],
                             type="filepath"
                         )
                     
-                    with gr.Tab("🎙️ Gravação em Tempo Real"):
-                        gr.Markdown(
-                            """
-                            **Grave áudio em tempo real e veja a transcrição aparecer instantaneamente!**
-                            
-                            Selecione o microfone e clique em "🎙️ Iniciar Transcrição" para começar.
-                            """
-                        )
-                        
-                        # Lista dispositivos de áudio
+                    with gr.Tab("🎙️ Streaming (microfone)"):
                         def get_audio_devices():
-                            """Obtém lista de dispositivos de áudio."""
                             devices = RealtimeAudioProcessor.list_audio_devices()
                             if not devices:
                                 return ["Nenhum dispositivo encontrado"]
                             return [f"{idx}: {name}" for idx, name in devices]
                         
-                        # Obtém lista inicial de dispositivos
                         initial_devices = get_audio_devices()
                         device_dropdown = gr.Dropdown(
-                            label="Selecione o Microfone",
+                            label="Microfone",
                             choices=initial_devices,
                             value=initial_devices[0] if initial_devices else None,
-                            info="Escolha o dispositivo de entrada de áudio"
-                        )
-                        
-                        btn_refresh_devices = gr.Button(
-                            "🔄 Atualizar Lista de Dispositivos",
-                            variant="secondary",
-                            size="sm"
                         )
                         
                         status_realtime = gr.Markdown(
@@ -346,12 +329,12 @@ def create_interface_v2():
                             visible=True
                         )
                         
-                        # Player de áudio que mostra forma de onda e permite reprodução
                         audio_player = gr.Audio(
-                            label="Áudio em Tempo Real",
+                            label="Áudio gravado",
                             type="filepath",
                             visible=True,
-                            interactive=True
+                            interactive=False,
+                            sources=[],
                         )
                         
                         transcript_realtime = gr.Textbox(
@@ -360,46 +343,44 @@ def create_interface_v2():
                             lines=8,
                             interactive=False,
                         )
+                        violence_alert_realtime = gr.Markdown(
+                            value="",
+                            visible=True,
+                            elem_classes=["violence-alert"],
+                        )
                         btn_start_realtime = gr.Button(
-                            "🎙️ Iniciar Transcrição em Tempo Real",
+                            "🎙️ Iniciar transcrição",
                             variant="primary",
                             size="lg"
                         )
                         btn_stop_realtime = gr.Button(
-                            "⏹️ Parar Transcrição",
+                            "⏹️ Parar",
                             variant="stop",
                             visible=False
                         )
                         
-                        # Estado para controlar o streaming
                         streaming_state = gr.State(value=False)
                         
-                        # Função para atualizar lista de dispositivos
-                        def refresh_devices():
-                            """Atualiza a lista de dispositivos."""
-                            devices = get_audio_devices()
-                            return gr.update(choices=devices, value=devices[0] if devices else None)
-                        
-                        # Função para extrair índice do dispositivo
                         def get_device_index(device_str):
-                            """Extrai o índice do dispositivo da string selecionada."""
                             if not device_str or ":" not in device_str:
                                 return None
                             try:
                                 return int(device_str.split(":")[0])
-                            except:
+                            except Exception:
                                 return None
                         
-                        # Função para iniciar transcrição em tempo real
                         def iniciar_realtime(device_selected):
                             """Inicia a captura e transcrição em tempo real."""
                             
                             if _realtime_processor.is_processing:
                                 return (
                                     "⚠️ Já existe uma transcrição em andamento.",
-                                    "",
+                                    None,
+                                    "Aguardando transcrição...",
                                     gr.update(visible=True),
                                     gr.update(visible=False),
+                                    None,
+                                    "",
                                     True
                                 )
                             
@@ -429,6 +410,7 @@ def create_interface_v2():
                                 gr.update(visible=True),
                                 gr.update(visible=False),
                                 None,  # Player de áudio vazio inicialmente
+                                "",  # sem alerta de violência ao iniciar
                                 True
                             )
                         
@@ -448,6 +430,12 @@ def create_interface_v2():
                                 '</div>'
                             )
                             
+                            alert_at_stop = _realtime_processor.get_violence_alert()
+                            alert_md = (
+                                f'<div style="padding: 12px; background: #f8d7da; border-radius: 8px; '
+                                f'border-left: 4px solid #dc3545; margin-top: 8px;">'
+                                f'<strong>🚨 Alerta de violência:</strong> {alert_at_stop}</div>'
+                            ) if alert_at_stop else ""
                             return (
                                 status_msg,
                                 audio_path if audio_path else None,  # Player de áudio com arquivo gravado
@@ -455,6 +443,7 @@ def create_interface_v2():
                                 gr.update(visible=False),
                                 gr.update(visible=True),
                                 audio_path if audio_path else None,
+                                alert_md,
                                 False
                             )
                         
@@ -467,24 +456,29 @@ def create_interface_v2():
                             transcript = _realtime_processor.get_current_transcript()
                             return transcript if transcript else "Aguardando transcrição..."
                         
-                        # Conecta eventos
-                        btn_refresh_devices.click(
-                            fn=refresh_devices,
-                            outputs=[device_dropdown]
-                        )
-                        
-                        # Função que atualiza continuamente enquanto está processando
+                        def _violence_alert_md():
+                            alert = _realtime_processor.get_violence_alert()
+                            if not alert:
+                                return ""
+                            return (
+                                f'<div style="padding: 12px; background: #f8d7da; border-radius: 8px; '
+                                f'border-left: 4px solid #dc3545; margin-top: 8px;">'
+                                f'<strong>🚨 Alerta de violência detectado:</strong> {alert}</div>'
+                            )
+
+                        # Função que atualiza a transcrição e o alerta em tempo real (polling rápido)
                         def update_transcript_loop():
-                            """Loop de atualização da transcrição."""
-                            
+                            """Loop de atualização da transcrição e alerta de violência em tempo real."""
+                            transcript = _realtime_processor.get_current_transcript()
+                            alert_md = _violence_alert_md()
+                            yield transcript if transcript else "Aguardando transcrição...", alert_md
                             while _realtime_processor.is_processing:
+                                time.sleep(0.2)
                                 transcript = _realtime_processor.get_current_transcript()
-                                yield transcript if transcript else "Aguardando transcrição..."
-                                time.sleep(0.5)
-                            
-                            # Retorna transcrição final
+                                alert_md = _violence_alert_md()
+                                yield transcript if transcript else "Aguardando transcrição...", alert_md
                             final_transcript = _realtime_processor.get_current_transcript()
-                            yield final_transcript if final_transcript else "Transcrição finalizada."
+                            yield final_transcript if final_transcript else "Transcrição finalizada.", _violence_alert_md()
                         
                         def update_audio_player_loop():
                             """Loop de atualização do player de áudio em tempo real."""
@@ -547,13 +541,13 @@ def create_interface_v2():
                         start_event = btn_start_realtime.click(
                             fn=iniciar_realtime,
                             inputs=[device_dropdown],
-                            outputs=[status_realtime, audio_player, transcript_realtime, btn_stop_realtime, btn_start_realtime, audio_player, streaming_state]
+                            outputs=[status_realtime, audio_player, transcript_realtime, btn_stop_realtime, btn_start_realtime, audio_player, violence_alert_realtime, streaming_state]
                         )
                         
-                        # Atualiza transcrição e player de áudio periodicamente após iniciar usando generator
+                        # Atualiza transcrição, alerta de violência e player de áudio periodicamente
                         start_event.then(
                             fn=update_transcript_loop,
-                            outputs=[transcript_realtime]
+                            outputs=[transcript_realtime, violence_alert_realtime]
                         )
                         start_event.then(
                             fn=update_audio_player_loop,
@@ -562,7 +556,7 @@ def create_interface_v2():
                         
                         btn_stop_realtime.click(
                             fn=stop_realtime,
-                            outputs=[status_realtime, audio_player, transcript_realtime, btn_stop_realtime, btn_start_realtime, audio_player, streaming_state]
+                            outputs=[status_realtime, audio_player, transcript_realtime, btn_stop_realtime, btn_start_realtime, audio_player, violence_alert_realtime, streaming_state]
                         )
 
         # Análise de áudio materno (PCG) atualiza o bloco de análise rápida + frequência cardíaca

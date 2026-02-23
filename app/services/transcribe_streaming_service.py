@@ -14,48 +14,66 @@ load_dotenv()
 
 
 class ZeroShotViolenceDetector:
-    def __init__(self):
+    def __init__(self, use_cuda: bool = False):
         print("🚀 Inicializando Detector de Violência...")
-        
-        if not torch.cuda.is_available():
-            print("⚠️ ALERTA: CUDA não detectado! O script vai rodar na CPU. Verifique sua instalação do PyTorch.")
-            device = -1
-        else:
-            print(f"✅ GPU Detectada: {torch.cuda.get_device_name(0)}")
+        # use_cuda=False: evita erro "no kernel image for device" em GPUs muito novas (ex.: RTX 50)
+        if use_cuda and torch.cuda.is_available():
+            print(f"✅ GPU: {torch.cuda.get_device_name(0)}")
             device = 0
-        
+            dtype = torch.float16
+        else:
+            print("⚠️ Usando CPU para o detector de violência (CUDA desabilitado).")
+            device = -1
+            dtype = torch.float32
+
         self.classifier = pipeline(
-            "zero-shot-classification", 
+            "zero-shot-classification",
             model="MoritzLaurer/mDeBERTa-v3-base-mnli-xnli",
             device=device,
-            torch_dtype=torch.float16 if device >= 0 and torch.cuda.is_available() else torch.float32
+            torch_dtype=dtype,
         )
         self.labels = [
-            "agressão física violência", 
-            "ameaça de morte perigo", 
+            "agressão física violência",
+            "ameaça de morte perigo",
             "menção a arma faca objeto perigoso",
             "ameaça com arma ou faca",
-            "conversa tranquila normal", 
+            "violência contra mulher violência doméstica",
+            "ameaça à parceira ou ex-companheira",
+            "agressão verbal ou psicológica à mulher",
+            "conversa tranquila normal",
             "pedido de socorro emergência",
             "discussão verbal acalorada",
-            "contexto de jogo ou filme"
+            "contexto de jogo ou filme",
         ]
-        
+
         self.danger_keywords = [
+            # Armas / objetos perigosos
             "faca", "facas", "facaço", "canivete",
             "arma", "armas", "revólver", "pistola", "espingarda", "rifle",
             "tiro", "atirar", "disparar", "disparo",
             "bala", "balas", "munição",
             "cutelo", "machado", "tesoura grande",
             "golpear com", "esfaquear", "atacar com",
-            "tenho uma", "tenho um", "estou com", "estou armado"
+            "tenho uma", "tenho um", "estou com", "estou armado",
+            # Violência contra mulher
+            "vou te matar", "vou te bater", "te mato",
+            "vou matar você", "vou te agredir", "vou te espancar",
+            "bater na mulher", "bater na esposa", "bater na namorada",
+            "matar a mulher", "matar a esposa", "matar a ex",
+            "agredir a mulher", "espancar a mulher", "surrar a mulher",
+            "ameaçar a mulher", "ameaçar a esposa", "ameaçar a ex",
+            "violência doméstica", "violência contra mulher",
+            "enforcar", "enforcar a", "socos na", "chutes na",
+            "não sai de casa", "te dou porrada", "vou te dar",
+            "cadê você", "volta pra casa", "obedece",
+            "puta", "vadia", "vagabunda", "te quebro",
         ]
         
         self.threshold = 0.75 
 
     def _check_danger_keywords(self, text: str) -> bool:
         """
-        Verifica se o texto contém palavras-chave perigosas relacionadas a armas/facas
+        Verifica se o texto contém palavras-chave de risco (armas, violência contra mulher, etc.).
         """
         text_lower = text.lower()
         for keyword in self.danger_keywords:
@@ -80,22 +98,25 @@ class ZeroShotViolenceDetector:
             score = result['scores'][0]
             
             danger_labels = [
-                "agressão física violência", 
-                "ameaça de morte perigo", 
+                "agressão física violência",
+                "ameaça de morte perigo",
                 "menção a arma faca objeto perigoso",
                 "ameaça com arma ou faca",
-                "pedido de socorro emergência"
+                "pedido de socorro emergência",
+                "violência contra mulher violência doméstica",
+                "ameaça à parceira ou ex-companheira",
+                "agressão verbal ou psicológica à mulher",
             ]
-            
+
             is_danger = (
-                has_danger_keywords or 
-                (top_label in danger_labels and score > self.threshold)
+                has_danger_keywords
+                or (top_label in danger_labels and score > self.threshold)
             )
-            
+
             if has_danger_keywords and not is_danger:
                 is_danger = True
-                top_label = "menção a arma faca objeto perigoso"
-                score = 0.9
+                top_label = top_label if top_label in danger_labels else "menção a arma faca objeto perigoso"
+                score = max(score, 0.9)
             
             return is_danger, top_label, score
         except Exception as e:
@@ -113,6 +134,18 @@ class ViolenceHandler(TranscriptResultStreamHandler):
         self.last_analyzed_text = ""
         self._detector_initialized = False
         self._detector = None
+        self.context_window = []
+        self._transcript_log_count = 0
+        self._events_received = 0
+
+    async def handle_events(self):
+        """Processa eventos do stream e loga para diagnóstico."""
+        async for event in self._transcript_result_stream:
+            self._events_received += 1
+            if self._events_received <= 2 or self._events_received % 50 == 0:
+                print(f"📥 Evento #{self._events_received} do stream: {type(event).__name__}", flush=True)
+            if isinstance(event, TranscriptEvent):
+                await self.handle_transcript_event(event)
 
     def _initialize_detector(self):
         if not self._detector_initialized:
@@ -137,35 +170,50 @@ class ViolenceHandler(TranscriptResultStreamHandler):
             return False
 
     async def handle_transcript_event(self, transcript_event: TranscriptEvent):
-        results = transcript_event.transcript.results
+        results = transcript_event.transcript.results or []
         for result in results:
-            if not result.alternatives:
-                continue
-            
-            transcript = result.alternatives[0].transcript
+            alts = result.alternatives if result.alternatives else []
+            transcript = (alts[0].transcript or "").strip() if alts else ""
             is_final = not result.is_partial
-            
-            if transcript.strip():
-                if is_final:
-                    self.full_transcript_context += " " + transcript.strip()
-                    text_to_analyze = self.full_transcript_context
-                else:
-                    text_to_analyze = (self.full_transcript_context + " " + transcript.strip()).strip()
-            else:
-                text_to_analyze = self.full_transcript_context
-            
-            is_violent = False
-            if len(text_to_analyze.strip()) > 3 and text_to_analyze.strip() != self.last_analyzed_text:
-                try:
-                    is_violent = await asyncio.to_thread(self._analyze_violence_risk, text_to_analyze)
-                    self.last_analyzed_text = text_to_analyze.strip()
-                except Exception as e:
-                    print(f"Error executing violence detection: {e}")
-            
+
             try:
-                self.output_queue.put_nowait((transcript.strip(), is_final, is_violent))
+                self.output_queue.put_nowait((transcript, is_final, False))
+                self._transcript_log_count += 1
+                if transcript and (self._transcript_log_count <= 3 or self._transcript_log_count % 20 == 0):
+                    txt = (transcript[:50] + "…") if len(transcript) > 50 else transcript
+                    print(f"📝 AWS retornou: {'[final]' if is_final else '[parcial]'} \"{txt}\"", flush=True)
             except queue.Full:
                 pass
+
+            if is_final and transcript:
+                self.context_window.append(transcript.strip())
+                if len(self.context_window) > 5:
+                    self.context_window.pop(0)
+
+            current_context = " ".join(self.context_window)
+            text_to_analyze = f"{current_context} {transcript}".strip()
+            if len(text_to_analyze) > 5 and text_to_analyze != self.last_analyzed_text:
+                self.last_analyzed_text = text_to_analyze
+
+                async def check_violence():
+                    if self._detector is None:
+                        return
+                    try:
+                        is_violent, label, score = await asyncio.to_thread(
+                            self._detector.predict, text_to_analyze
+                        )
+                        if is_violent:
+                            print(f"🚨 ALERTA DE VIOLÊNCIA: {label} ({score:.2f}) -> {text_to_analyze}", flush=True)
+                            try:
+                                self.output_queue.put_nowait(
+                                    (f"__VIOLENCE_ALERT__:{label}|{score:.2f}", False, True)
+                                )
+                            except queue.Full:
+                                pass
+                    except Exception as e:
+                        print(f"Erro na detecção de violência: {e}", flush=True)
+
+                asyncio.create_task(check_violence())
 
 
 class TranscribeStreamingService:
@@ -207,13 +255,17 @@ class TranscribeStreamingService:
         try:
             asyncio.run(self._worker(language_code))
         except Exception as e:
-            print(f"Fatal error in AWS thread: {e}")
+            print(f"Fatal error in AWS thread: {e}", flush=True)
+            import traceback
+            traceback.print_exc()
             self.result_queue.put((f"ERROR: {str(e)}", False, False))
         finally:
             self._is_streaming_active = False
 
     async def _worker(self, language_code):
+        print("⏳ Conectando à AWS Transcribe...", flush=True)
         client = TranscribeStreamingClient(region=self.region_name)
+        handler = ViolenceHandler(None, self.result_queue)
 
         try:
             stream = await client.start_stream_transcription(
@@ -221,31 +273,63 @@ class TranscribeStreamingService:
                 media_sample_rate_hz=self.SAMPLE_RATE,
                 media_encoding="pcm"
             )
+            handler._transcript_result_stream = stream.output_stream
+            print("✅ Stream AWS ativo. Iniciando recepção de transcrição.", flush=True)
 
-            handler = ViolenceHandler(stream.output_stream, self.result_queue)
+            async def init_detector_background():
+                await asyncio.to_thread(handler._initialize_detector)
+                self._detector_instance = handler._detector
+
+            asyncio.create_task(init_detector_background())
+
+            CHUNK_100MS = 3200
+            DURATION_SEC = 0.15
+            events_sent = [0]
 
             async def sender():
-                while not self.stop_event.is_set():
-                    try:
+                try:
+                    buffer = b""
+                    while not self.stop_event.is_set():
                         try:
-                            chunk = self.input_queue_sync.get_nowait()
+                            chunk = await asyncio.to_thread(
+                                self.input_queue_sync.get, timeout=0.05
+                            )
+                            if chunk is None:
+                                break
+                            buffer += chunk
+                            while len(buffer) >= CHUNK_100MS:
+                                to_send = buffer[:CHUNK_100MS]
+                                buffer = buffer[CHUNK_100MS:]
+                                await stream.input_stream.send_audio_event(audio_chunk=to_send)
+                                events_sent[0] += 1
+                                if events_sent[0] == 1:
+                                    print("📤 Primeiro chunk de áudio enviado à AWS.", flush=True)
+                                elif events_sent[0] % 100 == 0:
+                                    print(f"📤 Enviados {events_sent[0]} eventos de áudio à AWS.", flush=True)
+                                await asyncio.sleep(DURATION_SEC)
                         except queue.Empty:
-                            await asyncio.sleep(0.01)
                             continue
-
-                        if chunk is None: 
-                            break
-                        
-                        await stream.input_stream.send_audio_event(audio_chunk=chunk)
-                    except Exception as e:
-                        print(f"Error in sender: {e}")
-                        break
-                await stream.input_stream.end_stream()
+                    if buffer:
+                        await stream.input_stream.send_audio_event(audio_chunk=buffer)
+                except Exception as e:
+                    print(f"Erro no sender: {e}", flush=True)
+                    import traceback
+                    traceback.print_exc()
+                finally:
+                    await stream.input_stream.end_stream()
+                    print(f"📤 Total eventos de áudio enviados: {events_sent[0]}", flush=True)
 
             await asyncio.gather(sender(), handler.handle_events())
 
         except Exception as e:
-            self.result_queue.put((f"ERROR: AWS connection failure: {str(e)}", False, False))
+            import traceback
+            error_msg = f"ERROR: Falha na conexão ou processamento: {str(e)}"
+            print(error_msg, flush=True)
+            traceback.print_exc()
+            self.result_queue.put((error_msg, False, False))
+        finally:
+            self._is_streaming_active = False
+            print("🏁 Stream finalizado.", flush=True)
 
     def send_audio_chunk(self, audio_chunk: bytes):
         if self.is_streaming:

@@ -19,6 +19,7 @@ class RealtimeAudioProcessor:
         self.transcript_thread = None
         self.recorded_audio_frames = []
         self.audio_file_path = None
+        self.violence_alert_message = None  # mensagem de alerta para exibir na UI
     
     def start_realtime_transcription(
         self,
@@ -102,6 +103,7 @@ class RealtimeAudioProcessor:
         self.transcript_parts = []
         self.last_partial_transcript = ""
         self.recorded_audio_frames = []
+        self.violence_alert_message = None
         
         CHUNK = 1024
         FORMAT = pyaudio.paInt16
@@ -128,20 +130,20 @@ class RealtimeAudioProcessor:
                 input_device_index=device_index
             )
             
-            print(f"✅ Audio stream opened: {CHANNELS} channel(s), {RATE}Hz, {FORMAT}, {CHUNK} frames per buffer")
-            
+            print(f"✅ Audio stream opened: {CHANNELS} channel(s), {RATE}Hz, {FORMAT}, {CHUNK} frames per buffer", flush=True)
+
             self.streaming_service.start_stream(language_code)
-            time.sleep(0.5)
-            
+            time.sleep(1.0)  # dá tempo do stream AWS ficar ativo antes de enviar áudio
+
             def send_audio():
                 try:
                     chunks_sent = 0
-                    print(f"🎤 Starting audio send (CHUNK: {CHUNK} bytes)")
-                    
+                    print(f"🎤 Starting audio send (CHUNK: {CHUNK} bytes)", flush=True)
+
                     while self.is_processing:
                         try:
                             if not self.streaming_service.is_streaming:
-                                print("⚠️ Streaming stopped, interrupting send")
+                                print("⚠️ Streaming stopped, interrupting send", flush=True)
                                 break
                             
                             audio_data = self.audio_stream.read(CHUNK, exception_on_overflow=False)
@@ -159,39 +161,53 @@ class RealtimeAudioProcessor:
                             if self.is_processing and self.streaming_service.is_streaming:
                                 self.streaming_service.send_audio_chunk(audio_data)
                                 chunks_sent += 1
-                                if chunks_sent % 20 == 0:
-                                    print(f"📤 Sent {chunks_sent} audio chunks ({len(audio_data)} bytes each)")
+                                #if chunks_sent % 20 == 0:
+                                    #print(f"📤 Sent {chunks_sent} audio chunks ({len(audio_data)} bytes each)")
                             else:
-                                print("⚠️ Streaming not active, stopping send")
+                                print("⚠️ Streaming not active, stopping send", flush=True)
                                 break
                         except Exception as e:
                             if self.is_processing:
-                                print(f"❌ Error sending audio: {e}")
+                                print(f"❌ Error sending audio: {e}", flush=True)
                                 import traceback
                                 traceback.print_exc()
                             break
-                    print(f"✅ Audio send finished. Total chunks: {chunks_sent}")
+                    print(f"✅ Audio send finished. Total chunks: {chunks_sent}", flush=True)
                 finally:
                     if self.streaming_service.is_streaming:
                         self.streaming_service.stop_stream()
             
             def receive_transcripts():
                 try:
-                    print("Starting transcript reception...")
+                    print("Starting transcript reception...", flush=True)
+                    first_result = True
                     while self.is_processing:
                         try:
                             import queue
                             result = self.streaming_service.result_queue.get(timeout=0.1)
                             
                             if not isinstance(result, tuple) or len(result) != 3:
-                                print(f"⚠️ Unexpected result format: {result}")
+                                print(f"⚠️ Unexpected result format: {result}", flush=True)
                                 continue
                             
                             transcript, is_final, is_violent = result
                             
                             if isinstance(transcript, str) and transcript.startswith("ERROR"):
-                                print(f"❌ Error received: {transcript}")
+                                print(f"❌ Error received: {transcript}", flush=True)
                                 break
+                            
+                            # Alerta de violência vindo do detector (enviado para a UI)
+                            if isinstance(transcript, str) and transcript.startswith("__VIOLENCE_ALERT__:"):
+                                payload = transcript.replace("__VIOLENCE_ALERT__:", "").strip()
+                                parts = payload.split("|", 1)
+                                label = parts[0] if parts else "Risco detectado"
+                                score = parts[1] if len(parts) > 1 else ""
+                                self.violence_alert_message = f"{label} ({score})" if score else label
+                                continue
+                            
+                            if first_result and transcript and transcript.strip():
+                                print("📥 Primeiro resultado de transcrição recebido pela UI.", flush=True)
+                                first_result = False
                             
                             if transcript and transcript.strip():
                                 violence_indicator = " ⚠️ VIOLENCE RISK DETECTED!" if is_violent else ""
@@ -220,7 +236,7 @@ class RealtimeAudioProcessor:
                                 print("Empty transcript received")
                         except queue.Empty:
                             if not self.streaming_service.is_streaming:
-                                print("⚠️ Streaming stopped, exiting receive loop")
+                                print("⚠️ Streaming stopped, exiting receive loop", flush=True)
                                 break
                             continue
                         except ValueError as e:
@@ -243,9 +259,9 @@ class RealtimeAudioProcessor:
             
             send_thread = threading.Thread(target=send_audio, daemon=True)
             self.transcript_thread = threading.Thread(target=receive_transcripts, daemon=True)
-            
-            send_thread.start()
+            # Recepção primeiro para aparecer "Starting transcript reception..." logo
             self.transcript_thread.start()
+            send_thread.start()
             
         except Exception as e:
             self.is_processing = False
@@ -342,23 +358,56 @@ class RealtimeAudioProcessor:
     
     def get_current_transcript(self) -> str:
         return self.current_transcript or "Waiting for transcription..."
+
+    def get_violence_alert(self) -> Optional[str]:
+        """Retorna a mensagem de alerta de violência atual (se houver). Não limpa a mensagem."""
+        return self.violence_alert_message
     
     @staticmethod
     def list_audio_devices():
+        """
+        Lista dispositivos de entrada usando uma única host API (evita duplicatas).
+        No Windows: prefere WASAPI, depois MME, depois DirectSound.
+        No macOS/Linux: usa a API padrão (uma única lista por sistema).
+        """
         devices = []
         try:
             p = pyaudio.PyAudio()
+            preferred_apis = ("WASAPI", "Windows WASAPI", "MME", "Windows MME", "DirectSound", "Core Audio", "ALSA", "JACK", "PulseAudio")
+            chosen_host_api = None
+            try:
+                api_count = p.get_host_api_count()
+            except Exception:
+                api_count = 0
+            for a in range(api_count):
+                try:
+                    api_info = p.get_host_api_info_by_index(a)
+                    api_name = (api_info.get("name") or "").strip()
+                    for pref in preferred_apis:
+                        if pref.lower() in api_name.lower():
+                            chosen_host_api = a
+                            break
+                    if chosen_host_api is not None:
+                        break
+                except Exception:
+                    continue
             device_count = p.get_device_count()
-            
+            seen = set()
             for i in range(device_count):
                 info = p.get_device_info_by_index(i)
-                if info['maxInputChannels'] > 0:
-                    devices.append((i, info['name']))
-            
+                if info.get("maxInputChannels", 0) <= 0:
+                    continue
+                if chosen_host_api is not None and info.get("hostApi") != chosen_host_api:
+                    continue
+                name = (info.get("name") or "").strip() or f"Dispositivo {i}"
+                if chosen_host_api is None:
+                    if name.lower() in seen:
+                        continue
+                    seen.add(name.lower())
+                devices.append((i, name))
             p.terminate()
         except Exception as e:
             print(f"Error listing devices: {e}")
-        
         return devices
 
 

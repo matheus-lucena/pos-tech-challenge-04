@@ -20,3 +20,4 @@ amazon-transcribe
 asyncio
 transformers
 torch
+tf-keras
