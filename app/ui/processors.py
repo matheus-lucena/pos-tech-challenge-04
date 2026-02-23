@@ -7,7 +7,7 @@ from services.pdf_parser_service import PDFParserService
 from services.maternal_health_service import MaternalHealthService
 from agents.crew_orchestrator import start_multimodal_analysis
 from config.llm_config import get_llm
-from ui.formatters import format_result
+from ui.formatters import format_result, normalize_result, parse_result_str
 
 
 class AnalysisProcessor:
@@ -66,7 +66,7 @@ class AnalysisProcessor:
             result = start_multimodal_analysis(
                 llm=self.llm,
                 biometric_data=biometric_data,
-                s3_audio=None,  # Removido do fluxo principal
+                s3_audio=None,
                 s3_maternal_audio=maternal_audio_path
             )
             
@@ -127,27 +127,9 @@ class AnalysisProcessor:
         return audio_path, status_msg
     
     def _parse_result(self, result: Any) -> Any:
-        if hasattr(result, 'raw'):
-            result = result.raw
-        elif hasattr(result, 'tasks_output'):
-            if result.tasks_output:
-                result = result.tasks_output[-1]
-        elif hasattr(result, '__dict__'):
-            result = result.__dict__
-        
+        result = normalize_result(result)
         if isinstance(result, str):
-            result_str = result.strip()
-            if result_str.startswith('{'):
-                try:
-                    result = json.loads(result_str)
-                except:
-                    json_match = re.search(r'\{.*\}', result_str, re.DOTALL)
-                    if json_match:
-                        try:
-                            result = json.loads(json_match.group())
-                        except:
-                            pass
-        
+            result = parse_result_str(result)
         return result
     
     def _format_error(self, message: str) -> str:
@@ -199,14 +181,10 @@ def process_analysis(*args) -> str:
 def process_maternal_beats(
     maternal_audio_file: Optional[str],
 ) -> Tuple[str, Optional[float]]:
-    """
-    Processa automaticamente o sinal materno (PCG) para estimar a frequência
-    cardíaca materna e a quantidade de batimentos assim que o arquivo é enviado.
-    """
     if not maternal_audio_file:
         return (
             _processor._format_warning(
-                "Nenhum arquivo de áudio materno (PCG) foi fornecido."
+                "No maternal audio (PCG) file was provided."
             ),
             None,
         )
@@ -216,7 +194,7 @@ def process_maternal_beats(
         if result.get("status") == "error":
             return (
                 _processor._format_error(
-                    result.get("error", "Erro desconhecido ao analisar sinal materno (PCG).")
+                    result.get("error", "Unknown error analyzing maternal (PCG) signal.")
                 ),
                 None,
             )

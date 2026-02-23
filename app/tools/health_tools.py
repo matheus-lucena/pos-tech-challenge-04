@@ -14,7 +14,6 @@ _transcribe_service = TranscribeService()
 _comprehend_medical_service = ComprehendMedicalService()
 
 
-# Variável global para armazenar dados biométricos temporariamente
 _biometric_data_cache = None
 
 @tool("MaternalRiskPredictor")
@@ -44,19 +43,13 @@ def predict_risk(data_json: str = None, **kwargs) -> str:
     
     try:
         payload = None
-        
-        # Tenta obter dados do parâmetro data_json
         if data_json is not None:
             if isinstance(data_json, str):
                 payload = json.loads(data_json.replace("'", '"'))
             elif isinstance(data_json, dict):
                 payload = data_json
-        
-        # Se não tem payload e tem cache, usa o cache
         if payload is None and _biometric_data_cache is not None:
             payload = _biometric_data_cache
-        
-        # Se ainda não tem payload, retorna erro
         if payload is None:
             return "Error: No biometric data provided. Please provide data_json parameter with biometric data as JSON string."
         
@@ -78,7 +71,6 @@ def predict_risk(data_json: str = None, **kwargs) -> str:
 
 
 def set_biometric_data(data: dict):
-    """Helper function to set biometric data cache."""
     global _biometric_data_cache
     _biometric_data_cache = data
 

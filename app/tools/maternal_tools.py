@@ -1,6 +1,10 @@
 import os
+import tempfile
 from dotenv import load_dotenv
+
+import librosa
 from crewai.tools import tool
+
 from services.maternal_health_service import MaternalHealthService
 from services.s3_service import S3Service
 
@@ -15,17 +19,7 @@ def analyze_maternal_heart_sound(
     audio_path: str,
     is_s3_path: bool = False
 ) -> str:
-    """
-    Analyzes maternal heart signals (PCG) from an audio file.
-    Extracts maternal heart rate (MHR), variability, and classifies the state.
-
-    Args:
-        audio_path: Path to audio file (local or S3 if is_s3_path=True)
-        is_s3_path: If True, audio_path is an S3 path (s3://bucket/key)
-
-    Returns:
-        Formatted string with maternal analysis results
-    """
+    """Analyzes maternal heart signals (PCG) from an audio file. Use is_s3_path=True if audio_path is s3://bucket/key."""
     try:
         local_path = audio_path
         temp_file = None
@@ -39,8 +33,6 @@ def analyze_maternal_heart_sound(
                 return f"Error: {error_msg}"
 
             try:
-                import tempfile
-
                 temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.wav')
                 temp_file.close()
 
@@ -54,7 +46,7 @@ def analyze_maternal_heart_sound(
         if temp_file and os.path.exists(temp_file.name):
             try:
                 os.unlink(temp_file.name)
-            except:
+            except Exception:
                 pass
 
         if result.get("status") == "error":
@@ -101,19 +93,8 @@ def analyze_maternal_realtime(
     audio_chunk_path: str,
     sample_rate: int = 16000
 ) -> str:
-    """
-    Analyzes an audio chunk in real-time for continuous monitoring.
-
-    Args:
-        audio_chunk_path: Path to audio chunk
-        sample_rate: Sample rate (default: 16000 Hz)
-
-    Returns:
-        Formatted string with real-time analysis results
-    """
+    """Analyzes an audio chunk in real time (default sample_rate 16000 Hz)."""
     try:
-        import librosa
-
         y, sr = librosa.load(audio_chunk_path, sr=sample_rate, mono=True)
 
         result = _maternal_service.analyze_realtime_stream(y, sr)

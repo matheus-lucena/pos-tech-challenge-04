@@ -1,7 +1,24 @@
 import re
 from typing import Dict, Any, Optional
-from services.textract_service import TextractService
+
+from config.constants import (
+    PDF_AGE_MIN,
+    PDF_AGE_MAX,
+    PDF_BP_SYSTOLIC_MIN,
+    PDF_BP_SYSTOLIC_MAX,
+    PDF_BP_DIASTOLIC_MIN,
+    PDF_BP_DIASTOLIC_MAX,
+    PDF_GLUCOSE_MIN,
+    PDF_GLUCOSE_MAX,
+    PDF_TEMP_FAHRENHEIT_MIN,
+    PDF_TEMP_FAHRENHEIT_MAX,
+    PDF_TEMP_CELSIUS_MIN,
+    PDF_TEMP_CELSIUS_MAX,
+    PDF_HR_MIN,
+    PDF_HR_MAX,
+)
 from services.comprehend_medical_service import ComprehendMedicalService
+from services.textract_service import TextractService
 
 
 class PDFParserService:
@@ -56,15 +73,15 @@ class PDFParserService:
         }
         
         text_lower = text.lower()
-        text_upper = text.upper()
-        
         age_match = re.search(r'age[:\s]*(\d+)', text_lower, re.IGNORECASE)
         if not age_match:
             age_match = re.search(r'(\d+)\s*years?', text_lower)
         if age_match:
             try:
-                form_data["age"] = float(age_match.group(1))
-            except:
+                age = float(age_match.group(1))
+                if PDF_AGE_MIN <= age <= PDF_AGE_MAX:
+                    form_data["age"] = age
+            except (ValueError, TypeError):
                 pass
         
         bp_patterns = [
@@ -80,11 +97,15 @@ class PDFParserService:
                 try:
                     systolic = float(match.group(1))
                     diastolic = float(match.group(2))
-                    if 50 <= systolic <= 250 and 30 <= diastolic <= 180 and systolic > diastolic:
+                    if (
+                        PDF_BP_SYSTOLIC_MIN <= systolic <= PDF_BP_SYSTOLIC_MAX
+                        and PDF_BP_DIASTOLIC_MIN <= diastolic <= PDF_BP_DIASTOLIC_MAX
+                        and systolic > diastolic
+                    ):
                         form_data["systolic_bp"] = systolic
                         form_data["diastolic_bp"] = diastolic
                         break
-                except:
+                except (ValueError, TypeError):
                     continue
         
         glucose_patterns = [
@@ -98,12 +119,12 @@ class PDFParserService:
             match = re.search(pattern, text_lower)
             if match:
                 try:
-                    glucose_str = match.group(1).replace(',', '.')
+                    glucose_str = match.group(1).replace(",", ".")
                     glucose = float(glucose_str)
-                    if 3.0 <= glucose <= 30.0:
+                    if PDF_GLUCOSE_MIN <= glucose <= PDF_GLUCOSE_MAX:
                         form_data["glucose"] = glucose
                         break
-                except:
+                except (ValueError, TypeError):
                     continue
         
         temp_patterns = [
@@ -116,17 +137,17 @@ class PDFParserService:
             match = re.search(pattern, text_lower)
             if match:
                 try:
-                    temp_str = match.group(1).replace(',', '.')
+                    temp_str = match.group(1).replace(",", ".")
                     temp = float(temp_str)
-                    if 'f' in match.group(0).lower():
-                        if 95.0 <= temp <= 105.0:
+                    if "f" in match.group(0).lower():
+                        if PDF_TEMP_FAHRENHEIT_MIN <= temp <= PDF_TEMP_FAHRENHEIT_MAX:
                             form_data["temperature"] = temp
                     else:
-                        if 35.0 <= temp <= 40.5:
-                            form_data["temperature"] = (temp * 9/5) + 32
+                        if PDF_TEMP_CELSIUS_MIN <= temp <= PDF_TEMP_CELSIUS_MAX:
+                            form_data["temperature"] = (temp * 9 / 5) + 32
                     if form_data["temperature"]:
                         break
-                except:
+                except (ValueError, TypeError):
                     continue
         
         hr_patterns = [
@@ -141,10 +162,10 @@ class PDFParserService:
             if match:
                 try:
                     hr = float(match.group(1))
-                    if 40 <= hr <= 200:
+                    if PDF_HR_MIN <= hr <= PDF_HR_MAX:
                         form_data["heart_rate"] = hr
                         break
-                except:
+                except (ValueError, TypeError):
                     continue
         
         if entities and 'entities' in entities:
@@ -152,26 +173,29 @@ class PDFParserService:
                 for entity in entity_list:
                     text_entity = entity.get('text', '')
                     
-                    if entity_type == 'AGE' and not form_data["age"]:
+                    if entity_type == "AGE" and not form_data["age"]:
                         try:
-                            age_match = re.search(r'(\d+)', text_entity)
+                            age_match = re.search(r"(\d+)", text_entity)
                             if age_match:
                                 age = float(age_match.group(1))
-                                if 15 <= age <= 50:
+                                if PDF_AGE_MIN <= age <= PDF_AGE_MAX:
                                     form_data["age"] = age
-                        except:
+                        except (ValueError, TypeError):
                             pass
-                    
-                    if entity_type == 'TEST_VALUE' and not form_data["systolic_bp"]:
-                        bp_match = re.search(r'(\d+)[/\sxX](\d+)', text_entity)
+                    if entity_type == "TEST_VALUE" and not form_data["systolic_bp"]:
+                        bp_match = re.search(r"(\d+)[/\sxX](\d+)", text_entity)
                         if bp_match:
                             try:
                                 systolic = float(bp_match.group(1))
                                 diastolic = float(bp_match.group(2))
-                                if 50 <= systolic <= 250 and 30 <= diastolic <= 180 and systolic > diastolic:
+                                if (
+                                    PDF_BP_SYSTOLIC_MIN <= systolic <= PDF_BP_SYSTOLIC_MAX
+                                    and PDF_BP_DIASTOLIC_MIN <= diastolic <= PDF_BP_DIASTOLIC_MAX
+                                    and systolic > diastolic
+                                ):
                                     form_data["systolic_bp"] = systolic
                                     form_data["diastolic_bp"] = diastolic
-                            except:
+                            except (ValueError, TypeError):
                                 pass
         
         return form_data

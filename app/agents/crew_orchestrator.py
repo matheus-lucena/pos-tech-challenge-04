@@ -38,9 +38,9 @@ def create_agents(llm: LLM) -> Tuple[Agent, Agent, Agent, Agent]:
     )
 
     chief = Agent(
-        role='Obstetra Sênior',
-        goal='Consolidar todas as análises disponíveis (biométrica, emocional e materna) em um relatório final em PORTUGUÊS (português brasileiro).',
-        backstory='Responsável pela decisão final, integrando dados técnicos, emocionais e de monitoramento materno. Especialista em saúde materna que sempre produz relatórios e recomendações em português brasileiro para facilitar a comunicação com a equipe médica brasileira.',
+        role='Senior Obstetrician',
+        goal='Consolidate all available analyses (biometric, emotional, and maternal) into a final report in Brazilian Portuguese.',
+        backstory='Responsible for the final decision, integrating technical, emotional, and maternal monitoring data. Maternal health specialist who always produces reports and recommendations in Brazilian Portuguese for the medical team.',
         llm=llm,
         allow_delegation=False,
         max_iter=2,

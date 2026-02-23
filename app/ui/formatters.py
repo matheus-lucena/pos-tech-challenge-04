@@ -3,22 +3,27 @@ import re
 from typing import Any, Dict
 
 
+def normalize_result(result: Any) -> Any:
+    if hasattr(result, "raw"):
+        return result.raw
+    if hasattr(result, "tasks_output") and result.tasks_output:
+        return result.tasks_output[-1]
+    if hasattr(result, "__dict__"):
+        return result.__dict__
+    return result
+
+
+def parse_result_str(result_str: str) -> Any:
+    return _parse_string_result(result_str)
+
+
 def format_result(result: Any) -> str:
     try:
+        result = normalize_result(result)
         if isinstance(result, str):
             result = _parse_string_result(result)
-        
-        if hasattr(result, 'raw'):
-            result = result.raw
-        elif hasattr(result, 'tasks_output'):
-            if result.tasks_output:
-                result = result.tasks_output[-1]
-        elif hasattr(result, '__dict__'):
-            result = result.__dict__
-        
         if isinstance(result, dict):
             return _format_dict_result(result)
-        
         return f'<div style="padding: 20px; background: #f8f9fa; border-radius: 8px;"><pre>{str(result)}</pre></div>'
     except Exception as e:
         return (
@@ -30,8 +35,6 @@ def format_result(result: Any) -> str:
 
 def _parse_string_result(result_str: str) -> Any:
     clean_result = result_str.strip()
-    
-    # Remove blocos de código markdown se existirem
     if clean_result.startswith('```json'):
         clean_result = re.sub(r'^```json\s*', '', clean_result, flags=re.MULTILINE)
         clean_result = re.sub(r'\s*```\s*$', '', clean_result, flags=re.MULTILINE)
@@ -65,9 +68,6 @@ def _parse_string_result(result_str: str) -> Any:
 def _format_dict_result(result: Dict[str, Any]) -> str:
     output = '<div style="font-family: Arial, sans-serif; line-height: 1.6;">\n'
     output += _format_header()
-    
-    # Análise Emocional removida - será exibida apenas na seção de Análise de Áudio de Consulta
-    
     if 'maternal_analysis' in result or 'analise_materna' in result:
         key = 'maternal_analysis' if 'maternal_analysis' in result else 'analise_materna'
         content = result[key]

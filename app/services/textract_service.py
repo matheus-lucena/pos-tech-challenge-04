@@ -1,9 +1,12 @@
 import os
 import json
 import time
+import uuid
+from datetime import datetime
 from typing import Dict, Any, Optional
-from dotenv import load_dotenv
+
 import boto3
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -80,9 +83,6 @@ class TextractService:
                 return None
     
     def _upload_pdf_to_s3(self, file_path: str) -> Optional[str]:
-        from datetime import datetime
-        import uuid
-        
         bucket_name = os.getenv("S3_BUCKET_NAME", "fiap-pos-teste-20-19")
         
         try:

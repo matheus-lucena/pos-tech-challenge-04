@@ -1,28 +1,23 @@
-"""Serviço para análise de sinal cardíaco materno (PCG) em gestantes em repouso."""
-
-import numpy as np
-import librosa
-import scipy.signal
-from typing import Dict, Any, Optional, Tuple
-from pathlib import Path
 import warnings
+from typing import Dict, Any, Optional, Tuple
+
+import librosa
+import numpy as np
+import scipy.signal
+
+from config.constants import MHR_VALID_MIN, MHR_VALID_MAX, SAMPLE_RATE
 
 warnings.filterwarnings('ignore')
 
 
 class MaternalHealthService:
-    """Serviço para análise de sinais cardíacos maternos em tempo real."""
-
-    # Faixas de referência simplificadas para frequência cardíaca materna (bpm)
-    # em gestantes em repouso (tende a ser discretamente mais alta que fora da gestação).
     MHR_NORMAL_MIN = 60
     MHR_NORMAL_MAX = 110
-    MHR_TACHYCARDIA = 110  # Acima disso é taquicardia (limiar simplificado)
-    MHR_BRADYCARDIA = 60   # Abaixo disso é bradicardia (limiar simplificado)
+    MHR_TACHYCARDIA = 110
+    MHR_BRADYCARDIA = 60
 
     def __init__(self):
-        """Inicializa o serviço de análise materna."""
-        self.sample_rate = 16000
+        self.sample_rate = SAMPLE_RATE
         self.max_analysis_seconds = 30
 
     def analyze_maternal_signal(
@@ -30,15 +25,6 @@ class MaternalHealthService:
         audio_path: str,
         sample_rate: Optional[int] = None
     ) -> Dict[str, Any]:
-        """Analisa um sinal de áudio de PCG materno.
-
-        Args:
-            audio_path: Caminho para o arquivo de áudio (local ou S3)
-            sample_rate: Taxa de amostragem (opcional, usa padrão se não fornecido)
-
-        Returns:
-            Dicionário com resultados da análise
-        """
         try:
             if sample_rate is None:
                 sample_rate = self.sample_rate
@@ -59,12 +45,11 @@ class MaternalHealthService:
 
         except Exception as e:
             return {
-                "error": f"Erro ao processar sinal: {str(e)}",
+                "error": f"Error processing signal: {str(e)}",
                 "status": "error"
             }
 
     def _process_signal(self, signal: np.ndarray, sample_rate: int) -> Dict[str, Any]:
-        """Processa o sinal de áudio para extrair métricas maternas."""
         sos = scipy.signal.butter(4, [20, 500], btype='band', fs=sample_rate, output='sos')
         filtered_signal = scipy.signal.sosfilt(sos, signal)
 
@@ -98,7 +83,6 @@ class MaternalHealthService:
         beats: np.ndarray,
         sample_rate: int
     ) -> Tuple[float, float]:
-        """Estima MHR a partir dos intervalos RR (bem mais leve que autocorrelação)."""
         if beats is None or len(beats) < 2:
             return 0.0, 0.0
 
@@ -110,14 +94,12 @@ class MaternalHealthService:
         rr_median = float(np.median(rr_intervals))
         mhr = 60.0 / rr_median if rr_median > 0 else 0.0
 
-        # Confiança simples baseada na estabilidade dos RR.
         rr_std = float(np.std(rr_intervals)) if len(rr_intervals) > 1 else 0.0
         cv = (rr_std / rr_median) if rr_median > 0 else 1.0
         confidence = float(max(0.0, min(1.0, 1.0 - cv)))
 
-        if mhr < 40 or mhr > 180:
+        if mhr < MHR_VALID_MIN or mhr > MHR_VALID_MAX:
             return 0.0, 0.0
-
         return mhr, confidence
 
     def _estimate_mhr_fft(
@@ -125,7 +107,6 @@ class MaternalHealthService:
         signal: np.ndarray,
         sample_rate: int
     ) -> Tuple[float, float]:
-        """Estima MHR usando análise espectral (FFT)."""
         fft = np.fft.rfft(signal)
         freqs = np.fft.rfftfreq(len(signal), 1/sample_rate)
         magnitude = np.abs(fft)
@@ -152,7 +133,6 @@ class MaternalHealthService:
         signal: np.ndarray,
         sample_rate: int
     ) -> np.ndarray:
-        """Detecta batimentos cardíacos no sinal."""
         sos = scipy.signal.butter(4, [50, 300], btype='band', fs=sample_rate, output='sos')
         filtered = scipy.signal.sosfilt(sos, signal)
 
@@ -171,7 +151,6 @@ class MaternalHealthService:
         beats: np.ndarray,
         sample_rate: int
     ) -> float:
-        """Calcula a variabilidade da frequência cardíaca."""
         if len(beats) < 2:
             return 0.0
 
@@ -185,12 +164,11 @@ class MaternalHealthService:
         mhr: float,
         variability: float
     ) -> Dict[str, Any]:
-        """Classifica o estado da frequência cardíaca materna."""
         if mhr == 0:
             return {
                 "status": "indeterminado",
                 "risk_level": "unknown",
-                "description": "Não foi possível determinar a MHR"
+                "description": "Could not determine MHR"
             }
 
         if mhr < self.MHR_BRADYCARDIA:
@@ -229,7 +207,6 @@ class MaternalHealthService:
         signal: np.ndarray,
         sample_rate: int
     ) -> Dict[str, float]:
-        """Extrai características espectrais do sinal."""
         freqs, psd = scipy.signal.welch(signal, sample_rate, nperseg=min(2048, len(signal)))
 
         centroid = np.sum(freqs * psd) / np.sum(psd) if np.sum(psd) > 0 else 0
@@ -253,19 +230,18 @@ class MaternalHealthService:
         }
 
     def _assess_signal_quality(self, signal: np.ndarray) -> str:
-        """Avalia a qualidade do sinal."""
         signal_power = np.mean(signal ** 2)
         noise_estimate = np.std(np.diff(signal))
         snr_estimate = 10 * np.log10(signal_power / (noise_estimate ** 2 + 1e-10))
 
         if snr_estimate > 20:
-            return "excelente"
+            return "excellent"
         elif snr_estimate > 10:
-            return "boa"
+            return "good"
         elif snr_estimate > 5:
-            return "moderada"
+            return "moderate"
         else:
-            return "ruim"
+            return "poor"
 
     def _generate_recommendations(
         self,
@@ -273,7 +249,6 @@ class MaternalHealthService:
         variability: float,
         classification: Dict[str, Any]
     ) -> list:
-        """Gera recomendações baseadas na análise."""
         recommendations = []
 
         risk_level = classification.get("risk_level", "unknown")
@@ -297,5 +272,4 @@ class MaternalHealthService:
         audio_chunk: np.ndarray,
         sample_rate: int
     ) -> Dict[str, Any]:
-        """Analisa um chunk de áudio em tempo real."""
         return self._process_signal(audio_chunk, sample_rate)
