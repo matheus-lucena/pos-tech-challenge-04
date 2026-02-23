@@ -112,24 +112,14 @@ def _add_audio_inputs():
     
     gr.Markdown("**OU**")
     
-    s3_audio = gr.Textbox(
-        label="Caminho S3 do Áudio (Alternativa)",
-        placeholder="s3://bucket-name/audio-file.mp3",
-        info="Se o arquivo já estiver no S3, informe o caminho completo",
-        lines=2
-    )
-    
     gr.Markdown(
         """
         **Opções:**
         - 📤 **Upload de arquivo**: O arquivo será enviado automaticamente para S3
-        - 🔗 **Caminho S3**: Use se o arquivo já estiver no bucket
-        
-        **Exemplo de caminho S3:** `s3://fiap-pos-fase04-matheuslucena/vitima-01.mp3`
         """
     )
     
-    return arquivo_audio, s3_audio
+    return arquivo_audio
 
 
 def _add_action_button():
@@ -286,14 +276,6 @@ def create_interface_v2():
                             label="Upload de Arquivo de Áudio (Consulta/Emocional)",
                             file_types=["audio"],
                             type="filepath"
-                        )
-                    
-                    with gr.Tab("🔗 Caminho S3"):
-                        s3_audio = gr.Textbox(
-                            label="Caminho S3 do Áudio",
-                            placeholder="s3://bucket-name/audio-file.mp3",
-                            info="Se o arquivo já estiver no S3, informe o caminho completo",
-                            lines=2
                         )
                     
                     with gr.Tab("🎙️ Gravação em Tempo Real"):
@@ -578,20 +560,10 @@ def create_interface_v2():
                     type="filepath",
                 )
                 
-                gr.Markdown("**OU**")
-                
-                s3_audio_materno = gr.Textbox(
-                    label="Caminho S3 do Áudio Materno (Alternativa)",
-                    placeholder="s3://bucket-name/maternal-pcg.wav",
-                    info="Caminho S3 do arquivo de PCG materno",
-                    lines=2
-                )
-                
                 gr.Markdown(
                     """
                     **Opções:**
                     - 📤 **Upload de arquivo**: O arquivo será enviado automaticamente para S3
-                    - 🔗 **Caminho S3**: Use se o arquivo já estiver no bucket
                     
                     **Análise Materna:**
                     - Extrai Frequência Cardíaca Materna (MHR)
@@ -628,8 +600,8 @@ def create_interface_v2():
             inputs=[
                 idade, pressao_sistolica, pressao_diastolica,
                 glicemia, temperatura, frequencia_cardiaca, 
-                arquivo_audio, s3_audio,
-                arquivo_audio_materno, s3_audio_materno
+                arquivo_audio,
+                arquivo_audio_materno
             ],
             outputs=output,
             show_progress="full"

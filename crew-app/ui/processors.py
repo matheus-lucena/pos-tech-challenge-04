@@ -30,9 +30,7 @@ class AnalysisProcessor:
         temperature: Optional[float],
         heart_rate: Optional[float],
         audio_file: Optional[str],
-        s3_audio: Optional[str],
         maternal_audio_file: Optional[str] = None,
-        s3_maternal_audio: Optional[str] = None
     ) -> str:
         biometric_data = self._prepare_biometric_data(
             age, systolic_bp, diastolic_bp,
@@ -42,13 +40,13 @@ class AnalysisProcessor:
         if isinstance(biometric_data, str):
             return self._format_error(biometric_data)
         
-        audio_result = self._process_audio(audio_file, s3_audio)
+        audio_result = self._process_audio(audio_file)
         if isinstance(audio_result, str) and audio_result.startswith('<div'):
             return audio_result
         
         audio_path, status_msg = audio_result
         
-        maternal_audio_result = self._process_audio(maternal_audio_file, s3_maternal_audio)
+        maternal_audio_result = self._process_audio(maternal_audio_file)
         if isinstance(maternal_audio_result, str) and maternal_audio_result.startswith('<div'):
             return maternal_audio_result
         
@@ -108,7 +106,6 @@ class AnalysisProcessor:
     def _process_audio(
         self,
         audio_file: Optional[str],
-        s3_audio: Optional[str]
     ) -> Union[Tuple[Optional[str], str], str]:
         audio_path = None
         status_msg = ""
@@ -125,11 +122,6 @@ class AnalysisProcessor:
                     "Failed to upload audio to S3. "
                     "Check AWS credentials and permissions."
                 )
-        
-        elif s3_audio and s3_audio.strip():
-            audio_path = s3_audio.strip()
-            if not audio_path.startswith('s3://'):
-                return self._format_error('S3 path must start with "s3://"')
         
         return audio_path, status_msg
     
