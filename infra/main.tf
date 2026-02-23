@@ -425,7 +425,8 @@ resource "aws_iam_policy" "local_user_transcribe_policy" {
           "transcribe:StartTranscriptionJob",
           "transcribe:GetTranscriptionJob",
           "transcribe:ListTranscriptionJobs",
-          "transcribe:DeleteTranscriptionJob"
+          "transcribe:DeleteTranscriptionJob",
+          "transcribe:StartStreamTranscription"
         ]
         Resource = "*"
       },
