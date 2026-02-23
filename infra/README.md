@@ -230,6 +230,6 @@ Certifique-se de que o `.gitignore` está configurado corretamente.
 - [AWS S3 Best Practices](https://docs.aws.amazon.com/AmazonS3/latest/userguide/security-best-practices.html)
 - [AWS IAM Best Practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html)
 
-## 📝 Licença
+## 📝 Sobre o Projeto
 
-Este projeto faz parte do sistema de saúde materna desenvolvido para o desafio técnico.
+Este projeto faz parte do sistema de saúde materna desenvolvido para o trabalho de pós-graduação.

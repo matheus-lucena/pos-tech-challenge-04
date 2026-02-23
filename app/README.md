@@ -174,11 +174,7 @@ app/
 - Verifique se o bucket S3 está configurado corretamente
 - Confirme que a role do Transcribe tem permissões adequadas
 
-## 📝 Licença
+## 📝 Sobre o Projeto
 
-Este projeto faz parte do sistema de saúde materna desenvolvido para o desafio técnico.
-
-## 🤝 Contribuindo
-
-Para contribuir com este projeto, siga as boas práticas de desenvolvimento e mantenha a documentação atualizada.
+Este projeto faz parte do sistema de saúde materna desenvolvido para o trabalho de pós-graduação.
 
