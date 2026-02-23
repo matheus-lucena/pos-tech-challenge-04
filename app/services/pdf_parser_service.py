@@ -17,14 +17,20 @@ from config.constants import (
     PDF_HR_MIN,
     PDF_HR_MAX,
 )
+from typing import Optional
+
 from services.comprehend_medical_service import ComprehendMedicalService
 from services.textract_service import TextractService
 
 
 class PDFParserService:
-    def __init__(self):
-        self.textract_service = TextractService()
-        self.comprehend_service = ComprehendMedicalService()
+    def __init__(
+        self,
+        textract_service: Optional[TextractService] = None,
+        comprehend_service: Optional[ComprehendMedicalService] = None,
+    ):
+        self.textract_service = textract_service or TextractService()
+        self.comprehend_service = comprehend_service or ComprehendMedicalService()
     
     def extract_medical_data_from_pdf(
         self, 

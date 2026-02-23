@@ -2,9 +2,7 @@ import json
 import re
 import traceback
 from typing import Optional, Dict, Any, Tuple, Union
-from services.s3_service import S3Service
-from services.pdf_parser_service import PDFParserService
-from services.maternal_health_service import MaternalHealthService
+from services.instances import get_maternal_health_service, get_pdf_parser_service, get_s3_service
 from agents.crew_orchestrator import start_multimodal_analysis
 from config.llm_config import get_llm
 from ui.formatters import format_result, normalize_result, parse_result_str
@@ -12,9 +10,9 @@ from ui.formatters import format_result, normalize_result, parse_result_str
 
 class AnalysisProcessor:
     def __init__(self):
-        self.s3_service = S3Service()
+        self.s3_service = get_s3_service()
         self._llm = None
-        self.pdf_parser = PDFParserService()
+        self.pdf_parser = get_pdf_parser_service()
     
     @property
     def llm(self):
@@ -171,7 +169,6 @@ class AnalysisProcessor:
 
 
 _processor = AnalysisProcessor()
-_maternal_service = MaternalHealthService()
 
 
 def process_analysis(*args) -> str:
@@ -190,7 +187,7 @@ def process_maternal_beats(
         )
 
     try:
-        result = _maternal_service.analyze_maternal_signal(maternal_audio_file)
+        result = get_maternal_health_service().analyze_maternal_signal(maternal_audio_file)
         if result.get("status") == "error":
             return (
                 _processor._format_error(

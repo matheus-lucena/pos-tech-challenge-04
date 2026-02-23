@@ -21,3 +21,4 @@ asyncio
 transformers
 torch
 tf-keras
+optimum[onnxruntime]

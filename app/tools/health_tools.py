@@ -1,17 +1,14 @@
 import json
 from dotenv import load_dotenv
 from crewai.tools import tool
-from services.s3_service import S3Service
-from services.sagemaker_service import SageMakerService
-from services.transcribe_service import TranscribeService
-from services.comprehend_medical_service import ComprehendMedicalService
+from services.instances import (
+    get_comprehend_medical_service,
+    get_s3_service,
+    get_sagemaker_service,
+    get_transcribe_service,
+)
 
 load_dotenv()
-
-_s3_service = S3Service()
-_sagemaker_service = SageMakerService()
-_transcribe_service = TranscribeService()
-_comprehend_medical_service = ComprehendMedicalService()
 
 
 _biometric_data_cache = None
@@ -58,7 +55,7 @@ def predict_risk(data_json: str = None, **kwargs) -> str:
         if missing_fields:
             return f"Error: Missing required fields: {', '.join(missing_fields)}"
     
-        result = _sagemaker_service.predict_risk(payload)
+        result = get_sagemaker_service().predict_risk(payload)
         
         return (
             f"Status: {result['status']} | "
@@ -86,16 +83,16 @@ def transcribe_consultation(s3_path: str) -> str:
     Returns:
         Transcribed text with Comprehend Medical analysis or error message
     """
-    exists, error_msg = _s3_service.verify_file_exists(s3_path)
+    exists, error_msg = get_s3_service().verify_file_exists(s3_path)
     if not exists:
         return error_msg
     
     try:
-        transcript = _transcribe_service.transcribe(s3_path)
-        
+        transcript = get_transcribe_service().transcribe(s3_path)
         try:
-            analysis = _comprehend_medical_service.analyze_text(transcript)
-            formatted_analysis = _comprehend_medical_service.format_analysis_result(analysis)
+            comprehend = get_comprehend_medical_service()
+            analysis = comprehend.analyze_text(transcript)
+            formatted_analysis = comprehend.format_analysis_result(analysis)
             
             result = f"""
 === AUDIO TRANSCRIPTION ===

@@ -10,6 +10,8 @@ from config.constants import (
     CONTEXT_WINDOW_SIZE,
     MIN_TEXT_LENGTH_VIOLENCE,
     SENDER_SLEEP_SEC,
+    VIOLENCE_MAX_INPUT_CHARS,
+    VIOLENCE_MAX_LENGTH,
     VIOLENCE_THRESHOLD,
 )
 from dotenv import load_dotenv
@@ -96,28 +98,24 @@ class ZeroShotViolenceDetector:
     def predict(self, text: str) -> Tuple[bool, str, float]:
         if len(text) < MIN_TEXT_LENGTH_VIOLENCE:
             return False, "too_short", 0.0
-
         has_danger_keywords = self._check_danger_keywords(text)
-        
+        if has_danger_keywords:
+            return True, "menção a arma faca objeto perigoso", 0.9
         try:
-            result = self.classifier(text, self.labels, multi_label=False)
-            
+            truncated = text[:VIOLENCE_MAX_INPUT_CHARS] if len(text) > VIOLENCE_MAX_INPUT_CHARS else text
+            result = self.classifier(
+                truncated,
+                self.danger_labels,
+                multi_label=False,
+                truncation=True,
+                max_length=VIOLENCE_MAX_LENGTH,
+            )
             top_label = result["labels"][0]
             score = result["scores"][0]
-            is_danger = (
-                has_danger_keywords
-                or (top_label in self.danger_labels and score > self.threshold)
-            )
-            if has_danger_keywords and not is_danger:
-                is_danger = True
-                top_label = top_label if top_label in self.danger_labels else "menção a arma faca objeto perigoso"
-                score = max(score, 0.9)
-            
+            is_danger = top_label in self.danger_labels and score > self.threshold
             return is_danger, top_label, score
         except Exception as e:
             print(f"Error in zero-shot classification: {e}")
-            if has_danger_keywords:
-                return True, "menção a arma faca objeto perigoso", 0.9
             return False, "error", 0.0
 
 
@@ -184,6 +182,8 @@ class ViolenceHandler(TranscriptResultStreamHandler):
                 if len(self.context_window) > CONTEXT_WINDOW_SIZE:
                     self.context_window.pop(0)
 
+            if not is_final:
+                continue
             current_context = " ".join(self.context_window)
             text_to_analyze = f"{current_context} {transcript}".strip()
             if len(text_to_analyze) > MIN_TEXT_LENGTH_VIOLENCE and text_to_analyze != self.last_analyzed_text:

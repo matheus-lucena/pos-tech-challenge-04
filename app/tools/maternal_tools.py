@@ -5,13 +5,9 @@ from dotenv import load_dotenv
 import librosa
 from crewai.tools import tool
 
-from services.maternal_health_service import MaternalHealthService
-from services.s3_service import S3Service
+from services.instances import get_maternal_health_service, get_s3_service
 
 load_dotenv()
-
-_maternal_service = MaternalHealthService()
-_s3_service = S3Service()
 
 
 @tool("MaternalHeartSoundAnalyzer")
@@ -28,7 +24,7 @@ def analyze_maternal_heart_sound(
             if not audio_path.startswith('s3://'):
                 return f"Error: Invalid S3 path. Must start with 's3://': {audio_path}"
 
-            exists, error_msg = _s3_service.verify_file_exists(audio_path)
+            exists, error_msg = get_s3_service().verify_file_exists(audio_path)
             if not exists:
                 return f"Error: {error_msg}"
 
@@ -36,12 +32,12 @@ def analyze_maternal_heart_sound(
                 temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.wav')
                 temp_file.close()
 
-                _s3_service.download_file(audio_path, temp_file.name)
+                get_s3_service().download_file(audio_path, temp_file.name)
                 local_path = temp_file.name
             except Exception as e:
                 return f"Error downloading file from S3: {str(e)}"
 
-        result = _maternal_service.analyze_maternal_signal(local_path)
+        result = get_maternal_health_service().analyze_maternal_signal(local_path)
 
         if temp_file and os.path.exists(temp_file.name):
             try:
@@ -97,7 +93,7 @@ def analyze_maternal_realtime(
     try:
         y, sr = librosa.load(audio_chunk_path, sr=sample_rate, mono=True)
 
-        result = _maternal_service.analyze_realtime_stream(y, sr)
+        result = get_maternal_health_service().analyze_realtime_stream(y, sr)
 
         if result.get("status") == "error":
             return f"❌ Error: {result.get('error', 'Unknown error')}"

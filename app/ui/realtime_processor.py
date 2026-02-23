@@ -25,14 +25,13 @@ from config.constants import (
     WAV_SAMPLEWIDTH,
     WAVEFORM_DOWNSAMPLE_FACTOR,
 )
-from services.s3_service import S3Service
-from services.transcribe_streaming_service import TranscribeStreamingService
+from services.instances import get_s3_service, get_transcribe_streaming_service
 
 
 class RealtimeAudioProcessor:
     def __init__(self):
-        self.streaming_service = TranscribeStreamingService()
-        self.s3_service = S3Service()
+        self.streaming_service = get_transcribe_streaming_service()
+        self.s3_service = get_s3_service()
         self.is_processing = False
         self.current_transcript = ""
         self.transcript_parts = []

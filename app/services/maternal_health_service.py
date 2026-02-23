@@ -30,13 +30,18 @@ class MaternalHealthService:
                 sample_rate = self.sample_rate
 
             try:
-                y, sr = librosa.load(audio_path, sr=sample_rate, mono=True)
-            except Exception as e:
-                y, sr = librosa.load(audio_path, sr=None, mono=True)
+                y, sr = librosa.load(
+                    audio_path,
+                    sr=sample_rate,
+                    mono=True,
+                    duration=self.max_analysis_seconds,
+                    res_type="soxr_hq",
+                )
+            except Exception:
+                y, sr = librosa.load(audio_path, sr=None, mono=True, duration=self.max_analysis_seconds)
                 if sr != sample_rate:
                     y = librosa.resample(y, orig_sr=sr, target_sr=sample_rate)
                     sr = sample_rate
-
             max_len = int(sr * self.max_analysis_seconds)
             if max_len > 0 and len(y) > max_len:
                 y = y[:max_len]
