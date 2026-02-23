@@ -560,6 +560,36 @@ resource "aws_iam_user_policy_attachment" "local_user_ecr_attachment" {
   policy_arn = aws_iam_policy.local_user_ecr_policy.arn
 }
 
+# Policy para o usuário usar Bedrock
+resource "aws_iam_policy" "local_user_bedrock_policy" {
+  name        = "${var.project_name}-local-user-bedrock-policy"
+  description = "Permite usuario local usar Bedrock"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream",
+          "bedrock:ListFoundationModels",
+          "bedrock:GetFoundationModel"
+        ]
+        Resource = [
+          "arn:aws:bedrock:*::foundation-model/*",
+          "arn:aws:bedrock:*:${data.aws_caller_identity.current.account_id}:inference-profile/*"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_user_policy_attachment" "local_user_bedrock_attachment" {
+  user       = aws_iam_user.local_user.name
+  policy_arn = aws_iam_policy.local_user_bedrock_policy.arn
+}
+
 # ============================================================================
 # CLOUDWATCH LOG GROUPS
 # ============================================================================

@@ -1,3 +1,3 @@
-from .relatorio_saude import HealthReport
+from .report import HealthReport
 
 __all__ = ["HealthReport"]

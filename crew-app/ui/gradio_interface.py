@@ -180,40 +180,41 @@ def create_interface_v2():
             """
         )
         
-        # Seção de upload de PDF para pré-preenchimento
+        # Primeiro: botões de upload de PDF e áudio materno (PCG), lado a lado
         with gr.Row():
-            with gr.Column():
-                gr.Markdown("### 📄 Upload de Exame Médico (PDF) - Pré-preenchimento")
-                gr.Markdown(
-                    """
-                    **Faça upload de um PDF de exame médico para preencher automaticamente os campos abaixo.**
-                    
-                    O sistema extrairá automaticamente:
-                    - Idade
-                    - Pressão Arterial (Sistólica/Diastólica)
-                    - Glicemia
-                    - Temperatura
-                    - Frequência Cardíaca
-                    """
+            with gr.Column(scale=1):
+                gr.Markdown("### 🤰 Análise de Sinal Materno (PCG)")
+                gr.Markdown("*Baseado no banco de dados SUFHSDB*")
+                arquivo_audio_materno = gr.File(
+                    label="Upload de Arquivo de Áudio Materno (PCG)",
+                    file_types=["audio"],
+                    type="filepath",
                 )
-                
+            
+            with gr.Column(scale=1):
+                gr.Markdown("### 📄 Upload de Exame Médico (PDF) - Pré-preenchimento")
                 arquivo_pdf = gr.File(
                     label="Upload de PDF de Exame Médico",
                     file_types=[".pdf"],
                     type="filepath",
                 )
-                
                 btn_processar_pdf = gr.Button(
                     "📋 Processar PDF e Pré-preencher",
                     variant="secondary",
                     size="lg"
                 )
-                
                 status_pdf = gr.Markdown(
                     value="",
                     visible=True
                 )
-        
+
+        # Bloco de análise rápida de sinal materno (PCG) antes dos Dados Biométricos
+        resultado_pcg = gr.Markdown(
+            label="🤰 Análise rápida de sinal materno (PCG)",
+            value="Aguardando análise rápida de sinal materno (PCG)..."
+        )
+
+        # Abaixo dos botões de upload: dados biométricos completos
         with gr.Row():
             with gr.Column(scale=1):
                 gr.Markdown("### 📊 Dados Biométricos")
@@ -271,8 +272,33 @@ def create_interface_v2():
                     step=1,
                     info="Batimentos por minuto"
                 )
-            
-            with gr.Column(scale=1):
+        
+        # Conecta o evento de processamento de PDF
+        btn_processar_pdf.click(
+            fn=process_pdf_fill,
+            inputs=[arquivo_pdf],
+            outputs=[
+                idade, pressao_sistolica, pressao_diastolica,
+                glicemia, temperatura, frequencia_cardiaca, status_pdf
+            ],
+            show_progress="full"
+        )
+        
+        btn_processar = gr.Button(
+            "🚀 Iniciar Análise",
+            variant="primary",
+            size="lg"
+        )
+        
+        output = gr.Markdown(
+            label="Resultado da Análise",
+            value="Aguardando análise...",
+            elem_classes=["resultado-analise"]
+        )
+
+        # Abaixo do botão principal: fluxo separado de Análise de Áudio de Consulta
+        with gr.Row():
+            with gr.Column():
                 gr.Markdown("### 🎤 Análise de Áudio de Consulta (Opcional)")
                 
                 with gr.Tabs():
@@ -462,7 +488,6 @@ def create_interface_v2():
                         
                         def update_audio_player_loop():
                             """Loop de atualização do player de áudio em tempo real."""
-
                             
                             # Cria arquivo temporário para o áudio em tempo real
                             temp_dir = "temp_audio"
@@ -539,59 +564,16 @@ def create_interface_v2():
                             fn=stop_realtime,
                             outputs=[status_realtime, audio_player, transcript_realtime, btn_stop_realtime, btn_start_realtime, audio_player, streaming_state]
                         )
-                
-                gr.Markdown("---")
-                gr.Markdown("### 🤰 Análise de Sinal Materno (PCG) - Opcional")
-                gr.Markdown("*Baseado no banco de dados SUFHSDB*")
-                
-                arquivo_audio_materno = gr.File(
-                    label="Upload de Arquivo de Áudio Materno (PCG)",
-                    file_types=["audio"],
-                    type="filepath",
-                )
-                
-                gr.Markdown(
-                    """
-                    **Opções:**
-                    - 📤 **Upload de arquivo**: O arquivo será enviado automaticamente para S3
-                    
-                    **Análise Materna:**
-                    - Extrai Frequência Cardíaca Materna (MHR)
-                    - Detecta bradicardia, taquicardia e variabilidade
-                    - Classifica risco materno em tempo real
-                    """
-                )
-        
-        # Conecta o evento de processamento de PDF
-        btn_processar_pdf.click(
-            fn=process_pdf_fill,
-            inputs=[arquivo_pdf],
-            outputs=[
-                idade, pressao_sistolica, pressao_diastolica,
-                glicemia, temperatura, frequencia_cardiaca, status_pdf
-            ],
-            show_progress="full"
-        )
-        
-        btn_processar = gr.Button(
-            "🚀 Iniciar Análise",
-            variant="primary",
-            size="lg"
-        )
-        
-        output = gr.Markdown(
-            label="Resultado da Análise",
-            value="Aguardando análise...",
-            elem_classes=["resultado-analise"]
-        )
 
+        # Análise de áudio materno (PCG) atualiza o bloco de análise rápida + frequência cardíaca
         arquivo_audio_materno.change(
             fn=process_maternal_beats,
             inputs=[arquivo_audio_materno],
-            outputs=[output, frequencia_cardiaca],
+            outputs=[resultado_pcg, frequencia_cardiaca],
             show_progress="full",
         )
 
+        # Botão principal roda análise integrada (biometria + PCG + áudio de consulta)
         btn_processar.click(
             fn=process_analysis,
             inputs=[

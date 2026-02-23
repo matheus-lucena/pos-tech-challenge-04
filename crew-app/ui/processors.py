@@ -66,7 +66,7 @@ class AnalysisProcessor:
             result = start_multimodal_analysis(
                 llm=self.llm,
                 biometric_data=biometric_data,
-                s3_audio=audio_path,
+                s3_audio=None,  # Removido do fluxo principal
                 s3_maternal_audio=maternal_audio_path
             )
             
