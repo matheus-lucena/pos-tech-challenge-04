@@ -4,6 +4,7 @@ import traceback
 from typing import Optional, Dict, Any, Tuple, Union
 from services.s3_service import S3Service
 from services.pdf_parser_service import PDFParserService
+from services.maternal_health_service import MaternalHealthService
 from agents.crew_orchestrator import start_multimodal_analysis
 from config.llm_config import get_llm
 from ui.formatters import format_result
@@ -188,11 +189,63 @@ class AnalysisProcessor:
 
 
 _processor = AnalysisProcessor()
+_maternal_service = MaternalHealthService()
 
 
 def process_analysis(*args) -> str:
     return _processor.process_analysis(*args)
 
+
+def process_maternal_beats(
+    maternal_audio_file: Optional[str],
+) -> Tuple[str, Optional[float]]:
+    """
+    Processa automaticamente o sinal materno (PCG) para estimar a frequência
+    cardíaca materna e a quantidade de batimentos assim que o arquivo é enviado.
+    """
+    if not maternal_audio_file:
+        return (
+            _processor._format_warning(
+                "Nenhum arquivo de áudio materno (PCG) foi fornecido."
+            ),
+            None,
+        )
+
+    try:
+        result = _maternal_service.analyze_maternal_signal(maternal_audio_file)
+        if result.get("status") == "error":
+            return (
+                _processor._format_error(
+                    result.get("error", "Erro desconhecido ao analisar sinal materno (PCG).")
+                ),
+                None,
+            )
+
+        num_beats = result.get("num_beats_detected", 0)
+        mhr = float(result.get("maternal_heart_rate", 0.0) or 0.0)
+        classification = result.get("classification", {}) or {}
+        risk_level = classification.get("risk_level", "desconhecido")
+        status = classification.get("status", "indeterminado")
+        description = classification.get("description", "")
+
+        return (
+            '<div style="padding: 15px; background: #e8f4ff; border-radius: 8px; '
+            'margin-bottom: 15px; border-left: 4px solid #17a2b8;">'
+            '<p style="margin: 0; color: #004085;">'
+            '<strong>🤰 Análise rápida de sinal materno (PCG)</strong><br>'
+            f'Batimentos detectados: <strong>{num_beats}</strong><br>'
+            f'Frequência cardíaca materna estimada (MHR): <strong>{mhr:.1f} bpm</strong><br>'
+            f'Classificação: <strong>{status}</strong> (risco {risk_level})<br>'
+            f'{description}'
+            '</p>'
+            '</div>',
+            mhr,
+        )
+
+    except Exception as e:
+        print(f"Error processing maternal beats: {e}")
+        print(traceback.format_exc())
+        return _processor._format_exception(e), None
 
 def process_pdf_fill(
     pdf_file: Optional[str]

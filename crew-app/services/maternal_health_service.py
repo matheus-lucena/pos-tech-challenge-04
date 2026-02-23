@@ -23,6 +23,7 @@ class MaternalHealthService:
     def __init__(self):
         """Inicializa o serviço de análise materna."""
         self.sample_rate = 16000
+        self.max_analysis_seconds = 30
 
     def analyze_maternal_signal(
         self,
@@ -50,6 +51,10 @@ class MaternalHealthService:
                     y = librosa.resample(y, orig_sr=sr, target_sr=sample_rate)
                     sr = sample_rate
 
+            max_len = int(sr * self.max_analysis_seconds)
+            if max_len > 0 and len(y) > max_len:
+                y = y[:max_len]
+
             return self._process_signal(y, sr)
 
         except Exception as e:
@@ -68,8 +73,10 @@ class MaternalHealthService:
         if np.max(np.abs(filtered_signal)) > 0:
             filtered_signal = filtered_signal / np.max(np.abs(filtered_signal))
 
-        mhr, mhr_confidence = self._estimate_mhr(filtered_signal, sample_rate)
         beats = self._detect_heartbeats(filtered_signal, sample_rate)
+        mhr, mhr_confidence = self._estimate_mhr_from_beats(beats, sample_rate)
+        if mhr == 0.0:
+            mhr, mhr_confidence = self._estimate_mhr_fft(filtered_signal, sample_rate)
         variability = self._calculate_variability(beats, sample_rate)
         classification = self._classify_mhr(mhr, variability)
         spectral_features = self._extract_spectral_features(filtered_signal, sample_rate)
@@ -86,32 +93,30 @@ class MaternalHealthService:
             "recommendations": self._generate_recommendations(mhr, variability, classification)
         }
 
-    def _estimate_mhr(
+    def _estimate_mhr_from_beats(
         self,
-        signal: np.ndarray,
+        beats: np.ndarray,
         sample_rate: int
     ) -> Tuple[float, float]:
-        """Estima a frequência cardíaca materna (MHR) em bpm."""
-        min_period = int(sample_rate * 60 / self.MHR_TACHYCARDIA)
-        max_period = int(sample_rate * 60 / self.MHR_BRADYCARDIA)
-
-        autocorr = np.correlate(signal, signal, mode='full')
-        autocorr = autocorr[len(autocorr)//2:]
-
-        search_range = autocorr[min_period:max_period]
-        if len(search_range) == 0:
+        """Estima MHR a partir dos intervalos RR (bem mais leve que autocorrelação)."""
+        if beats is None or len(beats) < 2:
             return 0.0, 0.0
 
-        peak_idx = np.argmax(search_range) + min_period
-        period_samples = peak_idx
-        mhr = (sample_rate * 60) / period_samples if period_samples > 0 else 0
+        rr_intervals = np.diff(beats) / sample_rate
+        rr_intervals = rr_intervals[rr_intervals > 0]
+        if len(rr_intervals) == 0:
+            return 0.0, 0.0
 
-        peak_value = autocorr[peak_idx]
-        max_value = np.max(autocorr)
-        confidence = min(peak_value / max_value if max_value > 0 else 0, 1.0)
+        rr_median = float(np.median(rr_intervals))
+        mhr = 60.0 / rr_median if rr_median > 0 else 0.0
+
+        # Confiança simples baseada na estabilidade dos RR.
+        rr_std = float(np.std(rr_intervals)) if len(rr_intervals) > 1 else 0.0
+        cv = (rr_std / rr_median) if rr_median > 0 else 1.0
+        confidence = float(max(0.0, min(1.0, 1.0 - cv)))
 
         if mhr < 40 or mhr > 180:
-            mhr, confidence = self._estimate_mhr_fft(signal, sample_rate)
+            return 0.0, 0.0
 
         return mhr, confidence
 

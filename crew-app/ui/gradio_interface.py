@@ -1,6 +1,11 @@
 import gradio as gr
-from ui.processors import process_analysis, process_pdf_fill
-
+import time
+import wave
+import os
+import threading
+from datetime import datetime
+from ui.processors import process_analysis, process_pdf_fill, process_maternal_beats
+from ui.realtime_processor import _realtime_processor, RealtimeAudioProcessor
 
 def create_interface():
     with gr.Blocks(
@@ -290,7 +295,6 @@ def create_interface_v2():
                         # Lista dispositivos de áudio
                         def get_audio_devices():
                             """Obtém lista de dispositivos de áudio."""
-                            from ui.realtime_processor import RealtimeAudioProcessor
                             devices = RealtimeAudioProcessor.list_audio_devices()
                             if not devices:
                                 return ["Nenhum dispositivo encontrado"]
@@ -363,7 +367,6 @@ def create_interface_v2():
                         # Função para iniciar transcrição em tempo real
                         def iniciar_realtime(device_selected):
                             """Inicia a captura e transcrição em tempo real."""
-                            from ui.realtime_processor import _realtime_processor
                             
                             if _realtime_processor.is_processing:
                                 return (
@@ -374,17 +377,14 @@ def create_interface_v2():
                                     True
                                 )
                             
-                            # Obtém índice do dispositivo
                             device_index = get_device_index(device_selected)
                             
-                            # Inicia o processamento em thread separada
                             def process_stream():
                                 try:
                                     _realtime_processor.start_microphone_streaming(device_index=device_index)
                                 except Exception as e:
                                     print(f"Erro no stream: {e}")
                             
-                            import threading
                             thread = threading.Thread(target=process_stream, daemon=True)
                             thread.start()
                             
@@ -406,10 +406,8 @@ def create_interface_v2():
                                 True
                             )
                         
-                        # Função para parar transcrição
-                        def parar_realtime():
+                        def stop_realtime():
                             """Para a transcrição em tempo real."""
-                            from ui.realtime_processor import _realtime_processor
                             
                             status = _realtime_processor.stop_transcription()
                             transcript = _realtime_processor.get_current_transcript()
@@ -434,10 +432,8 @@ def create_interface_v2():
                                 False
                             )
                         
-                        # Função para atualizar transcrição em tempo real
-                        def atualizar_transcricao():
+                        def update_transcript():
                             """Atualiza a transcrição periodicamente."""
-                            from ui.realtime_processor import _realtime_processor
                             
                             if not _realtime_processor.is_processing:
                                 return transcript_realtime.value or "Transcrição finalizada."
@@ -454,8 +450,6 @@ def create_interface_v2():
                         # Função que atualiza continuamente enquanto está processando
                         def update_transcript_loop():
                             """Loop de atualização da transcrição."""
-                            from ui.realtime_processor import _realtime_processor
-                            import time
                             
                             while _realtime_processor.is_processing:
                                 transcript = _realtime_processor.get_current_transcript()
@@ -468,11 +462,7 @@ def create_interface_v2():
                         
                         def update_audio_player_loop():
                             """Loop de atualização do player de áudio em tempo real."""
-                            from ui.realtime_processor import _realtime_processor
-                            import time
-                            import wave
-                            import os
-                            from datetime import datetime
+
                             
                             # Cria arquivo temporário para o áudio em tempo real
                             temp_dir = "temp_audio"
@@ -546,7 +536,7 @@ def create_interface_v2():
                         )
                         
                         btn_stop_realtime.click(
-                            fn=parar_realtime,
+                            fn=stop_realtime,
                             outputs=[status_realtime, audio_player, transcript_realtime, btn_stop_realtime, btn_start_realtime, audio_player, streaming_state]
                         )
                 
@@ -594,7 +584,14 @@ def create_interface_v2():
             value="Aguardando análise...",
             elem_classes=["resultado-analise"]
         )
-        
+
+        arquivo_audio_materno.change(
+            fn=process_maternal_beats,
+            inputs=[arquivo_audio_materno],
+            outputs=[output, frequencia_cardiaca],
+            show_progress="full",
+        )
+
         btn_processar.click(
             fn=process_analysis,
             inputs=[
