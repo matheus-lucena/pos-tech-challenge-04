@@ -34,16 +34,13 @@ def maternal_task_description(
     heart_rate_info = ""
     if biometric_data and biometric_data.get("HeartRate"):
         heart_rate_info = (
-            f"\n\nIMPORTANTE: Os dados biométricos fornecidos incluem Frequência Cardíaca = "
-            f"{biometric_data.get('HeartRate')} bpm. "
-            f"Use este valor como referência na análise materna. NÃO invente valores de bpm. "
-            f"Se o sinal PCG detectar um MHR diferente, mencione ambos os valores "
-            f"(o do PCG e o dos dados biométricos)."
+            f" The biometric HeartRate is {biometric_data.get('HeartRate')} bpm — "
+            f"use it as reference. If the PCG detects a different MHR, report both values."
         )
 
     return (
-        f"Analyze maternal heart signal (PCG) at: {s3_maternal_audio}. "
-        f"Use analyze_maternal_heart_sound tool with is_s3_path=True.{heart_rate_info}"
+        f"Call analyze_maternal_heart_sound(audio_path='{s3_maternal_audio}', is_s3_path=True) "
+        f"and report the result.{heart_rate_info}"
     )
 
 

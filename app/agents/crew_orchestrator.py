@@ -4,7 +4,7 @@ from crewai import Agent, Task, Crew, Process, LLM
 
 from models.report import HealthReport
 from tools.health_tools import predict_risk, transcribe_consultation, set_biometric_data
-from tools.maternal_tools import analyze_maternal_heart_sound
+from tools.maternal_tools import analyze_maternal_heart_sound, set_maternal_audio_path
 from agents.task_templates import (
     biometric_task_description,
     audio_task_description,
@@ -15,9 +15,6 @@ from agents.task_templates import (
 
 
 def create_agents(llm: LLM) -> Tuple[Agent, Agent, Agent, Agent]:
-    # max_iter=1 for tool-calling agents: each has exactly one tool and a
-    # deterministic task, so a second iteration is never useful and doubles
-    # the LLM call count when the first attempt succeeds.
     analyst = Agent(
         role="Biometric Analyst",
         goal="Interpret vital signs via SageMaker.",
@@ -38,6 +35,7 @@ def create_agents(llm: LLM) -> Tuple[Agent, Agent, Agent, Agent]:
         max_iter=1,
     )
 
+    # max_iter=2 kept for maternal analyst: it downloads from S3 before running
     maternal_analyst = Agent(
         role="Maternal Monitoring Specialist",
         goal="Analyze maternal heart signals (PCG) and detect anomalies in maternal heart rate (MHR).",
@@ -48,11 +46,9 @@ def create_agents(llm: LLM) -> Tuple[Agent, Agent, Agent, Agent]:
         tools=[analyze_maternal_heart_sound],
         llm=llm,
         allow_delegation=False,
-        max_iter=1,
+        max_iter=2,
     )
 
-    # The chief synthesises results — allow up to 2 iterations in case the
-    # first JSON output needs refinement.
     chief = Agent(
         role="Senior Obstetrician",
         goal=(
@@ -130,13 +126,14 @@ def start_multimodal_analysis(
 ):
     analyst, psychologist, maternal_analyst, chief = create_agents(llm)
 
+    if s3_maternal_audio:
+        set_maternal_audio_path(s3_maternal_audio)
+
     tasks = create_tasks(
         analyst, psychologist, maternal_analyst, chief,
         biometric_data, s3_audio, s3_maternal_audio,
     )
 
-    # Only include agents that have at least one task assigned — idle agents
-    # add CrewAI validation overhead without contributing to the result.
     active_agents = [chief]
     if biometric_data:
         active_agents.insert(0, analyst)

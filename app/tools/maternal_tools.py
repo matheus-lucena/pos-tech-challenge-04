@@ -6,21 +6,43 @@ from crewai.tools import tool
 
 from services.instances import get_maternal_health_service, get_s3_service
 
+_maternal_audio_cache: str | None = None
+
+
+def set_maternal_audio_path(path: str) -> None:
+    global _maternal_audio_cache
+    _maternal_audio_cache = path
+
 
 @tool("MaternalHeartSoundAnalyzer")
 def analyze_maternal_heart_sound(
-    audio_path: str,
+    audio_path: str = None,
     is_s3_path: bool = False,
+    **kwargs,
 ) -> str:
-    """Analyzes maternal heart signals (PCG) from an audio file. Use is_s3_path=True if audio_path is s3://bucket/key."""
+    """
+    Analyzes maternal heart signals (PCG) from an audio file.
+
+    Args:
+        audio_path: Local file path or S3 URI (s3://bucket/key).
+                    If omitted, uses the path set via set_maternal_audio_path().
+        is_s3_path: Set to True when audio_path is an S3 URI.
+    """
+    global _maternal_audio_cache
+    if audio_path is None:
+        audio_path = _maternal_audio_cache
+    if audio_path is None:
+        return (
+            "Error: No audio path provided. "
+            "Pass audio_path='s3://bucket/key' or call set_maternal_audio_path() first."
+        )
+    if audio_path.startswith("s3://"):
+        is_s3_path = True
     try:
         local_path = audio_path
         temp_file = None
 
         if is_s3_path:
-            if not audio_path.startswith("s3://"):
-                return f"Error: Invalid S3 path. Must start with 's3://': {audio_path}"
-
             exists, error_msg = get_s3_service().verify_file_exists(audio_path)
             if not exists:
                 return f"Error: {error_msg}"
