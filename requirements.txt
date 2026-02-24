@@ -1,1 +1,43 @@
+# ── AWS / Cloud ──────────────────────────────────────────────────────────────
+boto3>=1.34.0
+sagemaker==2.*
+amazon-transcribe
+
+# ── AI / ML core ─────────────────────────────────────────────────────────────
+torch>=2.1.0
+transformers==4.44.2
+tf-keras
+optimum[onnxruntime]
+scikit-learn>=1.3.0
+xgboost
+joblib
+
+# ── Data ─────────────────────────────────────────────────────────────────────
+pandas>=2.0.0
+numpy>=1.24.0
+scipy
+
+# ── Audio ────────────────────────────────────────────────────────────────────
+librosa
+soundfile
+pyaudio
+
+# ── Agents / LLM ─────────────────────────────────────────────────────────────
+crewai
+crewai-tools
+litellm
+litellm[proxy]
+langchain-community
+langchain-aws
+
+# ── API / Web ─────────────────────────────────────────────────────────────────
+gradio
+requests
+websocket-client
+asyncio
+
+# ── Utilities ────────────────────────────────────────────────────────────────
+pydantic
+pydantic-core
+python-dotenv>=1.0.0
 fpdf2>=2.8.5
