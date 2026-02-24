@@ -16,6 +16,8 @@ Interface web e orquestração de agentes para análise multimodal de saúde mat
 
 ## Instalação
 
+As dependências estão centralizadas no `requirements.txt` na raiz do repositório.
+
 ```bash
 cd app
 python -m venv venv

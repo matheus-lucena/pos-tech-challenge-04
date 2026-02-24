@@ -138,6 +138,10 @@ infra/
 
 ---
 
+## Limpeza
+
+Delete os recursos quando não estiverem mais em uso para evitar cobranças desnecessárias.
+
 ## Destruir infraestrutura
 
 ```bash

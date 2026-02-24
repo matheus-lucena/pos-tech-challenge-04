@@ -1,6 +1,11 @@
 # Violence Against Women — BERT Classifier
 
-BERTimbau (`neuralmind/bert-base-portuguese-cased`) fine-tunado para detecção de violência contra mulher em texto em português.
+O sistema transcreve áudio em tempo real e precisa identificar, no texto transcrito, situações de violência contra mulher. Modelos zero-shot multilíngues (como `mDeBERTa`) funcionam razoavelmente, mas cometem erros relevantes no contexto brasileiro: confundem linguagem de jogo online, expressões populares hiperbólicas ("me mato de rir") e descrições cotidianas com ameaças reais.
+
+O fine-tuning do BERTimbau resolve esse problema diretamente: o modelo já conhece o português do Brasil em profundidade, e o treinamento supervisionado com exemplos reais — incluindo cenários ambíguos deliberadamente difíceis — ensina a distinção que o zero-shot não consegue fazer com a mesma precisão.
+
+**Modelo base:** `neuralmind/bert-base-portuguese-cased`
+**Tarefa:** classificação binária — `safe` (0) / `violence` (1)
 
 ---
 
@@ -146,15 +151,10 @@ predict(text: str) -> tuple[bool, str, float]
 
 ## Dependências
 
-```bash
-pip install -r requirements.txt
-```
-
-Ou instale diretamente:
+As dependências estão centralizadas no `requirements.txt` na raiz do repositório:
 
 ```bash
-pip install torch>=2.1.0 transformers>=4.46.0 scikit-learn>=1.3.0 \
-            pandas>=2.0.0 numpy>=1.24.0 python-dotenv>=1.0.0 boto3>=1.34.0
+pip install -r ../requirements.txt
 ```
 
 ---

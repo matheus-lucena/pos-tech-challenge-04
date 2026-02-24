@@ -144,7 +144,13 @@ AWS_TRANSCRIBE_ROLE=arn:aws:iam::ACCOUNT:role/TranscribeDataAccess
 LITELLM_API_KEY=
 ```
 
-### 3. Treinar e fazer deploy do modelo
+### 3. Instalar dependências
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Treinar e fazer deploy do modelo
 
 ```bash
 cd maternal-health-risk
@@ -153,7 +159,7 @@ python deploy.py
 
 Aguarde ~10–15 minutos para o treinamento e deploy concluírem.
 
-### 4. Executar a aplicação
+### 5. Executar a aplicação
 
 ```bash
 cd app
@@ -254,19 +260,6 @@ pos-tech-challenge-04/
 - Acesso público bloqueado
 - Políticas IAM com princípio de menor privilégio
 - Logs centralizados no CloudWatch
-
----
-
-## Custos Estimados
-
-| Serviço | Custo |
-|---|---|
-| S3 Storage | ~$0.023/GB/mês |
-| SageMaker Training (ml.m5.large) | ~$0.115/hora |
-| SageMaker Serverless Endpoint | ~$0.000004/ms |
-| Transcribe | ~$0.024/minuto |
-
-Delete endpoints e recursos não utilizados para evitar custos desnecessários.
 
 ---
 

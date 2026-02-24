@@ -126,14 +126,9 @@ hyperparameters = {
 
 ---
 
-## Custos
+## Limpeza de recursos
 
-| Recurso | Custo |
-|---|---|
-| Training Job (ml.m5.large) | ~$0.115/hora (~$0.02 por execução) |
-| Serverless Endpoint (2048MB) | ~$0.000004/ms — cobrado por invocação |
-
-Delete o endpoint quando não estiver em uso:
+Delete o endpoint após o uso para não gerar cobranças:
 
 ```bash
 aws sagemaker delete-endpoint --endpoint-name seu-endpoint-name
