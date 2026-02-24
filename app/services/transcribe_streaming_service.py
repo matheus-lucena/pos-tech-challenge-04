@@ -22,6 +22,67 @@ import torch
 
 
 class ZeroShotViolenceDetector:
+    """Two-stage violence/risk detector.
+
+    Stage 1 — binary: asks the model a single yes/no question ("is this
+    dangerous?") using a well-designed NLI hypothesis.  With only two
+    competing labels the model concentrates its probability mass, giving
+    much higher recall for indirect or third-person descriptions of risk.
+
+    Stage 2 — category: if Stage 1 flags danger, a second pass over a small
+    set of broad category labels identifies the type of risk for the UI alert.
+    This pass never blocks the alert; it only adds the label.
+
+    Fast-path keywords: a compact list of completely unambiguous tokens
+    (weapon names, explicit murder phrases, child exploitation terms) bypasses
+    both model calls and returns immediately with confidence 1.0.
+    """
+
+    # --- Binary detection (Stage 1) ---
+    _BINARY_DANGER = "situação de risco, perigo ou violência"
+    _BINARY_SAFE   = "situação normal e segura"
+    _BINARY_HYPOTHESIS = "Esta frase descreve uma {}."
+    _BINARY_THRESHOLD = 0.55
+
+    _CATEGORY_LABELS = [
+        "violência física ou ameaça de morte",
+        "perseguição ou stalking",
+        "assédio verbal, psicológico ou online",
+        "posse ou uso de arma",
+        "exploração ou abuso sexual de menor",
+        "violência doméstica",
+        "ameaça velada ou coação",
+        "pedido de socorro ou emergência",
+        "exposição não consentida de conteúdo íntimo",
+    ]
+    _CATEGORY_HYPOTHESIS = "Esta frase é sobre {}."
+
+    _FAST_KEYWORDS: dict[str, str] = {
+        # weapons
+        "faca": "posse ou uso de arma",
+        "facaço": "posse ou uso de arma",
+        "canivete": "posse ou uso de arma",
+        "revólver": "posse ou uso de arma",
+        "pistola": "posse ou uso de arma",
+        "espingarda": "posse ou uso de arma",
+        "rifle": "posse ou uso de arma",
+        "cutelo": "posse ou uso de arma",
+        "estou armado": "posse ou uso de arma",
+        "tenho uma arma": "posse ou uso de arma",
+        # explicit death threats
+        "vou te matar": "violência física ou ameaça de morte",
+        "te mato": "violência física ou ameaça de morte",
+        "vou matar você": "violência física ou ameaça de morte",
+        "você não vai sair vivo": "violência física ou ameaça de morte",
+        # child exploitation
+        "pedofilia": "exploração ou abuso sexual de menor",
+        "abuso sexual infantil": "exploração ou abuso sexual de menor",
+        "nude de menor": "exploração ou abuso sexual de menor",
+        "nude de criança": "exploração ou abuso sexual de menor",
+        "sexo com criança": "exploração ou abuso sexual de menor",
+        "sexo com menor": "exploração ou abuso sexual de menor",
+    }
+
     def __init__(self, use_cuda: bool = False):
         print("🚀 Initializing violence detector...")
         if use_cuda and torch.cuda.is_available():
@@ -39,78 +100,55 @@ class ZeroShotViolenceDetector:
             device=device,
             torch_dtype=dtype,
         )
-        self.labels = [
-            "agressão física violência",
-            "ameaça de morte perigo",
-            "menção a arma faca objeto perigoso",
-            "ameaça com arma ou faca",
-            "violência contra mulher violência doméstica",
-            "ameaça à parceira ou ex-companheira",
-            "agressão verbal ou psicológica à mulher",
-            "conversa tranquila normal",
-            "pedido de socorro emergência",
-            "discussão verbal acalorada",
-            "contexto de jogo ou filme",
-        ]
 
-        self.danger_keywords = [
-            "faca", "facas", "facaço", "canivete",
-            "arma", "armas", "revólver", "pistola", "espingarda", "rifle",
-            "tiro", "atirar", "disparar", "disparo",
-            "bala", "balas", "munição",
-            "cutelo", "machado", "tesoura grande",
-            "golpear com", "esfaquear", "atacar com",
-            "tenho uma", "tenho um", "estou com", "estou armado",
-            "vou te matar", "vou te bater", "te mato",
-            "vou matar você", "vou te agredir", "vou te espancar",
-            "bater na mulher", "bater na esposa", "bater na namorada",
-            "matar a mulher", "matar a esposa", "matar a ex",
-            "agredir a mulher", "espancar a mulher", "surrar a mulher",
-            "ameaçar a mulher", "ameaçar a esposa", "ameaçar a ex",
-            "violência doméstica", "violência contra mulher",
-            "enforcar", "enforcar a", "socos na", "chutes na",
-            "não sai de casa", "te dou porrada", "vou te dar",
-            "cadê você", "volta pra casa", "obedece",
-            "puta", "vadia", "vagabunda", "te quebro",
-        ]
-        self.threshold = VIOLENCE_THRESHOLD
-        self.danger_labels = [
-            "agressão física violência",
-            "ameaça de morte perigo",
-            "menção a arma faca objeto perigoso",
-            "ameaça com arma ou faca",
-            "pedido de socorro emergência",
-            "violência contra mulher violência doméstica",
-            "ameaça à parceira ou ex-companheira",
-            "agressão verbal ou psicológica à mulher",
-        ]
-
-    def _check_danger_keywords(self, text: str) -> bool:
+    def _fast_path(self, text: str) -> tuple[bool, str]:
+        """Return (is_danger, category) for obvious keyword matches, else (False, '')."""
         text_lower = text.lower()
-        for keyword in self.danger_keywords:
-            if keyword in text_lower:
-                return True
-        return False
+        for token, category in self._FAST_KEYWORDS.items():
+            if token in text_lower:
+                return True, category
+        return False, ""
+
+    def _classify_binary(self, text: str) -> float:
+        """Return the danger probability (0-1) from the binary stage."""
+        result = self.classifier(
+            text,
+            [self._BINARY_DANGER, self._BINARY_SAFE],
+            hypothesis_template=self._BINARY_HYPOTHESIS,
+            multi_label=False,
+            truncation=True,
+            max_length=VIOLENCE_MAX_LENGTH,
+        )
+        danger_idx = result["labels"].index(self._BINARY_DANGER)
+        return result["scores"][danger_idx]
+
+    def _classify_category(self, text: str) -> str:
+        """Return the most likely risk category label."""
+        result = self.classifier(
+            text,
+            self._CATEGORY_LABELS,
+            hypothesis_template=self._CATEGORY_HYPOTHESIS,
+            multi_label=False,
+            truncation=True,
+            max_length=VIOLENCE_MAX_LENGTH,
+        )
+        return result["labels"][0]
 
     def predict(self, text: str) -> Tuple[bool, str, float]:
         if len(text) < MIN_TEXT_LENGTH_VIOLENCE:
             return False, "too_short", 0.0
-        has_danger_keywords = self._check_danger_keywords(text)
-        if has_danger_keywords:
-            return True, "menção a arma faca objeto perigoso", 0.9
+
+        is_fast, fast_category = self._fast_path(text)
+        if is_fast:
+            return True, fast_category, 1.0
+
         try:
-            truncated = text[:VIOLENCE_MAX_INPUT_CHARS] if len(text) > VIOLENCE_MAX_INPUT_CHARS else text
-            result = self.classifier(
-                truncated,
-                self.danger_labels,
-                multi_label=False,
-                truncation=True,
-                max_length=VIOLENCE_MAX_LENGTH,
-            )
-            top_label = result["labels"][0]
-            score = result["scores"][0]
-            is_danger = top_label in self.danger_labels and score > self.threshold
-            return is_danger, top_label, score
+            truncated = text[:VIOLENCE_MAX_INPUT_CHARS]
+            danger_score = self._classify_binary(truncated)
+            if danger_score >= self._BINARY_THRESHOLD:
+                category = self._classify_category(truncated)
+                return True, category, danger_score
+            return False, "safe", danger_score
         except Exception as e:
             print(f"Error in zero-shot classification: {e}")
             return False, "error", 0.0
@@ -211,8 +249,7 @@ class TranscribeStreamingService:
     DEFAULT_LANGUAGE_CODE = 'pt-BR'
     SAMPLE_RATE = 16000
 
-    # Shared detector instance across all sessions — avoids reloading the
-    # mDeBERTa model (~280 MB) on every start_stream() call.
+    # Shared detector instance across all sessions
     _shared_detector: Optional[ZeroShotViolenceDetector] = None
     _detector_lock = threading.Lock()
 
@@ -236,8 +273,6 @@ class TranscribeStreamingService:
         self.stop_event = threading.Event()
         self.processing_thread = None
         self._is_streaming_active = False
-        # Start loading the detector in the background as soon as the service
-        # is created so it is warm before the first streaming session begins.
         threading.Thread(
             target=self._get_or_create_detector,
             daemon=True,
@@ -280,7 +315,6 @@ class TranscribeStreamingService:
     async def _worker(self, language_code):
         print("⏳ Connecting to AWS Transcribe...", flush=True)
         client = TranscribeStreamingClient(region=self.region_name)
-        # Re-use the already-loaded singleton so the model is never reloaded.
         handler = ViolenceHandler(None, self.result_queue)
         handler._detector = self._shared_detector
         handler._detector_initialized = self._shared_detector is not None
