@@ -210,7 +210,25 @@ class ViolenceHandler(TranscriptResultStreamHandler):
 class TranscribeStreamingService:
     DEFAULT_LANGUAGE_CODE = 'pt-BR'
     SAMPLE_RATE = 16000
-    
+
+    # Shared detector instance across all sessions — avoids reloading the
+    # mDeBERTa model (~280 MB) on every start_stream() call.
+    _shared_detector: Optional[ZeroShotViolenceDetector] = None
+    _detector_lock = threading.Lock()
+
+    @classmethod
+    def _get_or_create_detector(cls) -> Optional[ZeroShotViolenceDetector]:
+        if cls._shared_detector is not None:
+            return cls._shared_detector
+        with cls._detector_lock:
+            if cls._shared_detector is None:
+                try:
+                    cls._shared_detector = ZeroShotViolenceDetector()
+                except Exception as e:
+                    print(f"Warning: could not load violence detector: {e}")
+                    return None
+        return cls._shared_detector
+
     def __init__(self, region_name: str = "us-east-1"):
         self.region_name = region_name or os.getenv("AWS_REGION", "us-east-1")
         self.result_queue = queue.Queue()
@@ -218,6 +236,13 @@ class TranscribeStreamingService:
         self.stop_event = threading.Event()
         self.processing_thread = None
         self._is_streaming_active = False
+        # Start loading the detector in the background as soon as the service
+        # is created so it is warm before the first streaming session begins.
+        threading.Thread(
+            target=self._get_or_create_detector,
+            daemon=True,
+            name="detector-warmup",
+        ).start()
 
     @property
     def is_streaming(self):
@@ -255,7 +280,10 @@ class TranscribeStreamingService:
     async def _worker(self, language_code):
         print("⏳ Connecting to AWS Transcribe...", flush=True)
         client = TranscribeStreamingClient(region=self.region_name)
+        # Re-use the already-loaded singleton so the model is never reloaded.
         handler = ViolenceHandler(None, self.result_queue)
+        handler._detector = self._shared_detector
+        handler._detector_initialized = self._shared_detector is not None
         try:
             stream = await client.start_stream_transcription(
                 language_code=language_code,
@@ -264,12 +292,6 @@ class TranscribeStreamingService:
             )
             handler._transcript_result_stream = stream.output_stream
             print("✅ AWS stream active. Starting transcript reception.", flush=True)
-
-            async def init_detector_background():
-                await asyncio.to_thread(handler._initialize_detector)
-                self._detector_instance = handler._detector
-
-            asyncio.create_task(init_detector_background())
             events_sent = [0]
 
             async def sender():

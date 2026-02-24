@@ -15,6 +15,9 @@ from agents.task_templates import (
 
 
 def create_agents(llm: LLM) -> Tuple[Agent, Agent, Agent, Agent]:
+    # max_iter=1 for tool-calling agents: each has exactly one tool and a
+    # deterministic task, so a second iteration is never useful and doubles
+    # the LLM call count when the first attempt succeeds.
     analyst = Agent(
         role="Biometric Analyst",
         goal="Interpret vital signs via SageMaker.",
@@ -22,7 +25,7 @@ def create_agents(llm: LLM) -> Tuple[Agent, Agent, Agent, Agent]:
         tools=[predict_risk],
         llm=llm,
         allow_delegation=False,
-        max_iter=2,
+        max_iter=1,
     )
 
     psychologist = Agent(
@@ -32,7 +35,7 @@ def create_agents(llm: LLM) -> Tuple[Agent, Agent, Agent, Agent]:
         tools=[transcribe_consultation],
         llm=llm,
         allow_delegation=False,
-        max_iter=2,
+        max_iter=1,
     )
 
     maternal_analyst = Agent(
@@ -45,9 +48,11 @@ def create_agents(llm: LLM) -> Tuple[Agent, Agent, Agent, Agent]:
         tools=[analyze_maternal_heart_sound],
         llm=llm,
         allow_delegation=False,
-        max_iter=2,
+        max_iter=1,
     )
 
+    # The chief synthesises results — allow up to 2 iterations in case the
+    # first JSON output needs refinement.
     chief = Agent(
         role="Senior Obstetrician",
         goal=(
@@ -130,8 +135,18 @@ def start_multimodal_analysis(
         biometric_data, s3_audio, s3_maternal_audio,
     )
 
+    # Only include agents that have at least one task assigned — idle agents
+    # add CrewAI validation overhead without contributing to the result.
+    active_agents = [chief]
+    if biometric_data:
+        active_agents.insert(0, analyst)
+    if s3_audio:
+        active_agents.insert(-1, psychologist)
+    if s3_maternal_audio:
+        active_agents.insert(-1, maternal_analyst)
+
     crew = Crew(
-        agents=[analyst, psychologist, maternal_analyst, chief],
+        agents=active_agents,
         tasks=tasks,
         process=Process.sequential,
         verbose=True,
