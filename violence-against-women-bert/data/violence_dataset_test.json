@@ -1,0 +1,3122 @@
+[
+  {
+    "text": "A nova exposição do museu não está nada a ver com a última vez que fui.",
+    "label": 0,
+    "category": "notícias e eventos culturais neutros"
+  },
+  {
+    "text": "Dessa vez no MMA vamos focar mais na defesa contra golpes baixos.",
+    "label": 0,
+    "category": "treino de artes marciais, boxe ou MMA descrito de forma técnica e esportiva"
+  },
+  {
+    "text": "Até pensei que tinha acontecido algo sério quando o bolo começou a cair da bandeja, mas tudo bem",
+    "label": 0,
+    "category": "situações de susto ou preocupação sem violência real, como acidente doméstico leve"
+  },
+  {
+    "text": "Não dá mais pra aguentar, me sinto preso no próprio lar.",
+    "label": 1,
+    "category": "cárcere privado dentro de casa"
+  },
+  {
+    "text": "Cara, até que enfim a gente tá dando uma descansada dessa socialização exagerada.",
+    "label": 0,
+    "category": "amizade e socialização descontraída"
+  },
+  {
+    "text": "Não consigo parar, me persegue e eu não tenho mais forças para continuar, preciso de ajuda!",
+    "label": 1,
+    "category": "pedido de socorro em situação de perigo imediato"
+  },
+  {
+    "text": "A brisa que eu sinto agora é só o sopro do desespero da natureza.",
+    "label": 0,
+    "category": "natureza, clima e meio ambiente"
+  },
+  {
+    "text": "Ele agiu na hora da agressão, e agora tá preso.",
+    "label": 1,
+    "category": "agressão física: espancamento, murro, chute, empurrão"
+  },
+  {
+    "text": "Meu mano entrou na partida e disse: 'Esse adversário não sabe jogar, eu 'mato' fácil'.",
+    "label": 0,
+    "category": "partida de FPS ou battle royale onde jogadores falam 'vou te matar', 'te destruo', 'morreu' no jogo"
+  },
+  {
+    "text": "Quando eu tento me organizar financeiramente, parece que ele sempre tem um plano contra.",
+    "label": 1,
+    "category": "violência financeira: controle de dinheiro"
+  },
+  {
+    "text": "Fiquei com um pé de vento só de ver aquele bolo pronto na mesa.",
+    "label": 0,
+    "category": "pessoas relatando susto, nervosismo ou medo sem situação de perigo real"
+  },
+  {
+    "text": "Pode acreditar, até que deu pra entender um do outro.",
+    "label": 0,
+    "category": "discussão acalorada entre pessoas que termina em entendimento mútuo"
+  },
+  {
+    "text": "Naquela meditação, senti uma religião mais serena e uma conexão espiritual mais profunda.",
+    "label": 0,
+    "category": "religião e espiritualidade serena"
+  },
+  {
+    "text": "Vou pedir pra um amigo ajudá no jardim. A decoração daqui tá precisando de uns toques.",
+    "label": 0,
+    "category": "decoração, casa e jardim"
+  },
+  {
+    "text": "Fala sério, todo mundo sabe que foi você que arrumou tudo.",
+    "label": 0,
+    "category": "elogios e reconhecimento entre pessoas"
+  },
+  {
+    "text": "Aquela tesoura que ele falou só é para cortar o seu time no jogo.",
+    "label": 0,
+    "category": "jogos online multiplayer com trash talk e provocações entre jogadores sem violência real"
+  },
+  {
+    "text": "Isso aí é que é pra se cuidar, mas não é justo não poder ver ninguém.",
+    "label": 1,
+    "category": "isolamento social: proibição de ver família e amigos"
+  },
+  {
+    "text": "O cara disse que ia mandar as fotos para todos se eu não fizesse o que ele queria.",
+    "label": 1,
+    "category": "chantagem e ameaça de expor fotos íntimas"
+  },
+  {
+    "text": "Cara, só te falando, se me enche de novo é morte certa.",
+    "label": 1,
+    "category": "ameaça de morte ou lesão corporal grave"
+  },
+  {
+    "text": "Não perca a cabeça com isso, ele só está brincando, mas o tom dele é meio ameaçador.",
+    "label": 1,
+    "category": "ameaça velada e linguagem de duplo sentido intimidatória"
+  },
+  {
+    "text": "Nada na vida justifica alguém fazer essa merda, isso é um escândalo.",
+    "label": 1,
+    "category": "revenge porn: divulgação de conteúdo íntimo"
+  },
+  {
+    "text": "A única coisa que ele quer é a total obediência dela.",
+    "label": 1,
+    "category": "violência doméstica e controle coercitivo"
+  },
+  {
+    "text": "Vi numa rede social que uma instituição vai dar assistência pra quem levou prejuízo no temporal.",
+    "label": 0,
+    "category": "voluntariado e solidariedade"
+  },
+  {
+    "text": "É foda quando o jogo fica duro e a galera começa a falar ‘vou te matar’ e ‘te destruo’.",
+    "label": 0,
+    "category": "partida de FPS ou battle royale onde jogadores falam 'vou te matar', 'te destruo', 'morreu' no jogo"
+  },
+  {
+    "text": "Tem que denunciar esses casos à polícia, não dá pra aguentar.",
+    "label": 1,
+    "category": "chantagem e ameaça de expor fotos íntimas"
+  },
+  {
+    "text": "Ao preparar minha janta, cada barulho me fazia tremer.",
+    "label": 0,
+    "category": "pessoas relatando susto, nervosismo ou medo sem situação de perigo real"
+  },
+  {
+    "text": "A sensação na virilha mudou, e agora é uma dor que não sai.",
+    "label": 0,
+    "category": "atleta relatando lesão ou momento de dor durante treino ou competição esportiva"
+  },
+  {
+    "text": "O jeito dela de lidar com o tempo livre é sempre procurando uma boa viagem.",
+    "label": 0,
+    "category": "lazer, viagens e hobbies"
+  },
+  {
+    "text": "Não vou aguentar mais, se eu não resolver isso ele fala que vai tirar as crianças de casa.",
+    "label": 1,
+    "category": "ameaça de tirar os filhos como coação"
+  },
+  {
+    "text": "A amiga dela disse que ele é pior agora que ela está grávida.",
+    "label": 1,
+    "category": "violência durante a gravidez"
+  },
+  {
+    "text": "Se a gente não fizer nada, até o meio ambiente tá ficando desesperado.",
+    "label": 0,
+    "category": "natureza, clima e meio ambiente"
+  },
+  {
+    "text": "A dona da padaria sempre coloca pão na mão errada na sacola, como se eu não notasse!",
+    "label": 0,
+    "category": "humor e situações engraçadas do cotidiano"
+  },
+  {
+    "text": "Na ocorrência, uma tesoura esteve envolvida, mas não houve feridos.",
+    "label": 0,
+    "category": "jornalista ou repórter noticiando fato violento de forma objetiva e impessoal"
+  },
+  {
+    "text": "Acho legal fazer prateleiras com madeira para organizar livros.",
+    "label": 0,
+    "category": "bricolagem, marcenaria e trabalhos manuais em casa"
+  },
+  {
+    "text": "Ninguém fala nada sobre a minha vida, parece que estou numa prisão.",
+    "label": 1,
+    "category": "cárcere privado dentro de casa"
+  },
+  {
+    "text": "O delegado precisa confirmar essa informação com o advogado.",
+    "label": 0,
+    "category": "advogado, delegado ou promotor discutindo caso criminal em linguagem jurídica"
+  },
+  {
+    "text": "Um cara me contou que a briga começou com um simples empurrão e acabou com um espancamento.",
+    "label": 1,
+    "category": "agressão física: espancamento, murro, chute, empurrão"
+  },
+  {
+    "text": "Meio ambiente é tudo nessa vida, sem natureza, não tem futuro, né?",
+    "label": 0,
+    "category": "natureza, clima e meio ambiente"
+  },
+  {
+    "text": "Nunca esqueço de limpar a faca depois de cada uso, se não, o metal vai manchar.",
+    "label": 0,
+    "category": "culinária e preparo de refeições usando facas e utensílios de cozinha"
+  },
+  {
+    "text": "Treinar com os amigos sempre é muito mais divertido do que sozinho.",
+    "label": 0,
+    "category": "esportes e atividade física"
+  },
+  {
+    "text": "Aquele cara que me chutou na bola durante o jogo parece não ter vergonha nenhuma.",
+    "label": 0,
+    "category": "esportes e atividade física"
+  },
+  {
+    "text": "É nessa hora que a gente vê quem realmente é solidário.",
+    "label": 0,
+    "category": "voluntariado e solidariedade"
+  },
+  {
+    "text": "Olha só, não é nada grave, só uma faca que ficou um pouco mais solta",
+    "label": 0,
+    "category": "bombeiro, policial ou socorrista relatando ocorrência de forma técnica e neutra"
+  },
+  {
+    "text": "Na musculação senti um aperto no ombro, achei que tivesse exagerado nos pesos.",
+    "label": 0,
+    "category": "atleta relatando lesão ou momento de dor durante treino ou competição esportiva"
+  },
+  {
+    "text": "Esse cara no meu grupo disse que vai levar a faca e acabar com todo mundo no jogo, tipo, é brincadeira?",
+    "label": 0,
+    "category": "jogo de luta ou RPG com falas de personagens ameaçando inimigos fictícios"
+  },
+  {
+    "text": "A vítima teve um princípio de infarto, mas já está estável. Médicos no local estão cuidando dela.",
+    "label": 0,
+    "category": "bombeiro, policial ou socorrista relatando ocorrência de forma técnica e neutra"
+  },
+  {
+    "text": "A galera não para de elogiar como você lidou com a situação.",
+    "label": 0,
+    "category": "elogios e reconhecimento entre pessoas"
+  },
+  {
+    "text": "O chamado foi para remover um pote quente de sopa que espirrou.",
+    "label": 0,
+    "category": "bombeiro, policial ou socorrista relatando ocorrência de forma técnica e neutra"
+  },
+  {
+    "text": "Ainda no começo do levantamento, uma pontada no músculo da coxa.",
+    "label": 0,
+    "category": "atleta relatando lesão ou momento de dor durante treino ou competição esportiva"
+  },
+  {
+    "text": "A cena de ação naquele filme ontem foi demais, parece que os atores estavam mesmo lá lutando.",
+    "label": 0,
+    "category": "discussão sobre cena de ação, crime ou thriller em filme, série ou livro"
+  },
+  {
+    "text": "No nosso namoro, sempre respeitamos um ao outro, sem nenhum mal-estar.",
+    "label": 0,
+    "category": "relacionamento amoroso saudável e respeitoso"
+  },
+  {
+    "text": "O jeito que eu arrumei o guarda-roupa, até a vovó ia dizer que ficou show!",
+    "label": 0,
+    "category": "bricolagem, marcenaria e trabalhos manuais em casa"
+  },
+  {
+    "text": "Esse cara ficou rico fácil só roubando de todo mundo, violência financeira a todo vapor!",
+    "label": 1,
+    "category": "violência financeira: controle de dinheiro"
+  },
+  {
+    "text": "Ele me diz que sou a única, mas sei que não é verdade.",
+    "label": 1,
+    "category": "abuso sexual dentro do relacionamento"
+  },
+  {
+    "text": "Estou preparando o almoço e vou precisar da tesoura pra cortar o queijo em pedaços pequenos.",
+    "label": 0,
+    "category": "uso cotidiano de ferramentas como tesoura, martelo, serrote em casa"
+  },
+  {
+    "text": "A amizade é tão forte que até na hora da ressaca, todo mundo está junto.",
+    "label": 0,
+    "category": "amizade e socialização descontraída"
+  },
+  {
+    "text": "Ele sempre usa expressões que fazem você se sentir inseguro.",
+    "label": 1,
+    "category": "ameaça velada e linguagem de duplo sentido intimidatória"
+  },
+  {
+    "text": "O pessoal adora reconhecer o trabalho do Vinícius, até demais.",
+    "label": 0,
+    "category": "elogios e reconhecimento entre pessoas"
+  },
+  {
+    "text": "Você acha que só xingando vai resolver as coisas? É bobagem.",
+    "label": 1,
+    "category": "assédio verbal: xingamentos e humilhação"
+  },
+  {
+    "text": "Sempre fico sem tempo, mas vou à clínica pra fazer os exames de rotina.",
+    "label": 0,
+    "category": "saúde e bem-estar: consultas, exames, exercícios"
+  },
+  {
+    "text": "Aquele enredo da série ficou tão arrepiante que a gente quase ficou em suspense até o final!",
+    "label": 0,
+    "category": "pessoas discutindo enredo de novela ou série com personagens em situação de perigo fictício"
+  },
+  {
+    "text": "É incrível ver como as palavras de encorajamento podem mudar a perspectiva de alguém.",
+    "label": 0,
+    "category": "apoio emocional e palavras de encorajamento"
+  },
+  {
+    "text": "O adversário tá tremendo, olha o gancho de direita que o tirou do sério!",
+    "label": 0,
+    "category": "comentarista ou lutador descrevendo golpes, nocautes e combates em luta esportiva"
+  },
+  {
+    "text": "Ele faz as coisas sem a gente e não leva ninguém a sério.",
+    "label": 0,
+    "category": "família e relacionamentos saudáveis"
+  },
+  {
+    "text": "Ele tem as contas todas, até as que a gente acha que é nossa, e controla tudo.",
+    "label": 1,
+    "category": "violência financeira: controle de dinheiro"
+  },
+  {
+    "text": "Tá todo mundo aí falando só do seu jeito genial de resolver os problemas.",
+    "label": 0,
+    "category": "elogios e reconhecimento entre pessoas"
+  },
+  {
+    "text": "Fazer yoga junto com uma discussão sobre religião sempre me deixa muito serena.",
+    "label": 0,
+    "category": "religião e espiritualidade serena"
+  },
+  {
+    "text": "Aqui só tem gente que curte luta, treino de artes marciais é sempre um show.",
+    "label": 0,
+    "category": "treino de artes marciais, boxe ou MMA descrito de forma técnica e esportiva"
+  },
+  {
+    "text": "Vi uma mulher no metrô com um olho roxo, pensei 'nossa, deve ter sido o namorado'.",
+    "label": 1,
+    "category": "violência durante a gravidez"
+  },
+  {
+    "text": "Até a TV está igual, novela no meio do dia, novela a noite e mais novela. Que rotina sem graça.",
+    "label": 0,
+    "category": "rotina e atividades cotidianas neutras"
+  },
+  {
+    "text": "As amigas dela não param de chorar, é algo inimaginável.",
+    "label": 1,
+    "category": "estupro ou tentativa de estupro"
+  },
+  {
+    "text": "Vi ele ameaçando todo mundo, dizendo que vai dar uma ligada só para avisar que ela não vai conseguir mais fugir.",
+    "label": 1,
+    "category": "ameaça após separação ou término"
+  },
+  {
+    "text": "Passei a escova no gramado para tirar os insetos que não aguentei mais!",
+    "label": 0,
+    "category": "jardinagem e uso de ferramentas de corte no jardim"
+  },
+  {
+    "text": "Quando a gente fica junto, meu pai não fala uma palavra com a minha mãe.",
+    "label": 0,
+    "category": "família e relacionamentos saudáveis"
+  },
+  {
+    "text": "Ele ficou a noite toda observando minha casa até eu sair de lá.",
+    "label": 1,
+    "category": "perseguição e stalking presencial"
+  },
+  {
+    "text": "Às vezes, parece que a vida não está acontecendo, só que são rotinas.",
+    "label": 0,
+    "category": "rotina e atividades cotidianas neutras"
+  },
+  {
+    "text": "Vai passar, é só manter a calma e seguir com trabalho e dedicação.",
+    "label": 0,
+    "category": "trabalho e carreira de forma positiva"
+  },
+  {
+    "text": "Aqui é o bombeiro, vamos até o prédio, mas não parece haver nenhum risco de incêndio",
+    "label": 0,
+    "category": "bombeiro, policial ou socorrista relatando ocorrência de forma técnica e neutra"
+  },
+  {
+    "text": "Minha irmã quase brigou com o namorado por não cuidar direito do filhotinho.",
+    "label": 0,
+    "category": "cuidado de pets e animais"
+  },
+  {
+    "text": "A gente espera que alguém dê um basta, mas parece que ninguém quer assumir.",
+    "label": 1,
+    "category": "assédio sexual no trabalho"
+  },
+  {
+    "text": "Meu irmão fala tanto sobre esses crimes que parece que ele vive nos podcasts de true crime.",
+    "label": 0,
+    "category": "comentário sobre true crime, documentário policial ou podcast de crimes reais"
+  },
+  {
+    "text": "Esse trabalho não é qualquer um, é o que vai me dar a carreira que eu quero.",
+    "label": 0,
+    "category": "trabalho e carreira de forma positiva"
+  },
+  {
+    "text": "Que bom que a gente resolveu tudo! É isso aí.",
+    "label": 0,
+    "category": "discussão acalorada entre pessoas que termina em entendimento mútuo"
+  },
+  {
+    "text": "No episódio mais recente da novela, eles estão num lugar completamente assustador!",
+    "label": 0,
+    "category": "pessoas discutindo enredo de novela ou série com personagens em situação de perigo fictício"
+  },
+  {
+    "text": "Quase me ferro com a tesoura na cozinha, fiquei com um medo absurdo.",
+    "label": 0,
+    "category": "situações de susto ou preocupação sem violência real, como acidente doméstico leve"
+  },
+  {
+    "text": "Eu ouvi a menina no escritório dele, ele tá sempre provocando.",
+    "label": 1,
+    "category": "assédio sexual no trabalho"
+  },
+  {
+    "text": "Ela nunca reconhece quando erra. Sempre vira que é minha culpa.",
+    "label": 1,
+    "category": "manipulação emocional e gaslighting"
+  },
+  {
+    "text": "Ele sempre diz que sou eu que não estou entendendo e que ele não faz nada.",
+    "label": 1,
+    "category": "manipulação emocional e gaslighting"
+  },
+  {
+    "text": "Vê aquela galera no Instagram com mil seguidores? Ê boi, empreendedorismo é muito mais que isso!",
+    "label": 0,
+    "category": "empreendedorismo e projetos criativos"
+  },
+  {
+    "text": "A última série que assisti foi incrível, tô até sonhando com ela agora.",
+    "label": 0,
+    "category": "música, filmes, séries e entretenimento"
+  },
+  {
+    "text": "Só quero tirar essas fotos do ar, mas ele não quer saber.",
+    "label": 1,
+    "category": "chantagem e ameaça de expor fotos íntimas"
+  },
+  {
+    "text": "Aí vem alguém falar que tudo é normal, mas não, isso é sério.",
+    "label": 1,
+    "category": "stalking digital: monitoramento de redes e mensagens"
+  },
+  {
+    "text": "Vi no último episódio que o bandido quase matou a heroína!",
+    "label": 0,
+    "category": "pessoas discutindo enredo de novela ou série com personagens em situação de perigo fictício"
+  },
+  {
+    "text": "Ela me contou que ele disse que vai sequestrar a filha se não voltasse com ele.",
+    "label": 1,
+    "category": "ameaça após separação ou término"
+  },
+  {
+    "text": "Nossa, esse burburinho acabou, mas ainda senti um ar de ressentimento.",
+    "label": 0,
+    "category": "discussão construtiva e resolução pacífica de conflitos"
+  },
+  {
+    "text": "Esqueci de segurar a escada e quase derrubo as minhas ferramentas.",
+    "label": 0,
+    "category": "situações de susto ou preocupação sem violência real, como acidente doméstico leve"
+  },
+  {
+    "text": "A batalha de super-heróis deles não é nada perigosa, é só brincadeira.",
+    "label": 0,
+    "category": "crianças brincando de luta, super-herói ou guerra de mentira sem agressão real"
+  },
+  {
+    "text": "Aquela fala só pode ser uma provocação velada.",
+    "label": 1,
+    "category": "ameaça velada e linguagem de duplo sentido intimidatória"
+  },
+  {
+    "text": "Aqui no consultório, o médico só falava sobre a importância dos exames, não de exercícios.",
+    "label": 0,
+    "category": "saúde e bem-estar: consultas, exames, exercícios"
+  },
+  {
+    "text": "Na pesca de ontem, a vara de pescar apanhou um peixe enorme, foi uma festa na água.",
+    "label": 0,
+    "category": "açougue, pesca ou caça esportiva descrita de forma neutra"
+  },
+  {
+    "text": "O queridinho da família é o peixe fresco do açougue.",
+    "label": 0,
+    "category": "açougue, pesca ou caça esportiva descrita de forma neutra"
+  },
+  {
+    "text": "Agora que estou melhor, vou voltar a fazer exercícios e marcar consultas.",
+    "label": 0,
+    "category": "saúde e bem-estar: consultas, exames, exercícios"
+  },
+  {
+    "text": "Um uppercut espetacular, o outro só conseguiu cair no chão!",
+    "label": 0,
+    "category": "comentarista ou lutador descrevendo golpes, nocautes e combates em luta esportiva"
+  },
+  {
+    "text": "As músicas novas não são nada comparado ao que ouvia quando eu era criança.",
+    "label": 0,
+    "category": "música, filmes, séries e entretenimento"
+  },
+  {
+    "text": "Cara, não acredito que ele fez isso comigo, postou minhas fotos íntimas no grupo",
+    "label": 1,
+    "category": "revenge porn: divulgação de conteúdo íntimo"
+  },
+  {
+    "text": "O planejamento dessa festa já está uma bagunça, você tem que dar uma mão.",
+    "label": 0,
+    "category": "planejamento de festas e comemorações"
+  },
+  {
+    "text": "Eu já senti tudo, mas quando alguém te dá palavras de encorajamento, é mágico.",
+    "label": 0,
+    "category": "apoio emocional e palavras de encorajamento"
+  },
+  {
+    "text": "Você tem que se alimentar direito se não vai acabar com esse seu organismo!",
+    "label": 0,
+    "category": "alimentação e culinária"
+  },
+  {
+    "text": "Ela não consegue mais se soltar, me diz que é por amor.",
+    "label": 1,
+    "category": "abuso sexual dentro do relacionamento"
+  },
+  {
+    "text": "As pessoas não fazem mais contato, sabem que ele é fraco, sempre vai cair na armadilha.",
+    "label": 1,
+    "category": "humilhação pública e difamação"
+  },
+  {
+    "text": "Ou você me obedece, ou a próxima vítima vai ser a sua mãe.",
+    "label": 1,
+    "category": "ameaça aos filhos ou familiares para controlar a vítima"
+  },
+  {
+    "text": "As pessoas não sabem quanto dinheiro ele esconde, tipo, é até assustador o controle.",
+    "label": 1,
+    "category": "violência financeira: controle de dinheiro"
+  },
+  {
+    "text": "Eu estava vendo TV quando minha tia começou a brigar e acabou atacando meu tio.",
+    "label": 1,
+    "category": "violência praticada por familiar ou parente"
+  },
+  {
+    "text": "A guerra de mentira é só para brincar, nada de machucar.",
+    "label": 0,
+    "category": "crianças brincando de luta, super-herói ou guerra de mentira sem agressão real"
+  },
+  {
+    "text": "Ainda não saí do aeroporto, mas mal posso esperar para viajar com vocês para a praia no fim de semana.",
+    "label": 0,
+    "category": "lazer, viagens e hobbies"
+  },
+  {
+    "text": "Amizade e socialização, só isso, é onde eu quero passar a vida.",
+    "label": 0,
+    "category": "amizade e socialização descontraída"
+  },
+  {
+    "text": "A vizinha do lado reclama sempre quando o gato vai no meu quintal e bagunça tudo.",
+    "label": 0,
+    "category": "cuidado de pets e animais"
+  },
+  {
+    "text": "Só tome cuidado com a saúde, exames e consultas são fundamentais.",
+    "label": 0,
+    "category": "saúde e bem-estar: consultas, exames, exercícios"
+  },
+  {
+    "text": "A música do grupo antigo é tão inesquecível, não tem como esquecer.",
+    "label": 0,
+    "category": "música, filmes, séries e entretenimento"
+  },
+  {
+    "text": "Durante a jogatina, alguém lançou: 'esse é que vai morrer no meu sniper'.",
+    "label": 0,
+    "category": "partida de FPS ou battle royale onde jogadores falam 'vou te matar', 'te destruo', 'morreu' no jogo"
+  },
+  {
+    "text": "Quase derrubei a jarra de água, quase fazia um baita escândalo.",
+    "label": 0,
+    "category": "situações de susto ou preocupação sem violência real, como acidente doméstico leve"
+  },
+  {
+    "text": "Esse espelho quase cai quando abro a porta.",
+    "label": 0,
+    "category": "situações de susto ou preocupação sem violência real, como acidente doméstico leve"
+  },
+  {
+    "text": "Tenho amigos que dão tanta importância à religião que acabam perdendo a verdadeira essência da espiritualidade.",
+    "label": 0,
+    "category": "religião e espiritualidade serena"
+  },
+  {
+    "text": "Aquilo foi uma surra pra ele, toda a vizinhança ficou sabendo das coisas que ele fez.",
+    "label": 1,
+    "category": "humilhação pública e difamação"
+  },
+  {
+    "text": "Estou pensando em começar a fazer exercícios pra melhorar a saúde.",
+    "label": 0,
+    "category": "saúde e bem-estar: consultas, exames, exercícios"
+  },
+  {
+    "text": "O que eu sempre quero é encontrar um equilíbrio entre a religião e a busca por uma espiritualidade serena.",
+    "label": 0,
+    "category": "religião e espiritualidade serena"
+  },
+  {
+    "text": "Na esquina do 12º com a Avenida, houve uma discussão que acabou em uma briga.",
+    "label": 0,
+    "category": "jornalista ou repórter noticiando fato violento de forma objetiva e impessoal"
+  },
+  {
+    "text": "O jogo ficou brabo, mas falei logo:'morre no meu game'.",
+    "label": 0,
+    "category": "partida de FPS ou battle royale onde jogadores falam 'vou te matar', 'te destruo', 'morreu' no jogo"
+  },
+  {
+    "text": "Fiquei apreensivo só de ver um prato balançar no balcão.",
+    "label": 0,
+    "category": "pessoas relatando susto, nervosismo ou medo sem situação de perigo real"
+  },
+  {
+    "text": "À noite, assisto uns vídeos no YouTube para relaxar.",
+    "label": 0,
+    "category": "rotina e atividades cotidianas neutras"
+  },
+  {
+    "text": "Num livro de suspense, esse cara é esperto demais, consegue fugir de tudo.",
+    "label": 0,
+    "category": "discussão sobre cena de ação, crime ou thriller em filme, série ou livro"
+  },
+  {
+    "text": "Ele não liga pra festa, mas só quer ficar com a galera pra tomar um refrigerante.",
+    "label": 0,
+    "category": "amizade e socialização descontraída"
+  },
+  {
+    "text": "O adversário nem percebeu, golpe certeiro!",
+    "label": 0,
+    "category": "comentarista ou lutador descrevendo golpes, nocautes e combates em luta esportiva"
+  },
+  {
+    "text": "Escutei um podcast de crimes reais e me deixou tipo tenso, mas em curiosidade.",
+    "label": 0,
+    "category": "comentário sobre true crime, documentário policial ou podcast de crimes reais"
+  },
+  {
+    "text": "Tá difícil, mas se derem ouvidos e se entenderem, pode se dar um milagre.",
+    "label": 0,
+    "category": "discussão construtiva e resolução pacífica de conflitos"
+  },
+  {
+    "text": "Eu não sabia que isso poderia acontecer, como alguém consegue fazer isso?",
+    "label": 1,
+    "category": "estupro ou tentativa de estupro"
+  },
+  {
+    "text": "Ele finge que eu estou exagerando as coisas, como se eu não soubesse do que estou falando.",
+    "label": 1,
+    "category": "manipulação emocional e gaslighting"
+  },
+  {
+    "text": "Eu sinto falta de alguém para dar apoio emocional quando estou na merda.",
+    "label": 0,
+    "category": "apoio emocional e palavras de encorajamento"
+  },
+  {
+    "text": "Quando alguém liga pra dizer que esqueceu a senha, todo mundo no grupo tenta ajudar, mas ninguém consegue.",
+    "label": 0,
+    "category": "humor e situações engraçadas do cotidiano"
+  },
+  {
+    "text": "Meu amigo só tem que colocar o esforço e a carreira vai andar sozinha.",
+    "label": 0,
+    "category": "trabalho e carreira de forma positiva"
+  },
+  {
+    "text": "Ele falou que vai mandar as fotos para todas as suas ex-namoradas se eu não atender suas exigências.",
+    "label": 1,
+    "category": "chantagem e ameaça de expor fotos íntimas"
+  },
+  {
+    "text": "Ele fez um discurso na rua falando coisas que não eram verdade sobre você, todo mundo assistiu.",
+    "label": 1,
+    "category": "humilhação pública e difamação"
+  },
+  {
+    "text": "Ele ficou maluco e vai ameaçar até com os filhos se eu não voltar.",
+    "label": 1,
+    "category": "ameaça de tirar os filhos como coação"
+  },
+  {
+    "text": "Ninguém entende, mas é evidente que ele está ficando maluco depois da nossa separação.",
+    "label": 1,
+    "category": "ameaça após separação ou término"
+  },
+  {
+    "text": "Acho que a gente vive num ciclo sem muita emoção, só as mesmas coisas dia após dia.",
+    "label": 0,
+    "category": "rotina e atividades cotidianas neutras"
+  },
+  {
+    "text": "Um desentendimento entre os músicos na roda de samba no clube foi notado.",
+    "label": 0,
+    "category": "jornalista ou repórter noticiando fato violento de forma objetiva e impessoal"
+  },
+  {
+    "text": "O cara no consultório anterior reclamava todo dia da sua dor de cabeça, não aguentava mais.",
+    "label": 0,
+    "category": "saúde e bem-estar: consultas, exames, exercícios"
+  },
+  {
+    "text": "Vai que vamo, essa vitória tá tirando o fôlego! Até a panela parece tremer de emoção!",
+    "label": 0,
+    "category": "torcida ou comemoração exaltada em jogo online, com gritos e palavrões sem ameaça real"
+  },
+  {
+    "text": "A polícia não fez nada, é controle e medo total.",
+    "label": 1,
+    "category": "violência doméstica e controle coercitivo"
+  },
+  {
+    "text": "O agressor usou uma faca em meio à briga; não há feridos graves.",
+    "label": 0,
+    "category": "jornalista ou repórter noticiando fato violento de forma objetiva e impessoal"
+  },
+  {
+    "text": "Ele costuma usar o cortador de carne no açougue.",
+    "label": 0,
+    "category": "açougue, pesca ou caça esportiva descrita de forma neutra"
+  },
+  {
+    "text": "Aquela festa ontem, só tem gente assim, sempre tão alegre.",
+    "label": 0,
+    "category": "amizade e socialização descontraída"
+  },
+  {
+    "text": "Fui naquela palestra sobre planejamento, a dica era ótima, mas como aplicar na prática? Nunca sei.",
+    "label": 0,
+    "category": "finanças pessoais e planejamento"
+  },
+  {
+    "text": "Nada mais de falar que vai te matar com uma faca de pedreiro, é só papo de brincadeira!",
+    "label": 0,
+    "category": "brincadeiras e zoações entre amigos usando linguagem exagerada sem intenção real de ameaça"
+  },
+  {
+    "text": "Se der pra falar sem ficar nervoso, acho que resolvemos tudo.",
+    "label": 0,
+    "category": "discussão construtiva e resolução pacífica de conflitos"
+  },
+  {
+    "text": "Me mato de rir toda vez que vejo aquela série no Netflix.",
+    "label": 0,
+    "category": "uso de expressões populares hiperbólicas como 'me mato de rir', 'quase morri de susto', 'tô morta de cansaço'"
+  },
+  {
+    "text": "As crianças na escola estão se fantasiando de super-heróis, é tudo bem divertido, sem nenhum dano.",
+    "label": 0,
+    "category": "crianças brincando de luta, super-herói ou guerra de mentira sem agressão real"
+  },
+  {
+    "text": "Ele me ameaçou de morte por eu falar pra polícia o que ele fez!",
+    "label": 1,
+    "category": "ameaça de morte ou lesão corporal grave"
+  },
+  {
+    "text": "Acho que ele só está jogando para ver sua reação.",
+    "label": 1,
+    "category": "ameaça velada e linguagem de duplo sentido intimidatória"
+  },
+  {
+    "text": "Tenho medo de contar minhas verdades, temer que ele vai reagir mal.",
+    "label": 0,
+    "category": "relacionamento amoroso saudável e respeitoso"
+  },
+  {
+    "text": "Estou aprendendo a fazer caixinhas de madeira para organizar as coisas.",
+    "label": 0,
+    "category": "bricolagem, marcenaria e trabalhos manuais em casa"
+  },
+  {
+    "text": "Vi o ex acordando os vizinhos com gritos sobre ameaças contra mim.",
+    "label": 1,
+    "category": "ameaça após separação ou término"
+  },
+  {
+    "text": "Tem que ser muito barato pra gente, os doces do João sempre custam um braço.",
+    "label": 0,
+    "category": "planejamento de festas e comemorações"
+  },
+  {
+    "text": "Quer saber de notícias, o lançamento do livro novo no café literário foi um sucesso.",
+    "label": 0,
+    "category": "notícias e eventos culturais neutros"
+  },
+  {
+    "text": "Um confronto entre vizinhos sobre a manutenção do quintal foi ao vivo.",
+    "label": 0,
+    "category": "jornalista ou repórter noticiando fato violento de forma objetiva e impessoal"
+  },
+  {
+    "text": "O que mais gostamos? Beber, socializar e ficar entre amigos, não tem outro modo.",
+    "label": 0,
+    "category": "amizade e socialização descontraída"
+  },
+  {
+    "text": "Me conta uma coisa sobre a Batalha de Stalingrado, é de deixar qualquer um sem fôlego.",
+    "label": 0,
+    "category": "entusiasta de história descrevendo batalhas, guerras ou conflitos históricos"
+  },
+  {
+    "text": "Na cozinha, ele fica sempre por perto só para me incomodar, isso é assédio",
+    "label": 1,
+    "category": "assédio sexual no trabalho"
+  },
+  {
+    "text": "Ele manda mensagens dizendo que vai falar pra minha filha o que ele faz, tem medo dele.",
+    "label": 1,
+    "category": "ameaça aos filhos ou familiares para controlar a vítima"
+  },
+  {
+    "text": "Ele mandou uma foto com uma arma, sei lá, parece piada, mas eu não estou brincando.",
+    "label": 1,
+    "category": "ameaça após separação ou término"
+  },
+  {
+    "text": "Meu ex sempre dizia que eu era superparanoica, só porque eu me importava.",
+    "label": 1,
+    "category": "manipulação emocional e gaslighting"
+  },
+  {
+    "text": "Nossa, o paciente tá firme, só uma pequena cirurgia pra melhorar sua qualidade de vida.",
+    "label": 0,
+    "category": "profissional de saúde, médico ou enfermeiro descrevendo procedimento cirúrgico ou acidente"
+  },
+  {
+    "text": "Esse caso é complicado, o delegado já tentou resolver isso há meses.",
+    "label": 0,
+    "category": "advogado, delegado ou promotor discutindo caso criminal em linguagem jurídica"
+  },
+  {
+    "text": "Eles não podiam resolver assim, tiveram que sentar e debater pra entender um do outro.",
+    "label": 0,
+    "category": "discussão construtiva e resolução pacífica de conflitos"
+  },
+  {
+    "text": "Vi um comentário falando daquele documentário policial que ninguém consegue dormir direito.",
+    "label": 0,
+    "category": "comentário sobre true crime, documentário policial ou podcast de crimes reais"
+  },
+  {
+    "text": "Os meninos na praça estão lutando de super-heróis, só é fantasia, sem nenhum perigo real.",
+    "label": 0,
+    "category": "crianças brincando de luta, super-herói ou guerra de mentira sem agressão real"
+  },
+  {
+    "text": "Me ajuda com a marretada aí, cara! Eu tô cansado de bater nessa tábua.",
+    "label": 0,
+    "category": "uso cotidiano de ferramentas como tesoura, martelo, serrote em casa"
+  },
+  {
+    "text": "Eu não sei mais o que fazer, ele já disse que vai mandar as fotos pra todos os contatos.",
+    "label": 1,
+    "category": "chantagem e ameaça de expor fotos íntimas"
+  },
+  {
+    "text": "Nossa, que gol incrível, só podia ser você!",
+    "label": 0,
+    "category": "torcida ou comemoração exaltada em jogo online, com gritos e palavrões sem ameaça real"
+  },
+  {
+    "text": "Ele até parece sério, vai mandar as fotos se eu não fizer o que ele quer.",
+    "label": 1,
+    "category": "chantagem e ameaça de expor fotos íntimas"
+  },
+  {
+    "text": "O promotor fala sobre a necessidade de mais dados para sustentar a acusação.",
+    "label": 0,
+    "category": "advogado, delegado ou promotor discutindo caso criminal em linguagem jurídica"
+  },
+  {
+    "text": "A carreira pede sacrifício, mas tem que se valorizar o trabalho que faz.",
+    "label": 0,
+    "category": "trabalho e carreira de forma positiva"
+  },
+  {
+    "text": "Voluntários, nem sei como agradeço tudo o que vcs fizeram por nós.",
+    "label": 0,
+    "category": "voluntariado e solidariedade"
+  },
+  {
+    "text": "O novo vaso que ela colocou na varanda está uma merda, não encobre nem a metade da planta.",
+    "label": 0,
+    "category": "decoração, casa e jardim"
+  },
+  {
+    "text": "Ele não conseguiu mais esconder, virou piada na rua por causa do que falaram dele.",
+    "label": 1,
+    "category": "humilhação pública e difamação"
+  },
+  {
+    "text": "Quase morri de susto quando vi um morcego no quarto.",
+    "label": 0,
+    "category": "uso de expressões populares hiperbólicas como 'me mato de rir', 'quase morri de susto', 'tô morta de cansaço'"
+  },
+  {
+    "text": "Tá parecendo que eu não posso fazer mais nada sem ele me seguindo, é doido!",
+    "label": 1,
+    "category": "perseguição e stalking presencial"
+  },
+  {
+    "text": "Eu não tenho onde correr, ele está me perseguindo e não para, preciso de socorro rápido.",
+    "label": 1,
+    "category": "pedido de socorro em situação de perigo imediato"
+  },
+  {
+    "text": "Esse aqui é só um dos muitos lugares que voluntários ajudam.",
+    "label": 0,
+    "category": "voluntariado e solidariedade"
+  },
+  {
+    "text": "Quando eu falo algo, ele sempre fala que eu estou maluca pra ganhar tempo.",
+    "label": 1,
+    "category": "manipulação emocional e gaslighting"
+  },
+  {
+    "text": "Ué, mas acabei de eliminar ele no último segundo!",
+    "label": 0,
+    "category": "streamer ou gamer comentando jogadas agressivas, mortes e eliminações no game"
+  },
+  {
+    "text": "A turma só fala em elogios quando alguém faz algo importante.",
+    "label": 0,
+    "category": "elogios e reconhecimento entre pessoas"
+  },
+  {
+    "text": "Ele sempre traz o filé do peixe que comprou na pescaria de fim de semana.",
+    "label": 0,
+    "category": "açougue, pesca ou caça esportiva descrita de forma neutra"
+  },
+  {
+    "text": "As pessoas ficam envergonhadas, preferem fingir que não aconteceu.",
+    "label": 1,
+    "category": "assédio sexual no trabalho"
+  },
+  {
+    "text": "Será que essa isenção nunca vai acabar? Eu não aguento sem ver minha família.",
+    "label": 1,
+    "category": "isolamento social: proibição de ver família e amigos"
+  },
+  {
+    "text": "Você já usou faca serra pra cortar madeira?",
+    "label": 0,
+    "category": "bricolagem, marcenaria e trabalhos manuais em casa"
+  },
+  {
+    "text": "O sujeito ameaçou usar a faca, e não queria que ninguém contasse à polícia.",
+    "label": 1,
+    "category": "ameaça de morte ou lesão corporal grave"
+  },
+  {
+    "text": "Alguém viu ele segurando ela pela mão e ela chorando, a barriga não escapa.",
+    "label": 1,
+    "category": "violência durante a gravidez"
+  },
+  {
+    "text": "A minha mãe viu a vizinha com uma bota de proteção e um olho roxo.",
+    "label": 1,
+    "category": "violência durante a gravidez"
+  },
+  {
+    "text": "Que lance épico, só vi o seu avatar lá no canto!",
+    "label": 0,
+    "category": "streamer ou gamer comentando jogadas agressivas, mortes e eliminações no game"
+  },
+  {
+    "text": "Por fazer o que quero, me sinto preso, meu quarto é meu cárcere.",
+    "label": 1,
+    "category": "cárcere privado dentro de casa"
+  },
+  {
+    "text": "Maneiro, essa faca é boa pra cortar madeira; só to tendo que tomar cuidado pra não errar o golpe",
+    "label": 0,
+    "category": "bricolagem, marcenaria e trabalhos manuais em casa"
+  },
+  {
+    "text": "No filme, ele teve que lidar com uma onda de ação e táticas pra lá de loucas.",
+    "label": 0,
+    "category": "discussão sobre cena de ação, crime ou thriller em filme, série ou livro"
+  },
+  {
+    "text": "Eu ouvi um grito, fui ver e ele tava tentando fazer a pior coisa.",
+    "label": 1,
+    "category": "estupro ou tentativa de estupro"
+  },
+  {
+    "text": "Minha mente está doendo de tanto ficar confinada, preciso sair!",
+    "label": 1,
+    "category": "cárcere privado dentro de casa"
+  },
+  {
+    "text": "Ele nunca perde a oportunidade de ameaçar tirar os filhos para me abalar.",
+    "label": 1,
+    "category": "ameaça de tirar os filhos como coação"
+  },
+  {
+    "text": "Pessoas de confiança sabem que a gravidez piorou tudo.",
+    "label": 1,
+    "category": "violência durante a gravidez"
+  },
+  {
+    "text": "O dono do gato sempre tava atrasado com a castração, a gente nem comentava, mas sempre ficava alerta.",
+    "label": 0,
+    "category": "cuidado de pets e animais"
+  },
+  {
+    "text": "Testemunhas disseram que ele bate e diz que a gravidez é da sua concorrência.",
+    "label": 1,
+    "category": "violência durante a gravidez"
+  },
+  {
+    "text": "O cara botou um banco na varanda e tá tomando conta do espaço todo.",
+    "label": 0,
+    "category": "decoração, casa e jardim"
+  },
+  {
+    "text": "No podcast de crimes reais que eu escuto todos os dias, tem uma história que te deixa arrepio de pé.",
+    "label": 0,
+    "category": "comentário sobre true crime, documentário policial ou podcast de crimes reais"
+  },
+  {
+    "text": "De repente, fiquei gelada só de olhar para uma faca afiada.",
+    "label": 0,
+    "category": "pessoas relatando susto, nervosismo ou medo sem situação de perigo real"
+  },
+  {
+    "text": "Esses tipos de ameaças são uma tortura, não sei como reagir.",
+    "label": 1,
+    "category": "chantagem e ameaça de expor fotos íntimas"
+  },
+  {
+    "text": "Quase me calei de susto quando a porta bate na parede.",
+    "label": 0,
+    "category": "pessoas relatando susto, nervosismo ou medo sem situação de perigo real"
+  },
+  {
+    "text": "Se quer discussão, fala direto sem xingamentos, não precisa ser tão chato.",
+    "label": 1,
+    "category": "assédio verbal: xingamentos e humilhação"
+  },
+  {
+    "text": "A cena de super-heróis dos pequenos é toda sem violência.",
+    "label": 0,
+    "category": "crianças brincando de luta, super-herói ou guerra de mentira sem agressão real"
+  },
+  {
+    "text": "No tênis, eu só perco por que os outros têm um nível acima do meu.",
+    "label": 0,
+    "category": "esportes e atividade física"
+  },
+  {
+    "text": "Meu irmão é um streamer monstro, já eliminou todo mundo no game!",
+    "label": 0,
+    "category": "streamer ou gamer comentando jogadas agressivas, mortes e eliminações no game"
+  },
+  {
+    "text": "Cortei só o que era necessário pra extrair a lesão, tá tudo certo.",
+    "label": 0,
+    "category": "profissional de saúde, médico ou enfermeiro descrevendo procedimento cirúrgico ou acidente"
+  },
+  {
+    "text": "Todo mundo comentando que a tua atitude foi incrível no encontro.",
+    "label": 0,
+    "category": "elogios e reconhecimento entre pessoas"
+  },
+  {
+    "text": "Posso usar essa ferramenta para polir a madeira antes de pintar?",
+    "label": 0,
+    "category": "bricolagem, marcenaria e trabalhos manuais em casa"
+  },
+  {
+    "text": "O empreendedorismo criativo parece um sonho, mas na prática é uma luta pra cacete.",
+    "label": 0,
+    "category": "empreendedorismo e projetos criativos"
+  },
+  {
+    "text": "Se deixar os pets sem cuidados, os animais ficam sem saúde e os donos perdem a paciência.",
+    "label": 0,
+    "category": "cuidado de pets e animais"
+  },
+  {
+    "text": "Deixa de ser tão suspeito e para de curtir todas as minhas postagens.",
+    "label": 1,
+    "category": "stalking digital: monitoramento de redes e mensagens"
+  },
+  {
+    "text": "Vou passar a tesoira no mato, depois vou regá-lo para não secar.",
+    "label": 0,
+    "category": "jardinagem e uso de ferramentas de corte no jardim"
+  },
+  {
+    "text": "Vi gente perder tudo só por causa do controle abusivo do dinheiro.",
+    "label": 1,
+    "category": "violência financeira: controle de dinheiro"
+  },
+  {
+    "text": "Nunca falei isso, mas meu tio é violento e já bateu no meu outro tio.",
+    "label": 1,
+    "category": "violência praticada por familiar ou parente"
+  },
+  {
+    "text": "Aquela fila no banco ontem foi engraçada. Todo mundo tava reclamando do tempo, mas ninguém tava nem aí pra dar lugar pros velhos.",
+    "label": 0,
+    "category": "humor e situações engraçadas do cotidiano"
+  },
+  {
+    "text": "Ela só falava as merdas que todo mundo fazia, mas no final sempre ganhava o prêmio.",
+    "label": 0,
+    "category": "elogios e reconhecimento entre pessoas"
+  },
+  {
+    "text": "Não aguento mais as ameaças dela de contar tudo pra todo mundo.",
+    "label": 1,
+    "category": "ameaça após separação ou término"
+  },
+  {
+    "text": "Já é domingo e eu só tô pensando na segunda, sabe? A mesma rotina de novo.",
+    "label": 0,
+    "category": "rotina e atividades cotidianas neutras"
+  },
+  {
+    "text": "Ela disse que não quer mais, mas ele insiste, diz que não vai deixar ninguém tira-la dele.",
+    "label": 1,
+    "category": "violência doméstica e controle coercitivo"
+  },
+  {
+    "text": "Ele só fala que vai te matar com um pincel, é só para ficar no pé!",
+    "label": 0,
+    "category": "brincadeiras e zoações entre amigos usando linguagem exagerada sem intenção real de ameaça"
+  },
+  {
+    "text": "Os caras só se expõem com as provocações, mas na real não são nada no jogo.",
+    "label": 0,
+    "category": "jogos online multiplayer com trash talk e provocações entre jogadores sem violência real"
+  },
+  {
+    "text": "Você viu a notícia sobre a temperatura subindo? Tá parecendo que a gente tá num forno!",
+    "label": 0,
+    "category": "natureza, clima e meio ambiente"
+  },
+  {
+    "text": "Ele ficou preso em um elevador e viu um cara armado!",
+    "label": 0,
+    "category": "pessoas discutindo enredo de novela ou série com personagens em situação de perigo fictício"
+  },
+  {
+    "text": "Ela pede ajuda, mas não tem mais como escapar da chantagem das fotos.",
+    "label": 1,
+    "category": "chantagem e ameaça de expor fotos íntimas"
+  },
+  {
+    "text": "Ela disse que o hamster é um bichinho de estimação, mas a gente nem vê ele por aí.",
+    "label": 0,
+    "category": "cuidado de pets e animais"
+  },
+  {
+    "text": "Ele é pior que ladrão, a violência é constante desde que ela tá grávida.",
+    "label": 1,
+    "category": "violência durante a gravidez"
+  },
+  {
+    "text": "No meu ambiente de trabalho, sei que a carreira é construída passo a passo.",
+    "label": 0,
+    "category": "trabalho e carreira de forma positiva"
+  },
+  {
+    "text": "Ele tá agindo como um tirano com o dinheiro, controlando e até humilhando.",
+    "label": 1,
+    "category": "violência financeira: controle de dinheiro"
+  },
+  {
+    "text": "A série inteira é boa, mas foi a música do penúltimo episódio que mexeu comigo.",
+    "label": 0,
+    "category": "música, filmes, séries e entretenimento"
+  },
+  {
+    "text": "Eles me mandaram uma mensagem avisando que as fotos estão salvas em seu computador.",
+    "label": 1,
+    "category": "chantagem e ameaça de expor fotos íntimas"
+  },
+  {
+    "text": "Uma das coisas que mais admiro é a Batalha de Blenheim, a maneira como Marlborough comandou!",
+    "label": 0,
+    "category": "entusiasta de história descrevendo batalhas, guerras ou conflitos históricos"
+  },
+  {
+    "text": "Ele disse que vai tirar os meus filhos só para me punir.",
+    "label": 1,
+    "category": "ameaça de tirar os filhos como coação"
+  },
+  {
+    "text": "A gente sempre fala em exercícios, mas na hora da verdade eu sumo no fim de semana.",
+    "label": 0,
+    "category": "saúde e bem-estar: consultas, exames, exercícios"
+  },
+  {
+    "text": "Acabei de descobrir na última consulta que precisava começar a fazer exercícios regularmente.",
+    "label": 0,
+    "category": "saúde e bem-estar: consultas, exames, exercícios"
+  },
+  {
+    "text": "A gente só vê no noticiário as novidades que a tecnologia traz.",
+    "label": 0,
+    "category": "tecnologia e ciência de forma informativa"
+  },
+  {
+    "text": "Alguém viu a série sobre a Guerra Civil Americana? É super interessante!",
+    "label": 0,
+    "category": "entusiasta de história descrevendo batalhas, guerras ou conflitos históricos"
+  },
+  {
+    "text": "Ela já disse que não quer mais essa pessoa no seu feed.",
+    "label": 1,
+    "category": "stalking digital: monitoramento de redes e mensagens"
+  },
+  {
+    "text": "A gente está cada vez mais rodeado de novidades em ciência.",
+    "label": 0,
+    "category": "tecnologia e ciência de forma informativa"
+  },
+  {
+    "text": "Sinto que não tenho privacidade nenhuma, parece que estou sendo vigiada o tempo inteiro.",
+    "label": 1,
+    "category": "stalking digital: monitoramento de redes e mensagens"
+  },
+  {
+    "text": "Ele fala sobre acabar com você, como se não fosse apenas palavras.",
+    "label": 1,
+    "category": "ameaça após separação ou término"
+  },
+  {
+    "text": "Ela está me chamando no WhatsApp o dia inteiro, não dá para ignorar.",
+    "label": 1,
+    "category": "perseguição e stalking presencial"
+  },
+  {
+    "text": "Estamos no local, não há nenhum problema, apenas um garfo que se soltou",
+    "label": 0,
+    "category": "bombeiro, policial ou socorrista relatando ocorrência de forma técnica e neutra"
+  },
+  {
+    "text": "Não quero mais brigar, vamos tentar uma negociação.",
+    "label": 0,
+    "category": "discussão construtiva e resolução pacífica de conflitos"
+  },
+  {
+    "text": "A veterinária disse que a alimentação e a higiene são fundamentais para os animais.",
+    "label": 0,
+    "category": "cuidado de pets e animais"
+  },
+  {
+    "text": "Eu não assisto mais séries, só me dedico a música agora.",
+    "label": 0,
+    "category": "música, filmes, séries e entretenimento"
+  },
+  {
+    "text": "A discussão sobre a sobremesa ficou intensa, mas a gente viu que pode ser algo simples e eficiente.",
+    "label": 0,
+    "category": "discussão acalorada entre pessoas que termina em entendimento mútuo"
+  },
+  {
+    "text": "Ele tá com ciúmes da barriga, vai que o filho é de outro.",
+    "label": 1,
+    "category": "violência durante a gravidez"
+  },
+  {
+    "text": "Porra, que jogada foi essa, tá todo mundo falando do seu gol.",
+    "label": 0,
+    "category": "elogios e reconhecimento entre pessoas"
+  },
+  {
+    "text": "Nada de exagero, só focar na técnica e no condicionamento físico.",
+    "label": 0,
+    "category": "treino de artes marciais, boxe ou MMA descrito de forma técnica e esportiva"
+  },
+  {
+    "text": "Acho que meu cãozinho deu um pulo alto demais e quase acertou o armário.",
+    "label": 0,
+    "category": "situações de susto ou preocupação sem violência real, como acidente doméstico leve"
+  },
+  {
+    "text": "Pequena queda com uma cadeira alta, leve machucado, estamos monitorando.",
+    "label": 0,
+    "category": "bombeiro, policial ou socorrista relatando ocorrência de forma técnica e neutra"
+  },
+  {
+    "text": "Meu chefe riu muito quando eu disse que o problema era 'hardware' e não 'headware'.",
+    "label": 0,
+    "category": "humor e situações engraçadas do cotidiano"
+  },
+  {
+    "text": "Tá aí, gol absurdo! Que comemoração, tá parecendo um festival aqui!",
+    "label": 0,
+    "category": "torcida ou comemoração exaltada em jogo online, com gritos e palavrões sem ameaça real"
+  },
+  {
+    "text": "A gente sabe que a faca só aparece no jogo, e não na nossa casa.",
+    "label": 0,
+    "category": "jogos online multiplayer com trash talk e provocações entre jogadores sem violência real"
+  },
+  {
+    "text": "Ele tava numa floresta e quase foi capturado por um predador!",
+    "label": 0,
+    "category": "pessoas discutindo enredo de novela ou série com personagens em situação de perigo fictício"
+  },
+  {
+    "text": "Ele sempre diz que a carreira é a coisa mais importante da vida, concordo",
+    "label": 0,
+    "category": "trabalho e carreira de forma positiva"
+  },
+  {
+    "text": "Vi uma faca em meio àquela confusão, o medo era gigante.",
+    "label": 1,
+    "category": "ameaça com arma branca ou de fogo"
+  },
+  {
+    "text": "O que eu preciso é de alguém pra sair sem compromisso, sem pressão.",
+    "label": 0,
+    "category": "amizade e socialização descontraída"
+  },
+  {
+    "text": "Tinha que ter sido um pouquinho mais esperto nessa jogada.",
+    "label": 0,
+    "category": "streamer ou gamer comentando jogadas agressivas, mortes e eliminações no game"
+  },
+  {
+    "text": "Sempre me chama de babaca na frente de todo mundo, é humilhante.",
+    "label": 1,
+    "category": "assédio verbal: xingamentos e humilhação"
+  },
+  {
+    "text": "Aquele cara ficou sem saída e quase foi morto no elevador!",
+    "label": 0,
+    "category": "pessoas discutindo enredo de novela ou série com personagens em situação de perigo fictício"
+  },
+  {
+    "text": "Elas estão imitando cenas de super-heróis sem nem mesmo tocar nos brinquedos de verdade.",
+    "label": 0,
+    "category": "crianças brincando de luta, super-herói ou guerra de mentira sem agressão real"
+  },
+  {
+    "text": "Vítima chorando no canto, o gatão do meu amigo tá usando chantagem com minhas fotos.",
+    "label": 1,
+    "category": "chantagem e ameaça de expor fotos íntimas"
+  },
+  {
+    "text": "Puxei uma espinha na cara e fiquei meio morrendo de dó, mas sem dor.",
+    "label": 0,
+    "category": "uso de expressões populares hiperbólicas como 'me mato de rir', 'quase morri de susto', 'tô morta de cansaço'"
+  },
+  {
+    "text": "Em meio a tanta tensão da partida, falar ‘vou te matar’ é só uma forma de expressar o ódio virtual.",
+    "label": 0,
+    "category": "partida de FPS ou battle royale onde jogadores falam 'vou te matar', 'te destruo', 'morreu' no jogo"
+  },
+  {
+    "text": "Uma situação de violência terminou com uma lesão corporal grave.",
+    "label": 1,
+    "category": "ameaça de morte ou lesão corporal grave"
+  },
+  {
+    "text": "Sabe quando seu amigo fala que se sente bem mais com espiritualidade do que com religião? Eu também não entendo muito a diferença.",
+    "label": 0,
+    "category": "religião e espiritualidade serena"
+  },
+  {
+    "text": "Não tem nada melhor que a comida caseira, minha mãe faz de tudo!",
+    "label": 0,
+    "category": "alimentação e culinária"
+  },
+  {
+    "text": "Foi um golpe certeiro, esse cara manda bem!",
+    "label": 0,
+    "category": "comentarista ou lutador descrevendo golpes, nocautes e combates em luta esportiva"
+  },
+  {
+    "text": "Aquela vez que eu falei que não gostava daquele filme? Ele disse que eu era uma chata por não gostar.",
+    "label": 1,
+    "category": "manipulação emocional e gaslighting"
+  },
+  {
+    "text": "Ele sempre exagera quando brinca: 'Se eu não te cortar hoje, vai ser amanhã!'",
+    "label": 0,
+    "category": "brincadeiras e zoações entre amigos usando linguagem exagerada sem intenção real de ameaça"
+  },
+  {
+    "text": "Tenho que cuidar da minha segurança, estão querendo me prejudicar muito.",
+    "label": 1,
+    "category": "ameaça de morte ou lesão corporal grave"
+  },
+  {
+    "text": "Ele ameaçava que ia me chamar na rua se eu não me afastasse de amigos dele.",
+    "label": 1,
+    "category": "ameaça após separação ou término"
+  },
+  {
+    "text": "Cuidado com a faca na cozinha! Escorreguei e levei um susto, mas não machuquei nada",
+    "label": 0,
+    "category": "situações de susto ou preocupação sem violência real, como acidente doméstico leve"
+  },
+  {
+    "text": "Estou pensando em fazer uma estante com madeira pra organizar os livros.",
+    "label": 0,
+    "category": "bricolagem, marcenaria e trabalhos manuais em casa"
+  },
+  {
+    "text": "Quando tenho que consertar algo em casa, meu martelo é meu melhor companheiro.",
+    "label": 0,
+    "category": "uso cotidiano de ferramentas como tesoura, martelo, serrote em casa"
+  },
+  {
+    "text": "Alguém viu o novo evento de arte na praça? Não tinha tido notícia.",
+    "label": 0,
+    "category": "notícias e eventos culturais neutros"
+  },
+  {
+    "text": "O advogado sugere mudar a estratégia de defesa.",
+    "label": 0,
+    "category": "advogado, delegado ou promotor discutindo caso criminal em linguagem jurídica"
+  },
+  {
+    "text": "Ele é sempre ameaçador, querendo controlar por qualquer meio.",
+    "label": 1,
+    "category": "ameaça aos filhos ou familiares para controlar a vítima"
+  },
+  {
+    "text": "Eu sei que não é normal, mas é minha vida.",
+    "label": 1,
+    "category": "abuso sexual dentro do relacionamento"
+  },
+  {
+    "text": "Vou fazer uma 'limpinha' mesmo, não precisa de nada pesado, só um corte bem leve.",
+    "label": 0,
+    "category": "profissional de saúde, médico ou enfermeiro descrevendo procedimento cirúrgico ou acidente"
+  },
+  {
+    "text": "Ainda bem que a gente tem a internet, facilita bastante pra pesquisar e estudar.",
+    "label": 0,
+    "category": "educação e aprendizado"
+  },
+  {
+    "text": "É cada dia mais incrível o que a ciência e a tecnologia conseguem hoje.",
+    "label": 0,
+    "category": "tecnologia e ciência de forma informativa"
+  },
+  {
+    "text": "Meu chefe sempre fala sobre crimes reais como se fosse o melhor policial do mundo.",
+    "label": 0,
+    "category": "comentário sobre true crime, documentário policial ou podcast de crimes reais"
+  },
+  {
+    "text": "Aqui não é meu quarto, mas sinto-me como uma prisioneira.",
+    "label": 1,
+    "category": "cárcere privado dentro de casa"
+  },
+  {
+    "text": "Meu primo está preso, mas ao menos ele ainda pode ver seus familiares.",
+    "label": 1,
+    "category": "isolamento social: proibição de ver família e amigos"
+  },
+  {
+    "text": "As crianças na praça estão fazendo uma luta de super-heróis, só no imaginário, é tudo brincadeira.",
+    "label": 0,
+    "category": "crianças brincando de luta, super-herói ou guerra de mentira sem agressão real"
+  },
+  {
+    "text": "Se ele tenta me atacar com essa espada, só vai acabar cortando a cebola.",
+    "label": 0,
+    "category": "jogo de luta ou RPG com falas de personagens ameaçando inimigos fictícios"
+  },
+  {
+    "text": "Um direto que foi direto ao ponto!",
+    "label": 0,
+    "category": "comentarista ou lutador descrevendo golpes, nocautes e combates em luta esportiva"
+  },
+  {
+    "text": "Não aguento mais seus xingamentos, tá ficando chato pra caralho.",
+    "label": 1,
+    "category": "assédio verbal: xingamentos e humilhação"
+  },
+  {
+    "text": "Os meus amigos não entendem que planejamento é a única saída para não virar uma zona financeira.",
+    "label": 0,
+    "category": "finanças pessoais e planejamento"
+  },
+  {
+    "text": "A ex me mandou um áudio dizendo que vai fazer isso e aquilo comigo.",
+    "label": 1,
+    "category": "ameaça após separação ou término"
+  },
+  {
+    "text": "Lá em casa, meu pai sempre usa a faca de pão pra cortar os pães frescos.",
+    "label": 0,
+    "category": "culinária e preparo de refeições usando facas e utensílios de cozinha"
+  },
+  {
+    "text": "Só de pensar no que ele queria fazer, sinto meu coração acelerar de medo",
+    "label": 1,
+    "category": "estupro ou tentativa de estupro"
+  },
+  {
+    "text": "Ele ficou no chão depois de levar um chute no meio da rua.",
+    "label": 1,
+    "category": "agressão física: espancamento, murro, chute, empurrão"
+  },
+  {
+    "text": "Meu irmão botou um bebedouro no jardim, tá uma boa ideia.",
+    "label": 0,
+    "category": "decoração, casa e jardim"
+  },
+  {
+    "text": "O que estão fazendo com a natureza é uma vergonha!",
+    "label": 0,
+    "category": "natureza, clima e meio ambiente"
+  },
+  {
+    "text": "Na rua, todo mundo ouviu ele dizendo que você era um ladrão, que dó!",
+    "label": 1,
+    "category": "humilhação pública e difamação"
+  },
+  {
+    "text": "A outra mãe disse que isso é manipulação, mas não adianta nada falar.",
+    "label": 1,
+    "category": "ameaça de tirar os filhos como coação"
+  },
+  {
+    "text": "Nunca subestime um treino de boxe, sempre tem algo novo pra aprender.",
+    "label": 0,
+    "category": "treino de artes marciais, boxe ou MMA descrito de forma técnica e esportiva"
+  },
+  {
+    "text": "Tá, eu tava meio contra a ideia de ir pra praia, mas você explicou que dá pra ficar perto e o entendimento veio.",
+    "label": 0,
+    "category": "discussão acalorada entre pessoas que termina em entendimento mútuo"
+  },
+  {
+    "text": "Nada de erros, matei direto e ninguém vai me pegar!",
+    "label": 0,
+    "category": "streamer ou gamer comentando jogadas agressivas, mortes e eliminações no game"
+  },
+  {
+    "text": "Aqui no bairro, as crianças estão lutando de super-herói, é tudo muito divertido e sem agressão.",
+    "label": 0,
+    "category": "crianças brincando de luta, super-herói ou guerra de mentira sem agressão real"
+  },
+  {
+    "text": "Porra, tá mal aqui, ninguém veio, perigo total!",
+    "label": 1,
+    "category": "pedido de socorro em situação de perigo imediato"
+  },
+  {
+    "text": "No açougue, a faca do atendente cortou a carne com tanta facilidade que parecia quase mole.",
+    "label": 0,
+    "category": "açougue, pesca ou caça esportiva descrita de forma neutra"
+  },
+  {
+    "text": "A faca aqui é só pra picar, não pra ameaçar!",
+    "label": 0,
+    "category": "jogo de luta ou RPG com falas de personagens ameaçando inimigos fictícios"
+  },
+  {
+    "text": "Ele achou que estava sendo assaltado, mas no fim era um jogo!",
+    "label": 0,
+    "category": "pessoas discutindo enredo de novela ou série com personagens em situação de perigo fictício"
+  },
+  {
+    "text": "Cozinhar é arte, é preciso uma faca bem afiada pra cortar os ingredientes com perfeição.",
+    "label": 0,
+    "category": "culinária e preparo de refeições usando facas e utensílios de cozinha"
+  },
+  {
+    "text": "Se eu tivesse sabido que ele tava assim, nunca teria deixado ela ficar com ele.",
+    "label": 1,
+    "category": "violência durante a gravidez"
+  },
+  {
+    "text": "Ele quase não fala mais sobre os estudos, parece que a pressão está levando ele a abandonar tudo.",
+    "label": 1,
+    "category": "pressão para abandonar emprego ou estudos"
+  },
+  {
+    "text": "A gente nem imagina como as descobertas científicas vão transformar nossa vida.",
+    "label": 0,
+    "category": "tecnologia e ciência de forma informativa"
+  },
+  {
+    "text": "Aquele documentário de crimes reais me deixou muito triste, mas também me fez refletir sobre a sociedade.",
+    "label": 0,
+    "category": "comentário sobre true crime, documentário policial ou podcast de crimes reais"
+  },
+  {
+    "text": "Fiquei com uma dor nas costas durante o aquecimento, não sei se vai me prejudicar no jogo de hoje.",
+    "label": 0,
+    "category": "atleta relatando lesão ou momento de dor durante treino ou competição esportiva"
+  },
+  {
+    "text": "Ontem eu bati no porta-malas do carro do meu vizinho. O cara saiu e eu falei: 'Ei, tá tudo bem?' Ele só respondeu: 'O que foi?'",
+    "label": 0,
+    "category": "humor e situações engraçadas do cotidiano"
+  },
+  {
+    "text": "Me liga, se tiver alguém perto, tá mal aqui, é sério!",
+    "label": 1,
+    "category": "pedido de socorro em situação de perigo imediato"
+  },
+  {
+    "text": "Na última conversa com a minha irmã, ela disse que preciso fazer exames para uma melhor saúde.",
+    "label": 0,
+    "category": "saúde e bem-estar: consultas, exames, exercícios"
+  },
+  {
+    "text": "Tá quebrando tudo, esse jogo online vai pra memória dos fãs! Quem disse que não tem emoção aqui?",
+    "label": 0,
+    "category": "torcida ou comemoração exaltada em jogo online, com gritos e palavrões sem ameaça real"
+  },
+  {
+    "text": "Uma das minhas preferidas é a Batalha de Austerlitz, Napoleon mandando tudo pro espaço.",
+    "label": 0,
+    "category": "entusiasta de história descrevendo batalhas, guerras ou conflitos históricos"
+  },
+  {
+    "text": "Eu adoro falar sobre a Guerra do Pacífico, as estratégias japonesas eram super complexas.",
+    "label": 0,
+    "category": "entusiasta de história descrevendo batalhas, guerras ou conflitos históricos"
+  },
+  {
+    "text": "Ele só sabe mesmo é bater e ninguém se importa, a família toda só finge.",
+    "label": 1,
+    "category": "violência praticada por familiar ou parente"
+  },
+  {
+    "text": "Ele ameaça sempre que eu falo com meus pais, diz que vai dizer o que ele faz a eles.",
+    "label": 1,
+    "category": "ameaça aos filhos ou familiares para controlar a vítima"
+  },
+  {
+    "text": "Meu ex me mandou uma mensagem, ameaçando me expor com aquelas fotos que não quero que ninguém veja.",
+    "label": 1,
+    "category": "chantagem e ameaça de expor fotos íntimas"
+  },
+  {
+    "text": "A minha tia me contou que o seu irmão a agrediu, mas ela não quis denunciar.",
+    "label": 1,
+    "category": "violência praticada por familiar ou parente"
+  },
+  {
+    "text": "Tivemos que sentar e falar direitinho sobre o que aconteceu, sem gritos. Resolvemos em paz.",
+    "label": 0,
+    "category": "discussão construtiva e resolução pacífica de conflitos"
+  },
+  {
+    "text": "Nem olhando você vai entender, mas xinga mesmo assim.",
+    "label": 1,
+    "category": "assédio verbal: xingamentos e humilhação"
+  },
+  {
+    "text": "Passei a manhã toda cortando as ervas daninhas, que sujeira!",
+    "label": 0,
+    "category": "jardinagem e uso de ferramentas de corte no jardim"
+  },
+  {
+    "text": "É tanta provocação que acaba parecendo piada do grupo, mas ninguém leva a sério.",
+    "label": 0,
+    "category": "jogos online multiplayer com trash talk e provocações entre jogadores sem violência real"
+  },
+  {
+    "text": "A gente até tava um pouco acalorada, mas no final deu tudo certo.",
+    "label": 0,
+    "category": "discussão acalorada entre pessoas que termina em entendimento mútuo"
+  },
+  {
+    "text": "Achei que tivesse achado uma pessoa confiável, mas percebi que ele só queria saber de mais.",
+    "label": 1,
+    "category": "stalking digital: monitoramento de redes e mensagens"
+  },
+  {
+    "text": "As pessoas não sabem cuidar dos bichinhos direito, sempre ta algo errado.",
+    "label": 0,
+    "category": "cuidado de pets e animais"
+  },
+  {
+    "text": "A discussão sobre o presente para o aniversário tava quente, mas aí a gente viu que um presente antigo é o melhor.",
+    "label": 0,
+    "category": "discussão acalorada entre pessoas que termina em entendimento mútuo"
+  },
+  {
+    "text": "Achei que fosse só cansaço, mas a dor na minha panturrilha veio rápido.",
+    "label": 0,
+    "category": "atleta relatando lesão ou momento de dor durante treino ou competição esportiva"
+  },
+  {
+    "text": "Aqui, não tem negócio sem tesoura, martelo e serrote!",
+    "label": 0,
+    "category": "uso cotidiano de ferramentas como tesoura, martelo, serrote em casa"
+  },
+  {
+    "text": "Tem que acertar todos os detalhes antes da festa, não quero nenhum imprevisto.",
+    "label": 0,
+    "category": "planejamento de festas e comemorações"
+  },
+  {
+    "text": "Meu primo tá reclamando pra mim que não consegue aprender nada com o professor, tá até falando de sair da escola",
+    "label": 0,
+    "category": "educação e aprendizado"
+  },
+  {
+    "text": "A Guerra Civil Espanhola tem uns acontecimentos tão marcantes!",
+    "label": 0,
+    "category": "entusiasta de história descrevendo batalhas, guerras ou conflitos históricos"
+  },
+  {
+    "text": "Tem uma arma aqui, alguém me salva, ele não vai parar!",
+    "label": 1,
+    "category": "pedido de socorro em situação de perigo imediato"
+  },
+  {
+    "text": "Tô cansado de olhar essa decoração tão cafona, tá na hora de dar um toque moderno na casa.",
+    "label": 0,
+    "category": "decoração, casa e jardim"
+  },
+  {
+    "text": "Não se preocupe com esse adversário, ele só fala pra não te acertar com a faca.",
+    "label": 0,
+    "category": "jogo de luta ou RPG com falas de personagens ameaçando inimigos fictícios"
+  },
+  {
+    "text": "Pelo telefone, ele sempre fala o mesmo: 'ainda estou na rotina, nada de novo'. Cada dia parece um clone do outro.",
+    "label": 0,
+    "category": "rotina e atividades cotidianas neutras"
+  },
+  {
+    "text": "Fizemos o resgate de um gato preso em uma árvore.",
+    "label": 0,
+    "category": "bombeiro, policial ou socorrista relatando ocorrência de forma técnica e neutra"
+  },
+  {
+    "text": "Que merda é essa, mas a comemoração só aumentou! Tá parecendo a loucura total!",
+    "label": 0,
+    "category": "torcida ou comemoração exaltada em jogo online, com gritos e palavrões sem ameaça real"
+  },
+  {
+    "text": "A defesa se baseia na alegação de inexistência de intenção criminosa.",
+    "label": 0,
+    "category": "advogado, delegado ou promotor discutindo caso criminal em linguagem jurídica"
+  },
+  {
+    "text": "Você está me ajudando com as comidas daqui a pouco ou fica falando somente? A festa é sexta!",
+    "label": 0,
+    "category": "planejamento de festas e comemorações"
+  },
+  {
+    "text": "Nas aulas de filosofia sempre fico discutindo com os outros alunos sobre o que é aprender mesmo, parece que a educação é só formalismo",
+    "label": 0,
+    "category": "educação e aprendizado"
+  },
+  {
+    "text": "Sempre achei que a verdadeira espiritualidade era algo que não precisava de uma igreja para existir.",
+    "label": 0,
+    "category": "religião e espiritualidade serena"
+  },
+  {
+    "text": "Cara, nem falo, ao abrir a geladeira de repente quase que eu tombo do susto!",
+    "label": 0,
+    "category": "pessoas relatando susto, nervosismo ou medo sem situação de perigo real"
+  },
+  {
+    "text": "Ouçam, eu estou no beco do 23, alguém pode vir me socorrer? É um sequestro, não tenho mais escolha.",
+    "label": 1,
+    "category": "pedido de socorro em situação de perigo imediato"
+  },
+  {
+    "text": "Vou ao ginásio todo dia, nunca falta aula de spinning.",
+    "label": 0,
+    "category": "esportes e atividade física"
+  },
+  {
+    "text": "Puta que pariu, que lance, só podia ser você!",
+    "label": 0,
+    "category": "torcida ou comemoração exaltada em jogo online, com gritos e palavrões sem ameaça real"
+  },
+  {
+    "text": "Até minha filha de 10 anos já ouviu gente falando coisas horríveis de mim.",
+    "label": 1,
+    "category": "assédio verbal: xingamentos e humilhação"
+  },
+  {
+    "text": "Ele não fala direto, usa esses duplos sentidos pra te intimidir.",
+    "label": 1,
+    "category": "ameaça velada e linguagem de duplo sentido intimidatória"
+  },
+  {
+    "text": "O sujeito falou que você era um criminoso perante todos na assembleia, foi uma pena.",
+    "label": 1,
+    "category": "humilhação pública e difamação"
+  },
+  {
+    "text": "Eu sempre ajudo os amigos nos treinos, mas eles nunca retribuem o esforço.",
+    "label": 0,
+    "category": "esportes e atividade física"
+  },
+  {
+    "text": "Você já se pegou imaginando como seria lutar na Guerra dos Cem Anos?",
+    "label": 0,
+    "category": "entusiasta de história descrevendo batalhas, guerras ou conflitos históricos"
+  },
+  {
+    "text": "De segunda a sexta a rotina é a mesma, só que ao sábado é diferente.",
+    "label": 0,
+    "category": "rotina e atividades cotidianas neutras"
+  },
+  {
+    "text": "Ele ameaça que vai acabar comigo se eu não me submeter.",
+    "label": 1,
+    "category": "abuso sexual dentro do relacionamento"
+  },
+  {
+    "text": "Mano, vou colocar umas plantas na varanda pra dar uma renovada no jardim.",
+    "label": 0,
+    "category": "decoração, casa e jardim"
+  },
+  {
+    "text": "Só agora eu percebo que ele nunca me quis de verdade",
+    "label": 1,
+    "category": "revenge porn: divulgação de conteúdo íntimo"
+  },
+  {
+    "text": "Ele ameaça mandar as fotos de vez em quando, é uma tortura constante.",
+    "label": 1,
+    "category": "chantagem e ameaça de expor fotos íntimas"
+  },
+  {
+    "text": "Ainda vou para a rua que sempre tem alguém me observando.",
+    "label": 1,
+    "category": "perseguição e stalking presencial"
+  },
+  {
+    "text": "Me dá uma palavra de encorajamento, por favor. Preciso disso pra sobreviver.",
+    "label": 0,
+    "category": "apoio emocional e palavras de encorajamento"
+  },
+  {
+    "text": "O negócio é: empreendedorismo criativo é massa, mas é briga pra caramba.",
+    "label": 0,
+    "category": "empreendedorismo e projetos criativos"
+  },
+  {
+    "text": "Ela é tão machucada, mas tá tão medo de contar que fica em casa o tempo todo",
+    "label": 1,
+    "category": "abuso sexual dentro do relacionamento"
+  },
+  {
+    "text": "Meio ambiente é um problema real e ninguém fala nada sobre isso.",
+    "label": 0,
+    "category": "natureza, clima e meio ambiente"
+  },
+  {
+    "text": "Ele me agarrou e eu só pensei em como nunca mais vou conseguir olhar pra ele sem medo",
+    "label": 1,
+    "category": "estupro ou tentativa de estupro"
+  },
+  {
+    "text": "Amigos falam para eu largar o curso, mas não vou deixar a pressão me vencer.",
+    "label": 1,
+    "category": "pressão para abandonar emprego ou estudos"
+  },
+  {
+    "text": "Na série, eles entram em tantos perigos fictícios que até dá pra sentir uma adrenalina falsificada.",
+    "label": 0,
+    "category": "pessoas discutindo enredo de novela ou série com personagens em situação de perigo fictício"
+  },
+  {
+    "text": "Meus irmãos não conseguem mais me dar um abraço, é um pesadelo.",
+    "label": 1,
+    "category": "isolamento social: proibição de ver família e amigos"
+  },
+  {
+    "text": "Não precisa ameaçar com faca aqui, só vou preparar o prato!",
+    "label": 0,
+    "category": "jogo de luta ou RPG com falas de personagens ameaçando inimigos fictícios"
+  },
+  {
+    "text": "Ela não tá falando muito, devia ter ido pra um psicólogo, é preciso curar.",
+    "label": 1,
+    "category": "estupro ou tentativa de estupro"
+  },
+  {
+    "text": "Acho que eu não vou conseguir escapar dessa.",
+    "label": 1,
+    "category": "abuso sexual dentro do relacionamento"
+  },
+  {
+    "text": "Ele me pede para manter segredo, diz que ninguém pode saber.",
+    "label": 1,
+    "category": "abuso sexual dentro do relacionamento"
+  },
+  {
+    "text": "A veterinária me contou que muitos pets ficam com problemas de saúde por falta de cuidados.",
+    "label": 0,
+    "category": "cuidado de pets e animais"
+  },
+  {
+    "text": "Ele se afastou de tudo, não queria mais encara ninguém depois daquela vergonha.",
+    "label": 1,
+    "category": "humilhação pública e difamação"
+  },
+  {
+    "text": "No chat as pessoas só fazem piração com falas, mas na realidade é tudo bem tranquilo.",
+    "label": 0,
+    "category": "jogos online multiplayer com trash talk e provocações entre jogadores sem violência real"
+  },
+  {
+    "text": "Ah, esse novo filme não teve nada de novo, tipo, nem a música pegou.",
+    "label": 0,
+    "category": "música, filmes, séries e entretenimento"
+  },
+  {
+    "text": "Perna toda inflamada, acho que foi alguma distensão.",
+    "label": 0,
+    "category": "atleta relatando lesão ou momento de dor durante treino ou competição esportiva"
+  },
+  {
+    "text": "Olha, a galera aqui está só falando do teu sucesso incrível.",
+    "label": 0,
+    "category": "elogios e reconhecimento entre pessoas"
+  },
+  {
+    "text": "Esse aí quando fala que vai te acertar com a tesoura só quer enrolar, não liga pros seus nervos!",
+    "label": 0,
+    "category": "brincadeiras e zoações entre amigos usando linguagem exagerada sem intenção real de ameaça"
+  },
+  {
+    "text": "Vai se achar, mas ninguém merece xingamento.",
+    "label": 1,
+    "category": "assédio verbal: xingamentos e humilhação"
+  },
+  {
+    "text": "Naquela noite, a gente percebeu tarde demais, ele ia conseguir.",
+    "label": 1,
+    "category": "estupro ou tentativa de estupro"
+  },
+  {
+    "text": "Quem vai pagar pra alugar a tenda? Está caro demais.",
+    "label": 0,
+    "category": "planejamento de festas e comemorações"
+  },
+  {
+    "text": "É fácil xingar, mas não vai resolver nada.",
+    "label": 1,
+    "category": "assédio verbal: xingamentos e humilhação"
+  },
+  {
+    "text": "No meio da competição, senti uma dor de estômago que atrapalhou.",
+    "label": 0,
+    "category": "atleta relatando lesão ou momento de dor durante treino ou competição esportiva"
+  },
+  {
+    "text": "Eu pesquei uma corvina imensa, hoje vai ter muito peixe no jantar.",
+    "label": 0,
+    "category": "açougue, pesca ou caça esportiva descrita de forma neutra"
+  },
+  {
+    "text": "Me chamaram pra testemunhar, o barulho que ele fez foi nojento.",
+    "label": 1,
+    "category": "violência durante a gravidez"
+  },
+  {
+    "text": "Meu vizinho reclama todo santo dia por causa do cachorro que fica latindo do meu lado.",
+    "label": 0,
+    "category": "cuidado de pets e animais"
+  },
+  {
+    "text": "Ao contrário do que dizem, a religião nem sempre traz a paz espiritual que promete.",
+    "label": 0,
+    "category": "religião e espiritualidade serena"
+  },
+  {
+    "text": "O meu lazer preferido é jogar futebol na praça, e lá é onde eu me sinto mais feliz.",
+    "label": 0,
+    "category": "lazer, viagens e hobbies"
+  },
+  {
+    "text": "A minha sobrinha tem medo dele, ele ameaça ela todo dia.",
+    "label": 1,
+    "category": "ameaça aos filhos ou familiares para controlar a vítima"
+  },
+  {
+    "text": "É engraçado, nem dá pra confiar nas notícias de eventos culturais agora.",
+    "label": 0,
+    "category": "notícias e eventos culturais neutros"
+  },
+  {
+    "text": "Os meninos não estão brigando de verdade, só divertindo-se com suas fantasias de super-herói.",
+    "label": 0,
+    "category": "crianças brincando de luta, super-herói ou guerra de mentira sem agressão real"
+  },
+  {
+    "text": "Já nem to conseguindo falar com meus parentes, essa proibição é uma crueldade.",
+    "label": 1,
+    "category": "isolamento social: proibição de ver família e amigos"
+  },
+  {
+    "text": "Aqui no bairro a natureza tá ficando cada vez mais desprezada, nem parece que tem mata lá do lado.",
+    "label": 0,
+    "category": "natureza, clima e meio ambiente"
+  },
+  {
+    "text": "A minha lombar tá pedindo socorro, acho que fiz alguma coisa errada.",
+    "label": 0,
+    "category": "atleta relatando lesão ou momento de dor durante treino ou competição esportiva"
+  },
+  {
+    "text": "Nós precisamos revisar minuciosamente o arquivo de provas para encontrar qualquer brecha.",
+    "label": 0,
+    "category": "advogado, delegado ou promotor discutindo caso criminal em linguagem jurídica"
+  },
+  {
+    "text": "A gente só fica por mensagem, mas é só descontração.",
+    "label": 0,
+    "category": "amizade e socialização descontraída"
+  },
+  {
+    "text": "Cê vê como é, esse negócio de ficar sem ver ninguém é uma tortura.",
+    "label": 1,
+    "category": "isolamento social: proibição de ver família e amigos"
+  },
+  {
+    "text": "Vi no Instagram, aquele casal lindo, mas nos bastidores é outra história.",
+    "label": 0,
+    "category": "relacionamento amoroso saudável e respeitoso"
+  },
+  {
+    "text": "Aqui no jardim, sempre quebro umas coisas, mas já vira pra mim.",
+    "label": 0,
+    "category": "jardinagem e uso de ferramentas de corte no jardim"
+  },
+  {
+    "text": "Fiquei até com medo de sair de casa, até no shopping ele aparece, sério.",
+    "label": 1,
+    "category": "perseguição e stalking presencial"
+  },
+  {
+    "text": "Estou cansada desses festejões, quero algo pequeno e só para nós.",
+    "label": 0,
+    "category": "planejamento de festas e comemorações"
+  },
+  {
+    "text": "A caça esportiva de hoje foi um sucesso, cheia de peixes para o almoço.",
+    "label": 0,
+    "category": "açougue, pesca ou caça esportiva descrita de forma neutra"
+  },
+  {
+    "text": "Dor na panturrilha, talvez tenha sido uma sobrecarga.",
+    "label": 0,
+    "category": "atleta relatando lesão ou momento de dor durante treino ou competição esportiva"
+  },
+  {
+    "text": "Meu primo sempre foi briguento, mas dessa vez ele foi além e atacou meu irmão.",
+    "label": 1,
+    "category": "violência praticada por familiar ou parente"
+  },
+  {
+    "text": "Quero aprender a cortar com faca de sushi, já estou louca pra experimentar.",
+    "label": 0,
+    "category": "culinária e preparo de refeições usando facas e utensílios de cozinha"
+  },
+  {
+    "text": "Eu estou com medo, já ameaçaram minha vida direto no WhatsApp.",
+    "label": 1,
+    "category": "ameaça de morte ou lesão corporal grave"
+  },
+  {
+    "text": "O ex ficou falando que ia me matar se eu não fizesse o que ele mandou.",
+    "label": 1,
+    "category": "ameaça após separação ou término"
+  },
+  {
+    "text": "O apoio emocional é tudo pra mim. Se pudesse te ver agora, me daria uma força?",
+    "label": 0,
+    "category": "apoio emocional e palavras de encorajamento"
+  },
+  {
+    "text": "Ele se jogou e deu um murro no cara que nem fez nada.",
+    "label": 1,
+    "category": "agressão física: espancamento, murro, chute, empurrão"
+  },
+  {
+    "text": "Conheço pessoas que se perdem na religião e acabam achando que é o caminho para a paz, mas na verdade só geram mais conflito.",
+    "label": 0,
+    "category": "religião e espiritualidade serena"
+  },
+  {
+    "text": "A faca só será usada pra fazer uma pequena abertura, tudo sob controle.",
+    "label": 0,
+    "category": "profissional de saúde, médico ou enfermeiro descrevendo procedimento cirúrgico ou acidente"
+  },
+  {
+    "text": "Puta jogo, tá implodindo o adversário!",
+    "label": 0,
+    "category": "torcida ou comemoração exaltada em jogo online, com gritos e palavrões sem ameaça real"
+  },
+  {
+    "text": "Aquele cara no game só fala que vai me vencer, mas não sabe nem se orientar no mapa.",
+    "label": 0,
+    "category": "jogos online multiplayer com trash talk e provocações entre jogadores sem violência real"
+  },
+  {
+    "text": "Achei que a gente ia brigar sobre o menu da semana, mas aí a gente viu que pode incluir o que todo mundo gosta.",
+    "label": 0,
+    "category": "discussão acalorada entre pessoas que termina em entendimento mútuo"
+  },
+  {
+    "text": "Você não resolve nada com a boca, é preciso sentar e falar.",
+    "label": 0,
+    "category": "discussão construtiva e resolução pacífica de conflitos"
+  },
+  {
+    "text": "Até que deu certo no final, nem sei como a gente chegou nesse entendimento.",
+    "label": 0,
+    "category": "discussão acalorada entre pessoas que termina em entendimento mútuo"
+  },
+  {
+    "text": "Aqui não há liberdade, é um verdadeiro cárcere privado.",
+    "label": 1,
+    "category": "cárcere privado dentro de casa"
+  },
+  {
+    "text": "Espera, tá brincando? Não me deixe fazer algo com a sua irmã.",
+    "label": 1,
+    "category": "ameaça aos filhos ou familiares para controlar a vítima"
+  },
+  {
+    "text": "Eu sou fã da série, a música do encerramento é inesquecível.",
+    "label": 0,
+    "category": "música, filmes, séries e entretenimento"
+  },
+  {
+    "text": "Não vou aguentar mais, ninguém veio, preciso ajuda, por favor!",
+    "label": 1,
+    "category": "pedido de socorro em situação de perigo imediato"
+  },
+  {
+    "text": "Ele disse: 'Jogue o dinheiro na mala, ou te atiro aqui mesmo', com uma faca de verdade.",
+    "label": 1,
+    "category": "ameaça com arma branca ou de fogo"
+  },
+  {
+    "text": "A gente não pode deixar de ajudar o próximo, isso é uma questão de solidariedade.",
+    "label": 0,
+    "category": "voluntariado e solidariedade"
+  },
+  {
+    "text": "Quando derem um tempo e voltam a conversar, tudo tende a se acertar.",
+    "label": 0,
+    "category": "discussão construtiva e resolução pacífica de conflitos"
+  },
+  {
+    "text": "Minha mãe falou que já tava cheia dos bichinhos vizinhos sem dono tomando conta da calçada.",
+    "label": 0,
+    "category": "cuidado de pets e animais"
+  },
+  {
+    "text": "Ele deixou o cachorro no apartamento, mas agora diz que tá cansado de cuidar.",
+    "label": 0,
+    "category": "cuidado de pets e animais"
+  },
+  {
+    "text": "Ele ameaça todas as vezes que ela pensa em pedir ajuda.",
+    "label": 1,
+    "category": "violência doméstica e controle coercitivo"
+  },
+  {
+    "text": "Um sonho horroroso me acordando, meu guarda-roupas virou um pacote de massa.",
+    "label": 0,
+    "category": "pessoa relatando pesadelo, sonho ruim ou cena assustadora de forma descontraída"
+  },
+  {
+    "text": "Essa massa de pizza está ficando ótima, tá preciso de mais uma mão para modelar as bordas.",
+    "label": 0,
+    "category": "culinária e preparo de refeições usando facas e utensílios de cozinha"
+  },
+  {
+    "text": "Queixo abatido, adversário em pé só pela coragem!",
+    "label": 0,
+    "category": "comentarista ou lutador descrevendo golpes, nocautes e combates em luta esportiva"
+  },
+  {
+    "text": "Estou sempre um pouco tensa quando vou passar a faca pela massa.",
+    "label": 0,
+    "category": "pessoas relatando susto, nervosismo ou medo sem situação de perigo real"
+  },
+  {
+    "text": "Realizamos o transporte de uma vítima de uma queda de escada para o hospital.",
+    "label": 0,
+    "category": "bombeiro, policial ou socorrista relatando ocorrência de forma técnica e neutra"
+  },
+  {
+    "text": "Estou numa luta constante, não tem mágica para as finanças pessoais.",
+    "label": 0,
+    "category": "finanças pessoais e planejamento"
+  },
+  {
+    "text": "Quando chego em casa, a minha calça sempre bagunça mais ainda depois do dia todo.",
+    "label": 0,
+    "category": "humor e situações engraçadas do cotidiano"
+  },
+  {
+    "text": "No açougue o balcão de carnes vermelhas é sempre o mais movimentado.",
+    "label": 0,
+    "category": "açougue, pesca ou caça esportiva descrita de forma neutra"
+  },
+  {
+    "text": "O desentendimento sobre qual sobremesa escolher na cafeteria foi acalorado, mas acabamos combinando um doce que todos aprovaram.",
+    "label": 0,
+    "category": "discussão acalorada entre pessoas que termina em entendimento mútuo"
+  },
+  {
+    "text": "Tô em grave perigo, me ajuda logo, não aguento mais!",
+    "label": 1,
+    "category": "pedido de socorro em situação de perigo imediato"
+  },
+  {
+    "text": "Eu só vou matar, ninguém escapa dessa!",
+    "label": 0,
+    "category": "streamer ou gamer comentando jogadas agressivas, mortes e eliminações no game"
+  },
+  {
+    "text": "Ao encontrar um prato no chão, quase me derreti de medo.",
+    "label": 0,
+    "category": "pessoas relatando susto, nervosismo ou medo sem situação de perigo real"
+  },
+  {
+    "text": "Cara, se você aparecer aqui com sua faca, a gente vai ter que resolver isso fora!",
+    "label": 0,
+    "category": "jogo de luta ou RPG com falas de personagens ameaçando inimigos fictícios"
+  },
+  {
+    "text": "Eu estou preso em casa, sem nenhum direito, é um cárcere privado.",
+    "label": 1,
+    "category": "cárcere privado dentro de casa"
+  },
+  {
+    "text": "Tá só uma tesoura fina para dar um acabamento aqui.",
+    "label": 0,
+    "category": "profissional de saúde, médico ou enfermeiro descrevendo procedimento cirúrgico ou acidente"
+  },
+  {
+    "text": "A pressão para largar o estudo ta grande, mas se não conseguir um resultado, é o fim.",
+    "label": 1,
+    "category": "pressão para abandonar emprego ou estudos"
+  },
+  {
+    "text": "Pra ela, cortar o pão com a faca certa faz toda a diferença no acabamento.",
+    "label": 0,
+    "category": "culinária e preparo de refeições usando facas e utensílios de cozinha"
+  },
+  {
+    "text": "Ela não tem mais controle sobre nada, tudo é decisão minha.",
+    "label": 1,
+    "category": "violência doméstica e controle coercitivo"
+  },
+  {
+    "text": "Quase engasguei com meu café só de olhar para um pote de açúcar.",
+    "label": 0,
+    "category": "pessoas relatando susto, nervosismo ou medo sem situação de perigo real"
+  },
+  {
+    "text": "Aqui não é lar, é um cárcere privado sem saída.",
+    "label": 1,
+    "category": "cárcere privado dentro de casa"
+  },
+  {
+    "text": "Na próxima vez que eu me sentir mal, não vou deixar de ir no médico não.",
+    "label": 0,
+    "category": "saúde e bem-estar: consultas, exames, exercícios"
+  },
+  {
+    "text": "O professor falou que os avanços em inteligência artificial podem transformar tudo, até a forma de ensinar.",
+    "label": 0,
+    "category": "tecnologia e ciência de forma informativa"
+  },
+  {
+    "text": "Ela chorava na esquina, disse que o namorado deu um murro que a jogou no chão.",
+    "label": 1,
+    "category": "agressão física: espancamento, murro, chute, empurrão"
+  },
+  {
+    "text": "Vi ela no grupo do WhatsApp chorando, alguém contou que ele quase matou ela depois que terminaram.",
+    "label": 1,
+    "category": "ameaça após separação ou término"
+  },
+  {
+    "text": "Na lavanderia self-service, uma disputa entre duas pessoas ficou tensa.",
+    "label": 0,
+    "category": "jornalista ou repórter noticiando fato violento de forma objetiva e impessoal"
+  },
+  {
+    "text": "E aí, na outra parte do mapa, acabei de matar sem ser visto!",
+    "label": 0,
+    "category": "streamer ou gamer comentando jogadas agressivas, mortes e eliminações no game"
+  },
+  {
+    "text": "Aqui é a Central, alguém pode nos dizer onde você está? Estamos indo agora, mas precisamos mais detalhes.",
+    "label": 1,
+    "category": "pedido de socorro em situação de perigo imediato"
+  },
+  {
+    "text": "A minha irmã contou que um cara ameaçou colocá-la no hospital.",
+    "label": 1,
+    "category": "ameaça de morte ou lesão corporal grave"
+  },
+  {
+    "text": "Nada de anormal aqui, apenas uma faca que caiu no chão",
+    "label": 0,
+    "category": "bombeiro, policial ou socorrista relatando ocorrência de forma técnica e neutra"
+  },
+  {
+    "text": "Não sei se ele está brincando ou realmente se tem intenção.",
+    "label": 1,
+    "category": "ameaça velada e linguagem de duplo sentido intimidatória"
+  },
+  {
+    "text": "Achei que ele fosse alguém de confiança, nem imaginava que fosse fazer isso",
+    "label": 1,
+    "category": "revenge porn: divulgação de conteúdo íntimo"
+  },
+  {
+    "text": "Ficamos na mesma fila no banco e conversamos sobre o mesmo jornal.",
+    "label": 0,
+    "category": "rotina e atividades cotidianas neutras"
+  },
+  {
+    "text": "Se eu fosse ela, provavelmente não voltaria para lá depois do que ele fez.",
+    "label": 1,
+    "category": "assédio sexual no trabalho"
+  },
+  {
+    "text": "A cada dia, ele deixa de ser só um ex e parece um perigo real.",
+    "label": 1,
+    "category": "ameaça após separação ou término"
+  },
+  {
+    "text": "Esse cara não tem noção do que disse, mas ele falou que se eu terminasse com ele, ele ia me matar.",
+    "label": 1,
+    "category": "ameaça após separação ou término"
+  },
+  {
+    "text": "Incrível, esse lance de bicicleta foi demais!",
+    "label": 0,
+    "category": "torcida ou comemoração exaltada em jogo online, com gritos e palavrões sem ameaça real"
+  },
+  {
+    "text": "O enredo da novela tem momentos tão intensos que a gente quase se assusta!",
+    "label": 0,
+    "category": "pessoas discutindo enredo de novela ou série com personagens em situação de perigo fictício"
+  },
+  {
+    "text": "Uso a tesoura de jardim pra cortar as folhas que vão para o composte.",
+    "label": 0,
+    "category": "jardinagem e uso de ferramentas de corte no jardim"
+  },
+  {
+    "text": "Tá todo mundo revoltado com quem compartilhou as fotos, é uma falta de consideração total.",
+    "label": 1,
+    "category": "revenge porn: divulgação de conteúdo íntimo"
+  },
+  {
+    "text": "Sempre fico de olho quando alguém se aproxima, não sei mais confiar.",
+    "label": 1,
+    "category": "perseguição e stalking presencial"
+  },
+  {
+    "text": "Não precisa usar faca de punho, aqui só temos ferramentas de cozinha!",
+    "label": 0,
+    "category": "jogo de luta ou RPG com falas de personagens ameaçando inimigos fictícios"
+  },
+  {
+    "text": "Fiquei pensando se o celular poderia ter sido usado para uma chantagem. As mensagens mostram contato frequente.",
+    "label": 0,
+    "category": "advogado, delegado ou promotor discutindo caso criminal em linguagem jurídica"
+  },
+  {
+    "text": "O clima no meu bairro tá esquisito, todo dia tá uma loucura.",
+    "label": 0,
+    "category": "natureza, clima e meio ambiente"
+  },
+  {
+    "text": "Na última partida de battle royale, ‘te destruo’ era tipo a frase que mais ouvi, tudo bem leve.",
+    "label": 0,
+    "category": "partida de FPS ou battle royale onde jogadores falam 'vou te matar', 'te destruo', 'morreu' no jogo"
+  },
+  {
+    "text": "O cara deu uma caçada hoje no rio e trouxe uns peixes fresquinhos pra fazer um arroz de lagosta.",
+    "label": 0,
+    "category": "açougue, pesca ou caça esportiva descrita de forma neutra"
+  },
+  {
+    "text": "Viu essa tesoura? Sempre uso ela pra cortar papel ou até mesmo fios de cabelo no meu dia a dia.",
+    "label": 0,
+    "category": "uso cotidiano de ferramentas como tesoura, martelo, serrote em casa"
+  },
+  {
+    "text": "Ela me diz que me ama, mas não demonstra de jeito nenhum.",
+    "label": 0,
+    "category": "relacionamento amoroso saudável e respeitoso"
+  },
+  {
+    "text": "O cara tentou se defender e acabou espancando a mulher.",
+    "label": 1,
+    "category": "agressão física: espancamento, murro, chute, empurrão"
+  },
+  {
+    "text": "A última peça de teatro no centro foi muito legal, recomendo pra todo mundo.",
+    "label": 0,
+    "category": "notícias e eventos culturais neutros"
+  },
+  {
+    "text": "Tá bom, a gente não fala, mas ninguém liga mais pra essas coisas, a notícia é só para os mais interessados.",
+    "label": 0,
+    "category": "notícias e eventos culturais neutros"
+  },
+  {
+    "text": "Na esquina, as crianças estão se fantasiando de super-heróis, só é brincadeira e tudo muito seguro.",
+    "label": 0,
+    "category": "crianças brincando de luta, super-herói ou guerra de mentira sem agressão real"
+  },
+  {
+    "text": "Será que o cancelamento desse evento foi por falta de interesse?",
+    "label": 0,
+    "category": "notícias e eventos culturais neutros"
+  },
+  {
+    "text": "Quase chorei quando o espremedor de limão caiu.",
+    "label": 0,
+    "category": "pessoas relatando susto, nervosismo ou medo sem situação de perigo real"
+  },
+  {
+    "text": "Os jogadores de FPS ficam exaustos falando ‘vou te matar’ quando o adversário quase os pega.",
+    "label": 0,
+    "category": "partida de FPS ou battle royale onde jogadores falam 'vou te matar', 'te destruo', 'morreu' no jogo"
+  },
+  {
+    "text": "Um amigo deu detalhes de como quase foi atacado e ficou ferido.",
+    "label": 1,
+    "category": "ameaça de morte ou lesão corporal grave"
+  },
+  {
+    "text": "Às vezes, eu fico imaginando como seria se eu tivesse que lidar com uma história desse tipo, tipo de documentário.",
+    "label": 0,
+    "category": "comentário sobre true crime, documentário policial ou podcast de crimes reais"
+  },
+  {
+    "text": "Se tem alguma raiva, por que não fala direito em vez de xingar?",
+    "label": 1,
+    "category": "assédio verbal: xingamentos e humilhação"
+  },
+  {
+    "text": "Por mais que pareça uma coisa antiga, não deixa de ser um grande problema.",
+    "label": 1,
+    "category": "assédio sexual no trabalho"
+  },
+  {
+    "text": "O Renato é o cara da turma, todo mundo sabe.",
+    "label": 0,
+    "category": "elogios e reconhecimento entre pessoas"
+  },
+  {
+    "text": "Já vi várias pessoas saindo por causa dessa pressão do trabalho ou dos estudos.",
+    "label": 1,
+    "category": "pressão para abandonar emprego ou estudos"
+  },
+  {
+    "text": "A amiga dela viu de longe, mas viu um cara ser espancado brutalmente na praça.",
+    "label": 1,
+    "category": "agressão física: espancamento, murro, chute, empurrão"
+  },
+  {
+    "text": "O cara ficou preso em um elevador com um bandido armado!",
+    "label": 0,
+    "category": "pessoas discutindo enredo de novela ou série com personagens em situação de perigo fictício"
+  },
+  {
+    "text": "Nada como um bonitão bem cuidadoso pra cortar alho e cebola sem ter drama na cozinha.",
+    "label": 0,
+    "category": "culinária e preparo de refeições usando facas e utensílios de cozinha"
+  },
+  {
+    "text": "Aqui em casa, finanças pessoais é como lidar com um problema sem solução.",
+    "label": 0,
+    "category": "finanças pessoais e planejamento"
+  },
+  {
+    "text": "Ué, quase te bloqueei, mas aí você foi naquela outra rota.",
+    "label": 0,
+    "category": "streamer ou gamer comentando jogadas agressivas, mortes e eliminações no game"
+  },
+  {
+    "text": "A gente não pode esquecer, precisa ajudar as vítimas.",
+    "label": 1,
+    "category": "estupro ou tentativa de estupro"
+  },
+  {
+    "text": "Porque eu não posso ter uma vida sem perseguições?",
+    "label": 1,
+    "category": "perseguição e stalking presencial"
+  },
+  {
+    "text": "O ar aqui tá uma poça de poluição, tá ficando impossível de respirar direito.",
+    "label": 0,
+    "category": "natureza, clima e meio ambiente"
+  },
+  {
+    "text": "O meu irmão sempre acha que está acima de todos, mas ninguém leva ele a sério.",
+    "label": 0,
+    "category": "família e relacionamentos saudáveis"
+  },
+  {
+    "text": "Ela não fez nada, só ficou quieta e já levou um chute na barriga.",
+    "label": 1,
+    "category": "agressão física: espancamento, murro, chute, empurrão"
+  },
+  {
+    "text": "Na última ligação, ele me recomendou exames, mas não mencionou nada sobre exercícios.",
+    "label": 0,
+    "category": "saúde e bem-estar: consultas, exames, exercícios"
+  },
+  {
+    "text": "Meu primo bate na minha prima sempre que discutem, isso é doentio.",
+    "label": 1,
+    "category": "violência praticada por familiar ou parente"
+  },
+  {
+    "text": "No açougue, os legumes e a carne são separados para facilitar a escolha.",
+    "label": 0,
+    "category": "açougue, pesca ou caça esportiva descrita de forma neutra"
+  },
+  {
+    "text": "Acordar às sete, tomar café e ir para o trabalho. A rotina é a mesma todos os dias.",
+    "label": 0,
+    "category": "rotina e atividades cotidianas neutras"
+  },
+  {
+    "text": "Ele coloca as coisas de um jeito que você nunca sabe a intenção.",
+    "label": 1,
+    "category": "ameaça velada e linguagem de duplo sentido intimidatória"
+  },
+  {
+    "text": "Esse sujeito chega a entrar no meu carro e dizer coisas bizarras.",
+    "label": 1,
+    "category": "perseguição e stalking presencial"
+  },
+  {
+    "text": "O cara só fala em empreendedorismo e projetos novos, mas na hora da bota no mundo, é outro mundo.",
+    "label": 0,
+    "category": "empreendedorismo e projetos criativos"
+  },
+  {
+    "text": "Dois homens se encararem e a discussão virar confusão, na Praça da Matriz.",
+    "label": 0,
+    "category": "jornalista ou repórter noticiando fato violento de forma objetiva e impessoal"
+  },
+  {
+    "text": "Eu falei, 'olha só a cara desse cara, todo mundo só elogiando e ele nem fez nada de especial!'",
+    "label": 0,
+    "category": "elogios e reconhecimento entre pessoas"
+  },
+  {
+    "text": "Eu não sei se vou conseguir, mas preciso dessa sua palavra de encorajamento.",
+    "label": 0,
+    "category": "apoio emocional e palavras de encorajamento"
+  },
+  {
+    "text": "Aquele cara usou as fotos íntimas para conseguir favores.",
+    "label": 1,
+    "category": "chantagem e ameaça de expor fotos íntimas"
+  },
+  {
+    "text": "Você não pode contar a ninguém, ou eu vou fazer uma coisa horrível com o seu irmão.",
+    "label": 1,
+    "category": "ameaça aos filhos ou familiares para controlar a vítima"
+  },
+  {
+    "text": "Eu usei o martelo pra colocar a unha na parede.",
+    "label": 0,
+    "category": "uso cotidiano de ferramentas como tesoura, martelo, serrote em casa"
+  },
+  {
+    "text": "A galera fica exausta no final das batalhas, tipo ‘te destruo’ e ‘morreu’, mas é só um jogo.",
+    "label": 0,
+    "category": "partida de FPS ou battle royale onde jogadores falam 'vou te matar', 'te destruo', 'morreu' no jogo"
+  },
+  {
+    "text": "Nem sei se a minha ideia criativa vai dar certo, parece que todo mundo está no mesmo barco.",
+    "label": 0,
+    "category": "empreendedorismo e projetos criativos"
+  },
+  {
+    "text": "A gente sempre se pega no bar no final da semana, a amizade é incrível.",
+    "label": 0,
+    "category": "amizade e socialização descontraída"
+  },
+  {
+    "text": "Só de te falar isso, sinto que tenho forças para encarar qualquer coisa que aparece.",
+    "label": 0,
+    "category": "apoio emocional e palavras de encorajamento"
+  },
+  {
+    "text": "A Batalha de Dien Bien Phu, franceses tentando se segurar!",
+    "label": 0,
+    "category": "entusiasta de história descrevendo batalhas, guerras ou conflitos históricos"
+  },
+  {
+    "text": "Cortei as folhas dos pés de morango, elas estão crescendo demais.",
+    "label": 0,
+    "category": "jardinagem e uso de ferramentas de corte no jardim"
+  },
+  {
+    "text": "Não faz sentido o delegado acreditar nisso, tem evidências concretas contra o suspeito.",
+    "label": 0,
+    "category": "advogado, delegado ou promotor discutindo caso criminal em linguagem jurídica"
+  },
+  {
+    "text": "A pressão da família para eu desistir do emprego é intensa, mas eu não vou deixar.",
+    "label": 1,
+    "category": "pressão para abandonar emprego ou estudos"
+  },
+  {
+    "text": "Tá, a guerra civil americana é super interessante, principalmente a Batalha de Gettysburg.",
+    "label": 0,
+    "category": "entusiasta de história descrevendo batalhas, guerras ou conflitos históricos"
+  },
+  {
+    "text": "Esse livro de thriller tem uma cena de ação que não dá pra parar de ler.",
+    "label": 0,
+    "category": "discussão sobre cena de ação, crime ou thriller em filme, série ou livro"
+  },
+  {
+    "text": "A faca de cozinha precisa sempre estar bem afiada, nada de cortes mal acabados.",
+    "label": 0,
+    "category": "culinária e preparo de refeições usando facas e utensílios de cozinha"
+  },
+  {
+    "text": "Esse cara sempre se gabando de tudo, só queria ser reconhecido!",
+    "label": 0,
+    "category": "elogios e reconhecimento entre pessoas"
+  },
+  {
+    "text": "Sempre que paro para comer, vejo um cara me observando do outro lado da rua.",
+    "label": 1,
+    "category": "perseguição e stalking presencial"
+  },
+  {
+    "text": "A comida no trabalho não presta, o que eu faço?",
+    "label": 0,
+    "category": "alimentação e culinária"
+  },
+  {
+    "text": "Sinto que a cada dia a respeito é menor.",
+    "label": 0,
+    "category": "relacionamento amoroso saudável e respeitoso"
+  },
+  {
+    "text": "A pressão dos colegas de classe está me matando, não sei se aguento mais essa concorrência.",
+    "label": 1,
+    "category": "pressão para abandonar emprego ou estudos"
+  },
+  {
+    "text": "Ele falou que levou um murro tão forte que ficou com a visão toda emborrachada.",
+    "label": 1,
+    "category": "agressão física: espancamento, murro, chute, empurrão"
+  },
+  {
+    "text": "Seus comentários deixam tudo tão ambíguo, quase dá medo.",
+    "label": 1,
+    "category": "ameaça velada e linguagem de duplo sentido intimidatória"
+  },
+  {
+    "text": "Esse meu tio é perigoso, já bateu em todos que ficaram perto dele, eu também tive minhas marcas.",
+    "label": 1,
+    "category": "violência praticada por familiar ou parente"
+  },
+  {
+    "text": "Aqui é tudo gorduroso e sem graça!",
+    "label": 0,
+    "category": "alimentação e culinária"
+  },
+  {
+    "text": "As cobranças do meu curso são enormes, mas eu não posso desistir agora.",
+    "label": 1,
+    "category": "pressão para abandonar emprego ou estudos"
+  },
+  {
+    "text": "Meu amigo fez um trabalho sobre a história dos eventos culturais aqui.",
+    "label": 0,
+    "category": "notícias e eventos culturais neutros"
+  },
+  {
+    "text": "Esse documentário sobre crimes reais é do tipo que te deixa sem ar, sabe? Fiquei até com medo de sair sozinho à noite depois de ver.",
+    "label": 0,
+    "category": "comentário sobre true crime, documentário policial ou podcast de crimes reais"
+  },
+  {
+    "text": "Olha só essa chuva, parece que o céu está reclamando por causa do que ta acontecendo com o meio ambiente.",
+    "label": 0,
+    "category": "natureza, clima e meio ambiente"
+  },
+  {
+    "text": "Ele nunca fala de sua vida pessoal, mas sei que esconde muita coisa.",
+    "label": 0,
+    "category": "família e relacionamentos saudáveis"
+  },
+  {
+    "text": "Que coisa, tipo se a gente fosse cortar a torta e você tivesse a tesoura, nossa!",
+    "label": 0,
+    "category": "brincadeiras e zoações entre amigos usando linguagem exagerada sem intenção real de ameaça"
+  },
+  {
+    "text": "Nunca aprendi a lidar com finanças pessoais, sempre fico perdido.",
+    "label": 0,
+    "category": "finanças pessoais e planejamento"
+  },
+  {
+    "text": "Essa história de te pegar com o faqueiro é só brincadeira, ele não vai fazer nada!",
+    "label": 0,
+    "category": "brincadeiras e zoações entre amigos usando linguagem exagerada sem intenção real de ameaça"
+  },
+  {
+    "text": "Eu não sei como é que a pessoa consegue fazer isso, é uma total falta de respeito com a vítima.",
+    "label": 1,
+    "category": "revenge porn: divulgação de conteúdo íntimo"
+  },
+  {
+    "text": "A carne do açougue está impecável, nada de irregularidade.",
+    "label": 0,
+    "category": "açougue, pesca ou caça esportiva descrita de forma neutra"
+  },
+  {
+    "text": "Eu tô achando que a minha mulher tá se fazendo de coitadinha pra justificar as batidas, mas eu nem sei, tá difícil",
+    "label": 1,
+    "category": "violência durante a gravidez"
+  },
+  {
+    "text": "A minha parceira ficou com medo, ela não sabe mais se vai conseguir sair dessa, eu estou tentando ajudar, mas não sei se vai dar",
+    "label": 1,
+    "category": "violência durante a gravidez"
+  },
+  {
+    "text": "Não vai ser nada grande, só uma tesoura para acertar isso aqui.",
+    "label": 0,
+    "category": "profissional de saúde, médico ou enfermeiro descrevendo procedimento cirúrgico ou acidente"
+  },
+  {
+    "text": "Ele usa tudo que eu digo contra mim mesmo, é uma manipulação cruel.",
+    "label": 1,
+    "category": "manipulação emocional e gaslighting"
+  },
+  {
+    "text": "Aqui em casa, quem manda é a cadelinha. Faz o que ela quer, senão a dona fica maluca.",
+    "label": 0,
+    "category": "cuidado de pets e animais"
+  },
+  {
+    "text": "Uma mulher chorando no canto, disse que o sujeito a espancou como se não houvesse amanhã.",
+    "label": 1,
+    "category": "agressão física: espancamento, murro, chute, empurrão"
+  },
+  {
+    "text": "Ela não fez nada, mas viu um cara levar um espancamento de outro.",
+    "label": 1,
+    "category": "agressão física: espancamento, murro, chute, empurrão"
+  },
+  {
+    "text": "As pessoas do clube de leitura estão malhando os lançamentos literários mais recentes.",
+    "label": 0,
+    "category": "notícias e eventos culturais neutros"
+  },
+  {
+    "text": "O açougue tem uma seção especial para os vegetarianos.",
+    "label": 0,
+    "category": "açougue, pesca ou caça esportiva descrita de forma neutra"
+  },
+  {
+    "text": "Só de falar ‘te destruo’ já deixa qualquer um nervoso no jogo!",
+    "label": 0,
+    "category": "partida de FPS ou battle royale onde jogadores falam 'vou te matar', 'te destruo', 'morreu' no jogo"
+  },
+  {
+    "text": "Essa jogada ali foi incrível, acabei de eliminar sem ser visto!",
+    "label": 0,
+    "category": "streamer ou gamer comentando jogadas agressivas, mortes e eliminações no game"
+  },
+  {
+    "text": "Sempre que tem problema, meu primo vira, fala alto, dá no pé, e no fim do dia ninguém fica bem.",
+    "label": 0,
+    "category": "relacionamento amoroso saudável e respeitoso"
+  },
+  {
+    "text": "Eu estou de fora dessa onda de séries de sucesso, sempre vejo os outros falando.",
+    "label": 0,
+    "category": "música, filmes, séries e entretenimento"
+  },
+  {
+    "text": "Ela ficou maluca e tá dizendo que vai me perseguir pelas ruas.",
+    "label": 1,
+    "category": "ameaça após separação ou término"
+  },
+  {
+    "text": "É incrível ver as crianças na quadra de vôlei, sempre tão animadas.",
+    "label": 0,
+    "category": "esportes e atividade física"
+  },
+  {
+    "text": "Nunca vou esquecer quando meu primo atacou minha prima sem motivo.",
+    "label": 1,
+    "category": "violência praticada por familiar ou parente"
+  },
+  {
+    "text": "Essa receita de bolo até me mato de rir pra fazer, mas vale a pena!",
+    "label": 0,
+    "category": "uso de expressões populares hiperbólicas como 'me mato de rir', 'quase morri de susto', 'tô morta de cansaço'"
+  },
+  {
+    "text": "Eu acho que ele está me manipulando. Sempre que eu falo algo, ele vira tudo contra mim.",
+    "label": 1,
+    "category": "manipulação emocional e gaslighting"
+  },
+  {
+    "text": "Ele fala que ia contar pra minha filha do que eu sei se eu não obedecer.",
+    "label": 1,
+    "category": "ameaça aos filhos ou familiares para controlar a vítima"
+  },
+  {
+    "text": "Ela chorou muito dizendo que ele ameaça cortar a própria garganta se não voltar.",
+    "label": 1,
+    "category": "ameaça após separação ou término"
+  },
+  {
+    "text": "Hoje, vou deixar a varanda com tudo em ordem, depois vou cuidar do jardim.",
+    "label": 0,
+    "category": "jardinagem e uso de ferramentas de corte no jardim"
+  },
+  {
+    "text": "Depois do treino de hoje, uma massagem é essencial, tá um puxão nos braços.",
+    "label": 0,
+    "category": "treino de artes marciais, boxe ou MMA descrito de forma técnica e esportiva"
+  },
+  {
+    "text": "A escola do meu filho tá ficando cada vez mais chata, parece que não valoriza mais o aprendizado",
+    "label": 0,
+    "category": "educação e aprendizado"
+  },
+  {
+    "text": "Se a comida do restaurante de ontem fosse comida caseira, eu teria amado!",
+    "label": 0,
+    "category": "alimentação e culinária"
+  },
+  {
+    "text": "Ele não deu chance de pensar, tinha uma faca na mão.",
+    "label": 1,
+    "category": "ameaça com arma branca ou de fogo"
+  },
+  {
+    "text": "Minha mãe fala que eu sou a favorita, mas eu sei que não é verdade.",
+    "label": 0,
+    "category": "família e relacionamentos saudáveis"
+  },
+  {
+    "text": "Os meninos estão brigando de super-herói no quintal, ninguém está machucando ninguém, só uma guerra de mentira mesmo.",
+    "label": 0,
+    "category": "crianças brincando de luta, super-herói ou guerra de mentira sem agressão real"
+  },
+  {
+    "text": "Juro que nunca mais vou confiar em ninguém assim, é sério",
+    "label": 1,
+    "category": "revenge porn: divulgação de conteúdo íntimo"
+  },
+  {
+    "text": "Eu só não consigo entender essa tecnologia avançada, mas o professor garante que vai ajudar.",
+    "label": 0,
+    "category": "tecnologia e ciência de forma informativa"
+  },
+  {
+    "text": "Se a mira for boa, um ‘vou te matar’ é mais do que suficiente, não tem nem como escapar!",
+    "label": 0,
+    "category": "partida de FPS ou battle royale onde jogadores falam 'vou te matar', 'te destruo', 'morreu' no jogo"
+  },
+  {
+    "text": "Quer saber, nem todo mundo é capaz de lidar com esse empreendedorismo e projetos criativos.",
+    "label": 0,
+    "category": "empreendedorismo e projetos criativos"
+  },
+  {
+    "text": "O vizinho só precisa de um pouco de mão na roda, solidariedade é essencial.",
+    "label": 0,
+    "category": "voluntariado e solidariedade"
+  },
+  {
+    "text": "Ela ameaçava todo dia que ia levar os meninos embora, sem dizer pra onde.",
+    "label": 1,
+    "category": "ameaça de tirar os filhos como coação"
+  },
+  {
+    "text": "Pra mim, o que está acontecendo com a natureza é um desastre total.",
+    "label": 0,
+    "category": "natureza, clima e meio ambiente"
+  },
+  {
+    "text": "Ele sempre dá risada das provocações que faz no chat, como se não fosse nada.",
+    "label": 0,
+    "category": "jogos online multiplayer com trash talk e provocações entre jogadores sem violência real"
+  },
+  {
+    "text": "Ainda não saio da minha zona de conforto, só sei da minha rotina de sempre: café da manhã, trabalho e jantar.",
+    "label": 0,
+    "category": "rotina e atividades cotidianas neutras"
+  },
+  {
+    "text": "Ah, olha o cara girando e acertando um soco em cheio no queixo do adversário!",
+    "label": 0,
+    "category": "comentarista ou lutador descrevendo golpes, nocautes e combates em luta esportiva"
+  },
+  {
+    "text": "Não podemos manter esse impasse, temos que conversar e ver o que fazer.",
+    "label": 0,
+    "category": "discussão construtiva e resolução pacífica de conflitos"
+  },
+  {
+    "text": "As minhas finanças pessoais estão um caos, só se salvaria com outro planejamento.",
+    "label": 0,
+    "category": "finanças pessoais e planejamento"
+  },
+  {
+    "text": "Eu tô em casa preso, sem nenhum motivo, é uma prisão.",
+    "label": 1,
+    "category": "cárcere privado dentro de casa"
+  },
+  {
+    "text": "Sinto que estou perdendo a sanidade, cada dia é uma tortura.",
+    "label": 1,
+    "category": "cárcere privado dentro de casa"
+  },
+  {
+    "text": "Estou ficando sem ideia do que fazer, não posso nem ver minha irmã agora.",
+    "label": 1,
+    "category": "isolamento social: proibição de ver família e amigos"
+  },
+  {
+    "text": "Estamos no local, apenas um utensílio quebrado no chão, nada de mais",
+    "label": 0,
+    "category": "bombeiro, policial ou socorrista relatando ocorrência de forma técnica e neutra"
+  },
+  {
+    "text": "Ela ficou com um trauma que não vai sair fácil, é preciso ajuda.",
+    "label": 1,
+    "category": "estupro ou tentativa de estupro"
+  },
+  {
+    "text": "Ela usa palavras como se tudo estivesse certo, mas está me forçando a algo.",
+    "label": 1,
+    "category": "ameaça velada e linguagem de duplo sentido intimidatória"
+  },
+  {
+    "text": "Ela ficou toda assustada quando ele mandou aquele mensagem ameaçando se matar se ela não voltasse.",
+    "label": 1,
+    "category": "ameaça após separação ou término"
+  },
+  {
+    "text": "Minha mãe acha que só por andar na esteira já tá querendo ser atleta.",
+    "label": 0,
+    "category": "esportes e atividade física"
+  },
+  {
+    "text": "No RPG, tem que ameaçar os inimigos, mas é tudo na brincadeira, ninguém vai levar à sério",
+    "label": 0,
+    "category": "jogo de luta ou RPG com falas de personagens ameaçando inimigos fictícios"
+  },
+  {
+    "text": "Sempre que o Felipe faz um trabalho bom, todo mundo vai elogiá-lo no WhatsApp.",
+    "label": 0,
+    "category": "elogios e reconhecimento entre pessoas"
+  },
+  {
+    "text": "Na assembleia comunitária, ele falou que você era corrupto, todo mundo ficou espantado.",
+    "label": 1,
+    "category": "humilhação pública e difamação"
+  },
+  {
+    "text": "Eu cortei o dedo numa vez, a faca de cozinha estava bem afiada.",
+    "label": 0,
+    "category": "culinária e preparo de refeições usando facas e utensílios de cozinha"
+  },
+  {
+    "text": "Meu amigo acha que finanças é só matemática, mas tem que ser com mente esperta.",
+    "label": 0,
+    "category": "finanças pessoais e planejamento"
+  },
+  {
+    "text": "Eles não deixam ninguém entrar, preciso de ajuda, não sei o que vou fazer!",
+    "label": 1,
+    "category": "pedido de socorro em situação de perigo imediato"
+  },
+  {
+    "text": "Os pequenos estão lutando sem usar nada que possa machucar.",
+    "label": 0,
+    "category": "crianças brincando de luta, super-herói ou guerra de mentira sem agressão real"
+  },
+  {
+    "text": "Esse cara fala que foi consentimento, mas eu não dei em hipótese alguma",
+    "label": 1,
+    "category": "estupro ou tentativa de estupro"
+  },
+  {
+    "text": "Ainda não vi resultado, mas to cagando e andando, vou segurar firme.",
+    "label": 0,
+    "category": "trabalho e carreira de forma positiva"
+  },
+  {
+    "text": "Se eu não fizer o que ele diz, vão acontecer coisas ruins com a minha família.",
+    "label": 1,
+    "category": "ameaça aos filhos ou familiares para controlar a vítima"
+  },
+  {
+    "text": "Esse tal de bia no jogo só fala besteira no chat, nunca mostra que é boa de verdade.",
+    "label": 0,
+    "category": "jogos online multiplayer com trash talk e provocações entre jogadores sem violência real"
+  },
+  {
+    "text": "Vou usar essa faca para remover isso, mas nada de profundo.",
+    "label": 0,
+    "category": "profissional de saúde, médico ou enfermeiro descrevendo procedimento cirúrgico ou acidente"
+  },
+  {
+    "text": "Ele falou que vai machucar todo mundo se eu não dar o que ele quer.",
+    "label": 1,
+    "category": "ameaça de morte ou lesão corporal grave"
+  },
+  {
+    "text": "Meu tio fala que a faca de pão é a mais especial que tem no armário.",
+    "label": 0,
+    "category": "culinária e preparo de refeições usando facas e utensílios de cozinha"
+  },
+  {
+    "text": "Golpes certeiros e uma técnica impecável, já está no fim!",
+    "label": 0,
+    "category": "comentarista ou lutador descrevendo golpes, nocautes e combates em luta esportiva"
+  },
+  {
+    "text": "Antes de terminar o exercício, de repente senti uma queimação no glúteo.",
+    "label": 0,
+    "category": "atleta relatando lesão ou momento de dor durante treino ou competição esportiva"
+  },
+  {
+    "text": "Pela cara dele, ele não estava brincando quando ameaçou com uma arma de fogo.",
+    "label": 1,
+    "category": "ameaça com arma branca ou de fogo"
+  },
+  {
+    "text": "Acho que preciso aprender mais com o marceneiro da esquina",
+    "label": 0,
+    "category": "bricolagem, marcenaria e trabalhos manuais em casa"
+  },
+  {
+    "text": "O cara no meu trabalho disse que a inteligência artificial vai revolucionar quase tudo.",
+    "label": 0,
+    "category": "tecnologia e ciência de forma informativa"
+  },
+  {
+    "text": "A série tá me deixando bem ansioso, tipo, tipo quando vou cortar a carne com o cutelo só.",
+    "label": 0,
+    "category": "discussão sobre cena de ação, crime ou thriller em filme, série ou livro"
+  },
+  {
+    "text": "O adversário só ameaça, mas só tem uma tesoura de costura.",
+    "label": 0,
+    "category": "jogo de luta ou RPG com falas de personagens ameaçando inimigos fictícios"
+  },
+  {
+    "text": "Me mato de rir desse comercial de TV, é tão sem vergonha!",
+    "label": 0,
+    "category": "uso de expressões populares hiperbólicas como 'me mato de rir', 'quase morri de susto', 'tô morta de cansaço'"
+  },
+  {
+    "text": "Quando você começa a sentir que tem que dar parte do seu salário, é como se estivessem fazendo uma lavagem cerebral.",
+    "label": 1,
+    "category": "violência financeira: controle de dinheiro"
+  }
+]

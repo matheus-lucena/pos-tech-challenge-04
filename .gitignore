@@ -1,6 +1,5 @@
 # Resultados de análise
 results/
-*.json
 !package.json
 !package-lock.json
 
