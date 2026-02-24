@@ -1,8 +1,11 @@
 import asyncio
+import importlib.util
 import os
 import queue
+import sys
 import threading
 import traceback
+from pathlib import Path
 from typing import Optional, Generator, Tuple, Any
 
 from config.constants import (
@@ -14,74 +17,76 @@ from config.constants import (
     VIOLENCE_MAX_LENGTH,
     VIOLENCE_THRESHOLD,
 )
+from config.violence_config import (
+    BINARY_DANGER,
+    BINARY_HYPOTHESIS,
+    BINARY_SAFE,
+    BINARY_THRESHOLD,
+    CATEGORY_HYPOTHESIS,
+    CATEGORY_LABELS,
+)
 from amazon_transcribe.client import TranscribeStreamingClient
 from amazon_transcribe.handlers import TranscriptResultStreamHandler
 from amazon_transcribe.model import TranscriptEvent
 from transformers import pipeline
 import torch
 
+# ---------------------------------------------------------------------------
+# Caminho padrão para o modelo fine-tunado.  Pode ser sobrescrito via variável
+# de ambiente VIOLENCE_BERT_MODEL_DIR antes de iniciar a aplicação.
+# ---------------------------------------------------------------------------
+_DEFAULT_BERT_MODEL_DIR = str(
+    Path(__file__).resolve().parents[2]
+    / "violence-against-women-bert"
+    / "model_output"
+)
+VIOLENCE_BERT_MODEL_DIR: str = os.environ.get(
+    "VIOLENCE_BERT_MODEL_DIR", _DEFAULT_BERT_MODEL_DIR
+)
+
+
+def _load_finetuned_detector(model_dir: str):
+    """
+    Tenta importar FineTunedViolenceDetector do módulo de inferência
+    do modelo fine-tunado sem modificar sys.path globalmente.
+
+    Retorna uma instância ou None se o modelo não estiver disponível.
+    """
+    inference_path = Path(model_dir).parent / "code" / "inference.py"
+    if not inference_path.exists():
+        return None
+    if not (Path(model_dir) / "config.json").exists():
+        return None
+
+    try:
+        spec = importlib.util.spec_from_file_location(
+            "violence_bert_inference", str(inference_path)
+        )
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        detector = module.FineTunedViolenceDetector(model_dir)
+        print(f"✅ Modelo BERT fine-tunado carregado de: {model_dir}")
+        return detector
+    except Exception as exc:
+        print(f"⚠️  Modelo fine-tunado indisponível ({exc}). Usando zero-shot.")
+        return None
+
 
 class ZeroShotViolenceDetector:
-    """Two-stage violence/risk detector.
+    """Two-stage violence/risk detector (fallback zero-shot).
 
-    Stage 1 — binary: asks the model a single yes/no question ("is this
-    dangerous?") using a well-designed NLI hypothesis.  With only two
-    competing labels the model concentrates its probability mass, giving
-    much higher recall for indirect or third-person descriptions of risk.
+    Stage 1 — binary: pergunta ao modelo se a frase descreve perigo (NLI).
+    Stage 2 — category: se Stage 1 detectar perigo, identifica o tipo de risco.
 
-    Stage 2 — category: if Stage 1 flags danger, a second pass over a small
-    set of broad category labels identifies the type of risk for the UI alert.
-    This pass never blocks the alert; it only adds the label.
-
-    Fast-path keywords: a compact list of completely unambiguous tokens
-    (weapon names, explicit murder phrases, child exploitation terms) bypasses
-    both model calls and returns immediately with confidence 1.0.
+    Usado apenas quando o modelo BERT fine-tunado não está disponível.
     """
 
-    # --- Binary detection (Stage 1) ---
-    _BINARY_DANGER = "situação de risco, perigo ou violência"
-    _BINARY_SAFE   = "situação normal e segura"
-    _BINARY_HYPOTHESIS = "Esta frase descreve uma {}."
-    _BINARY_THRESHOLD = 0.55
-
-    _CATEGORY_LABELS = [
-        "violência física ou ameaça de morte",
-        "perseguição ou stalking",
-        "assédio verbal, psicológico ou online",
-        "posse ou uso de arma",
-        "exploração ou abuso sexual de menor",
-        "violência doméstica",
-        "ameaça velada ou coação",
-        "pedido de socorro ou emergência",
-        "exposição não consentida de conteúdo íntimo",
-    ]
-    _CATEGORY_HYPOTHESIS = "Esta frase é sobre {}."
-
-    _FAST_KEYWORDS: dict[str, str] = {
-        # weapons
-        "faca": "posse ou uso de arma",
-        "facaço": "posse ou uso de arma",
-        "canivete": "posse ou uso de arma",
-        "revólver": "posse ou uso de arma",
-        "pistola": "posse ou uso de arma",
-        "espingarda": "posse ou uso de arma",
-        "rifle": "posse ou uso de arma",
-        "cutelo": "posse ou uso de arma",
-        "estou armado": "posse ou uso de arma",
-        "tenho uma arma": "posse ou uso de arma",
-        # explicit death threats
-        "vou te matar": "violência física ou ameaça de morte",
-        "te mato": "violência física ou ameaça de morte",
-        "vou matar você": "violência física ou ameaça de morte",
-        "você não vai sair vivo": "violência física ou ameaça de morte",
-        # child exploitation
-        "pedofilia": "exploração ou abuso sexual de menor",
-        "abuso sexual infantil": "exploração ou abuso sexual de menor",
-        "nude de menor": "exploração ou abuso sexual de menor",
-        "nude de criança": "exploração ou abuso sexual de menor",
-        "sexo com criança": "exploração ou abuso sexual de menor",
-        "sexo com menor": "exploração ou abuso sexual de menor",
-    }
+    _BINARY_DANGER       = BINARY_DANGER
+    _BINARY_SAFE         = BINARY_SAFE
+    _BINARY_HYPOTHESIS   = BINARY_HYPOTHESIS
+    _BINARY_THRESHOLD    = BINARY_THRESHOLD
+    _CATEGORY_LABELS     = CATEGORY_LABELS
+    _CATEGORY_HYPOTHESIS = CATEGORY_HYPOTHESIS
 
     def __init__(self, use_cuda: bool = False):
         print("🚀 Initializing violence detector...")
@@ -100,14 +105,6 @@ class ZeroShotViolenceDetector:
             device=device,
             torch_dtype=dtype,
         )
-
-    def _fast_path(self, text: str) -> tuple[bool, str]:
-        """Return (is_danger, category) for obvious keyword matches, else (False, '')."""
-        text_lower = text.lower()
-        for token, category in self._FAST_KEYWORDS.items():
-            if token in text_lower:
-                return True, category
-        return False, ""
 
     def _classify_binary(self, text: str) -> float:
         """Return the danger probability (0-1) from the binary stage."""
@@ -137,10 +134,6 @@ class ZeroShotViolenceDetector:
     def predict(self, text: str) -> Tuple[bool, str, float]:
         if len(text) < MIN_TEXT_LENGTH_VIOLENCE:
             return False, "too_short", 0.0
-
-        is_fast, fast_category = self._fast_path(text)
-        if is_fast:
-            return True, fast_category, 1.0
 
         try:
             truncated = text[:VIOLENCE_MAX_INPUT_CHARS]
@@ -219,8 +212,7 @@ class ViolenceHandler(TranscriptResultStreamHandler):
 
             if not is_final:
                 continue
-            current_context = " ".join(self.context_window)
-            text_to_analyze = f"{current_context} {transcript}".strip()
+            text_to_analyze = " ".join(self.context_window).strip()
             if len(text_to_analyze) > MIN_TEXT_LENGTH_VIOLENCE and text_to_analyze != self.last_analyzed_text:
                 self.last_analyzed_text = text_to_analyze
 
@@ -250,20 +242,33 @@ class TranscribeStreamingService:
     SAMPLE_RATE = 16000
 
     # Shared detector instance across all sessions
-    _shared_detector: Optional[ZeroShotViolenceDetector] = None
+    _shared_detector = None   # ZeroShotViolenceDetector | FineTunedViolenceDetector
     _detector_lock = threading.Lock()
 
     @classmethod
-    def _get_or_create_detector(cls) -> Optional[ZeroShotViolenceDetector]:
+    def _get_or_create_detector(cls):
+        """
+        Retorna o detector compartilhado.
+
+        Ordem de preferência:
+          1. Modelo BERT fine-tunado (violence-against-women-bert/model_output)
+          2. Fallback: zero-shot mDeBERTa
+        """
         if cls._shared_detector is not None:
             return cls._shared_detector
         with cls._detector_lock:
             if cls._shared_detector is None:
-                try:
-                    cls._shared_detector = ZeroShotViolenceDetector()
-                except Exception as e:
-                    print(f"Warning: could not load violence detector: {e}")
-                    return None
+                # Tenta o modelo fine-tunado primeiro
+                finetuned = _load_finetuned_detector(VIOLENCE_BERT_MODEL_DIR)
+                if finetuned is not None:
+                    cls._shared_detector = finetuned
+                else:
+                    try:
+                        print("ℹ️  Iniciando detector zero-shot (modelo fine-tunado não encontrado).")
+                        cls._shared_detector = ZeroShotViolenceDetector()
+                    except Exception as e:
+                        print(f"Warning: could not load violence detector: {e}")
+                        return None
         return cls._shared_detector
 
     def __init__(self, region_name: str = "us-east-1"):
