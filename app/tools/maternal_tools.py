@@ -1,19 +1,16 @@
 import os
 import tempfile
-from dotenv import load_dotenv
 
 import librosa
 from crewai.tools import tool
 
 from services.instances import get_maternal_health_service, get_s3_service
 
-load_dotenv()
-
 
 @tool("MaternalHeartSoundAnalyzer")
 def analyze_maternal_heart_sound(
     audio_path: str,
-    is_s3_path: bool = False
+    is_s3_path: bool = False,
 ) -> str:
     """Analyzes maternal heart signals (PCG) from an audio file. Use is_s3_path=True if audio_path is s3://bucket/key."""
     try:
@@ -21,7 +18,7 @@ def analyze_maternal_heart_sound(
         temp_file = None
 
         if is_s3_path:
-            if not audio_path.startswith('s3://'):
+            if not audio_path.startswith("s3://"):
                 return f"Error: Invalid S3 path. Must start with 's3://': {audio_path}"
 
             exists, error_msg = get_s3_service().verify_file_exists(audio_path)
@@ -29,9 +26,8 @@ def analyze_maternal_heart_sound(
                 return f"Error: {error_msg}"
 
             try:
-                temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.wav')
+                temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
                 temp_file.close()
-
                 get_s3_service().download_file(audio_path, temp_file.name)
                 local_path = temp_file.name
             except Exception as e:
@@ -75,36 +71,10 @@ def analyze_maternal_heart_sound(
 
 💡 RECOMMENDATIONS:
 """
-        for rec in result['recommendations']:
+        for rec in result["recommendations"]:
             output += f"   • {rec}\n"
 
         return output.strip()
 
     except Exception as e:
         return f"Error analyzing maternal signal: {str(e)}"
-
-
-@tool("MaternalRealtimeAnalyzer")
-def analyze_maternal_realtime(
-    audio_chunk_path: str,
-    sample_rate: int = 16000
-) -> str:
-    """Analyzes an audio chunk in real time (default sample_rate 16000 Hz)."""
-    try:
-        y, sr = librosa.load(audio_chunk_path, sr=sample_rate, mono=True)
-
-        result = get_maternal_health_service().analyze_realtime_stream(y, sr)
-
-        if result.get("status") == "error":
-            return f"❌ Error: {result.get('error', 'Unknown error')}"
-
-        output = (
-            f"MHR: {result['maternal_heart_rate']:.1f} bpm | "
-            f"Risk: {result['classification']['risk_level'].upper()} | "
-            f"Status: {result['classification']['status'].upper()}"
-        )
-
-        return output
-
-    except Exception as e:
-        return f"Real-time analysis error: {str(e)}"

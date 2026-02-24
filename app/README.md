@@ -174,6 +174,39 @@ app/
 - Verifique se o bucket S3 está configurado corretamente
 - Confirme que a role do Transcribe tem permissões adequadas
 
+## 🎤 Transcrição em Tempo Real e Detecção de Violência
+
+O sistema inclui um módulo de processamento de áudio em tempo real via **AWS Transcribe Streaming**:
+
+### Fluxo
+1. O microfone captura áudio via `PyAudio` e divide em chunks de `~100ms`
+2. Os chunks são enviados para o `TranscribeStreamingService` que mantém uma conexão WebSocket com o AWS Transcribe
+3. Os resultados (parciais e finais) são entregues ao `RealtimeAudioProcessor` através de uma fila thread-safe
+4. A interface Gradio exibe a transcrição em tempo real com polling a cada `200ms`
+
+### Detecção de Violência
+- Implementada via **zero-shot classification** com o modelo `MoritzLaurer/mDeBERTa-v3-base-mnli-xnli`
+- Analisa janelas de contexto (`CONTEXT_WINDOW_SIZE = 5` segmentos finais)
+- Combina lista de palavras-chave de perigo com classificação probabilística
+- Emite alertas visuais na interface quando `score > VIOLENCE_THRESHOLD (0.75)`
+
+### Dependências extras para streaming
+```bash
+pip install amazon-transcribe transformers torch pyaudio
+```
+
+> **Nota**: `torch` é necessário para o modelo de detecção de violência. A instalação sem GPU funciona
+> normalmente em CPU, mas pode ser mais lenta. Passe `use_cuda=True` ao instanciar `ZeroShotViolenceDetector`
+> para habilitar GPU se disponível.
+
+### Módulos relacionados
+
+| Módulo | Responsabilidade |
+|---|---|
+| `services/transcribe_streaming_service.py` | Conexão WebSocket com AWS Transcribe, detecção de violência |
+| `ui/realtime_processor.py` | Captura de microfone, gerenciamento de threads, gravação WAV |
+| `ui/realtime_handlers.py` | Handlers Gradio para start/stop/update da transcrição em tempo real |
+
 ## 📝 Sobre o Projeto
 
 Este projeto faz parte do sistema de saúde materna desenvolvido para o trabalho de pós-graduação.

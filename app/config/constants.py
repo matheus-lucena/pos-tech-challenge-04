@@ -38,3 +38,9 @@ VIOLENCE_MAX_LENGTH = 256
 
 CHUNK_100MS_BYTES = 3200
 SENDER_SLEEP_SEC = 0.15
+
+# Seconds to wait after an S3 upload before the object is reliably accessible.
+# AWS S3 provides strong read-after-write consistency, but a small buffer avoids
+# race conditions with downstream services (e.g. Transcribe, Textract) that
+# start polling the object immediately after creation.
+S3_UPLOAD_PROPAGATION_WAIT = 2

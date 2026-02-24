@@ -14,14 +14,11 @@ from config.constants import (
     VIOLENCE_MAX_LENGTH,
     VIOLENCE_THRESHOLD,
 )
-from dotenv import load_dotenv
 from amazon_transcribe.client import TranscribeStreamingClient
 from amazon_transcribe.handlers import TranscriptResultStreamHandler
 from amazon_transcribe.model import TranscriptEvent
 from transformers import pipeline
 import torch
-
-load_dotenv()
 
 
 class ZeroShotViolenceDetector:

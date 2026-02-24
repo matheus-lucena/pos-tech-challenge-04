@@ -1,7 +1,5 @@
 import os
 from crewai import LLM
-from dotenv import load_dotenv
-load_dotenv()
 
 
 def get_llm() -> LLM:

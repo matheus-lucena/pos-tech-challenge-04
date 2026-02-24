@@ -1,5 +1,10 @@
 # 🏥 Sistema Multimodal de Análise de Saúde Materna
 
+![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+![AWS](https://img.shields.io/badge/AWS-SageMaker%20%7C%20Transcribe%20%7C%20Comprehend-orange)
+![Terraform](https://img.shields.io/badge/Terraform-%3E%3D1.0-7B42BC)
+![License](https://img.shields.io/badge/license-Academic-lightgrey)
+
 Sistema completo de inteligência artificial para análise de saúde materna, integrando múltiplas fontes de dados (biométricos, áudio, sinais cardíacos) para fornecer uma avaliação abrangente do risco de saúde materna.
 
 ## 📋 Visão Geral
@@ -162,17 +167,46 @@ python app.py
 
 A aplicação estará disponível em `http://localhost:7860`
 
+### (Opcional) Passo 5: Gerar PDFs de Teste
+
+Para testar o pré-preenchimento automático via PDF, gere laudos de exemplo na raiz do projeto:
+
+```bash
+# Instale a dependência (necessário apenas uma vez)
+pip install fpdf2
+
+# Gerar os três tipos de laudo de uma vez
+python generate_pdf.py
+
+# Ou gerar casos específicos
+python generate_pdf.py --low     # somente baixo risco
+python generate_pdf.py --high    # somente alto risco
+python generate_pdf.py --random  # somente aleatório
+```
+
+Arquivos gerados na raiz do projeto:
+
+| Arquivo | Caso | Idade | PA | Glicemia | Temp |
+|---|---|---|---|---|---|
+| `laudo_baixo_risco.pdf` | Baixo Risco | 25 anos | 110x70 mmHg | 117 mg/dL (6.5 mmol/L) | 36.7°C |
+| `laudo_alto_risco.pdf` | Alto Risco | 40 anos | 150x100 mmHg | 189 mg/dL (10.5 mmol/L) | 37.5°C |
+| `laudo_medico_exemplo.pdf` | Aleatório | variável | variável | variável | variável |
+
+> **Conversão automática**: o PDF usa unidades clínicas brasileiras (mg/dL, °C). O sistema de pré-preenchimento converte automaticamente para as unidades do modelo (mmol/L, °F) ao processar o PDF.
+
 ## 📁 Estrutura do Projeto
 
 ```
 pos-tech-challenge-04-new/
 ├── app/                          # Aplicação principal
 │   ├── agents/                   # Agentes CrewAI
-│   ├── config/                   # Configurações
-│   ├── models/                   # Modelos de dados
-│   ├── services/                 # Serviços AWS
-│   ├── tools/                    # Ferramentas dos agentes
-│   ├── ui/                       # Interface Gradio
+│   │   └── task_templates.py     # Prompts das tasks (separados da lógica)
+│   ├── config/                   # Configurações e constantes
+│   ├── models/                   # Modelos de dados (Pydantic)
+│   ├── services/                 # Serviços AWS (S3, SageMaker, Transcribe...)
+│   ├── tools/                    # Ferramentas dos agentes CrewAI
+│   ├── ui/                       # Interface Gradio + handlers de tempo real
+│   ├── utils/                    # Utilitários compartilhados (parse_s3_path...)
 │   ├── app.py                    # Ponto de entrada
 │   └── README.md                 # Documentação do app
 │
@@ -180,7 +214,7 @@ pos-tech-challenge-04-new/
 │   ├── main.tf                   # Recursos principais
 │   ├── variables.tf              # Variáveis
 │   ├── outputs.tf                # Outputs
-│   ├── terraform.tfvars.example # Exemplo de configuração
+│   ├── terraform.tfvars.example  # Exemplo de configuração
 │   └── README.md                 # Documentação da infra
 │
 ├── maternal-health-risk/         # Modelo de ML
@@ -189,10 +223,14 @@ pos-tech-challenge-04-new/
 │   │   ├── inference.py          # Script de inferência
 │   │   └── maternal_health_risk.csv  # Dataset
 │   ├── deploy.py                 # Script de deploy
-│   ├── demo.py                   # Script de demonstração
+│   ├── demo.py                   # Script de demonstração (casos de teste)
 │   ├── requirements.txt          # Dependências
 │   └── README.md                 # Documentação do modelo
 │
+├── generate_pdf.py               # Gerador de laudos PDF para testes
+├── laudo_baixo_risco.pdf         # Laudo de referência — Baixo Risco (gerado)
+├── laudo_alto_risco.pdf          # Laudo de referência — Alto Risco (gerado)
+├── laudo_medico_exemplo.pdf      # Laudo aleatório de exemplo (gerado)
 └── README.md                     # Este arquivo
 ```
 

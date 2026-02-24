@@ -7,7 +7,8 @@ import scipy.signal
 
 from config.constants import MHR_VALID_MIN, MHR_VALID_MAX, SAMPLE_RATE
 
-warnings.filterwarnings('ignore')
+warnings.filterwarnings("ignore", category=UserWarning, module="librosa")
+warnings.filterwarnings("ignore", category=FutureWarning, module="librosa")
 
 
 class MaternalHealthService:
